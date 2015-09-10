@@ -17,11 +17,79 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 public class ExactypeView extends View {
+    private static final String TAG = "Exactype";
+    private final Paint foreground;
+    private float verticalCenterOffset;
+
+    private final static String[] ROWS = new String[] {
+            "qwertyuiopå",
+            "asdfghjklöä",
+            "SzxcvbnmB" // S=SHIFT, B=Backspace
+    };
+
     public ExactypeView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
+        foreground.setColor(Color.WHITE);
+        foreground.setTextAlign(Paint.Align.CENTER);
+
+        // FIXME: Compute a good size
+        final int FONT_SIZE_DP = 50;
+
+        float fontSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                FONT_SIZE_DP, getResources().getDisplayMetrics());
+        foreground.setTextSize(fontSizePx);
+
+        // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
+        Rect bounds = new Rect();
+        foreground.getTextBounds("M", 0, 1, bounds);
+        Log.i(TAG, bounds.toString());
+        verticalCenterOffset = -bounds.top - bounds.height() / 2;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // FIXME: Compute coordinates for all keys:
+        // http://developer.android.com/training/custom-views/custom-drawing.html#layoutevent
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // Clear the background
+        canvas.drawColor(Color.BLACK);
+
+        // Draw the keys
+        for (int row_number = 0; row_number < ROWS.length; row_number++) {
+            String row = ROWS[row_number];
+
+            for (int char_number = 0; char_number < row.length(); char_number++) {
+                char current_char = row.charAt(char_number);
+
+                float x =
+                        ((char_number + 1f) * getWidth()) / (row.length() + 1f);
+                float y =
+                        ((row_number + 1f) * getHeight()) / (ROWS.length + 1f) + verticalCenterOffset;
+
+                canvas.drawText(Character.toString(current_char), x, y, foreground);
+            }
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // FIXME: Make up a reasonable size
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
