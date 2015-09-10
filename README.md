@@ -8,9 +8,11 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
-# TODO
+# TODO Before Installing on Johan's Phone
 * Draw a Swedish keyboard in the view
 * Insert characters in the text when the user presses the keys
+
+# TODO Before Getting the First Beta Tester
 * Implement a working SHIFT key
 * Automatic SHIFT handling depending on what kind of field we're editing
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
@@ -27,12 +29,17 @@ place) frame above the keyboard
 * Add vibrations on key presses
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed.
+* Add an Activity that helps users enabling / choosing the new keyboard.
+
+# TODO Before Publishing on Google Play
 * Take keyboard layouts from the AOSP keyboard and let users choose one or more in a Settings
 activity. Note that we most likely need to match their licensing terms for this.
 * Change keyboard layout by swiping left or right with two fingers.
 * Think about splitting the keyboard when wide enough
+
+# TODO Misc
 * Think about keyboard transparency, especially on phones in landscape mode
-* Add an Activity that helps users enabling / choosing the new keyboard.
 
 # DONE
 * Create an IME that when selected shows an empty view
+* Add licensing information (same as AOSP)
