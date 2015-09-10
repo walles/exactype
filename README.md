@@ -9,7 +9,6 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO
-* Create an IME that when selected shows an empty view
 * Draw a Swedish keyboard in the view
 * Insert characters in the text when the user presses the keys
 * Implement a working SHIFT key
@@ -33,3 +32,7 @@ activity. Note that we most likely need to match their licensing terms for this.
 * Change keyboard layout by swiping left or right with two fingers.
 * Think about splitting the keyboard when wide enough
 * Think about keyboard transparency, especially on phones in landscape mode
+* Add an Activity that helps users enabling / choosing the new keyboard.
+
+# DONE
+* Create an IME that when selected shows an empty view
