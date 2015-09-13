@@ -9,7 +9,8 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Installing on Johan's Phone
-* Size the keyboard and its keys properly and automatically
+* Find out why we have padding around the view and get rid of it
+* Size the letters properly
 * Insert characters in the text when the user presses the keys
 
 # TODO Before Getting the First Beta Tester
@@ -59,3 +60,4 @@ activity. Note that we most likely need to match their licensing terms for this.
 * Create an IME that when selected shows an empty view
 * Add licensing information (same as AOSP)
 * Draw a Swedish keyboard in the view
+* Size the keyboard and its keys properly and automatically

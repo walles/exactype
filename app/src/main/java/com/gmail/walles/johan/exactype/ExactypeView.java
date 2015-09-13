@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 
 public class ExactypeView extends View {
@@ -40,35 +39,17 @@ public class ExactypeView extends View {
     public ExactypeView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        setPadding(0, 0, 0, 0);
+
         foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
-
-        // FIXME: Compute a good size
-        final int FONT_SIZE_DP = 50;
-
-        float fontSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                FONT_SIZE_DP, getResources().getDisplayMetrics());
-        foreground.setTextSize(fontSizePx);
-
-        // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
-        Rect bounds = new Rect();
-        foreground.getTextBounds("M", 0, 1, bounds);
-        Log.i(TAG, bounds.toString());
-        verticalCenterOffset = -bounds.top - bounds.height() / 2;
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        // FIXME: Compute coordinates for all keys:
-        // http://developer.android.com/training/custom-views/custom-drawing.html#layoutevent
-        super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         // Clear the background
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.BLUE);
 
         // Draw the keys
         for (int row_number = 0; row_number < ROWS.length; row_number++) {
@@ -87,9 +68,57 @@ public class ExactypeView extends View {
         }
     }
 
+    private static int getLongestRowLength(Paint paint, String rows[]) {
+        int maxRowLength = 0;
+        Rect bounds = new Rect();
+        for (String row : rows) {
+            paint.getTextBounds(row, 0, row.length(), bounds);
+            maxRowLength = Math.max(maxRowLength, bounds.width());
+        }
+        return maxRowLength;
+    }
+
+    private static int sumRowHeights(Paint paint, String rows[]) {
+        int rowLengthSum = 0;
+        Rect bounds = new Rect();
+        for (String row : rows) {
+            paint.getTextBounds(row, 0, row.length(), bounds);
+            rowLengthSum += bounds.height();
+        }
+        return rowLengthSum;
+    }
+
+    private static float computeVerticalCenterOffset(Paint paint) {
+        // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
+        Rect bounds = new Rect();
+        paint.getTextBounds("M", 0, 1, bounds);
+        Log.i(TAG, bounds.toString());
+        return -bounds.top - bounds.height() / 2;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // FIXME: Make up a reasonable size
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.i(TAG,
+             MeasureSpec.toString(widthMeasureSpec) +
+             "x" +
+             MeasureSpec.toString(heightMeasureSpec));
+
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+
+        // Set foreground font size to 100 and compute the length of the longest line in px
+        foreground.setTextSize(100);
+        float longestRowLength = getLongestRowLength(foreground, ROWS);
+
+        // Scale the font size so that the longest line matches the display width
+        float factor = width / longestRowLength;
+        foreground.setTextSize(100 * factor);
+
+        verticalCenterOffset = computeVerticalCenterOffset(foreground);
+
+        // Sum up the heights of all keyboard rows with the new font size to get height in px
+        int height = sumRowHeights(foreground, ROWS);
+
+        Log.i(TAG, "Setting dimensions to: " + width + "x" + height);
+        setMeasuredDimension(width, height);
     }
 }
