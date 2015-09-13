@@ -27,23 +27,31 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class KeyCoordinatorTest {
-    @Test
-    public void testSingleChar() throws Exception {
-        KeyCoordinator testMe = new KeyCoordinator(new String[] {"A"}, 200, 100);
+    private void testIteration(
+        String[] rows, int width, int height, KeyCoordinator.KeyInfo[] expectedCoordinates)
+    {
+        KeyCoordinator testMe = new KeyCoordinator(rows, width, height);
         List<KeyCoordinator.KeyInfo> coordinates = new ArrayList<>();
         for (KeyCoordinator.KeyInfo keyInfo : testMe) {
             coordinates.add(keyInfo);
         }
 
-        KeyCoordinator.KeyInfo[] expectedCoordinates = new KeyCoordinator.KeyInfo[] {
-            new KeyCoordinator.KeyInfo(100, 50, 'A')
-        };
-
         Assert.assertArrayEquals(expectedCoordinates, coordinates.toArray());
     }
 
     @Test
-    public void test2x2() throws Exception {
-        Assert.fail("This test has not been written yet");
+    public void testPlacement() {
+        // Test single key keyboard
+        testIteration(new String[] {"A"}, 200, 100, new KeyCoordinator.KeyInfo[] {
+            new KeyCoordinator.KeyInfo(100, 50, 'A')
+        });
+
+        // Test 2x2 keyboard
+        testIteration(new String[] {"AB", "CD"}, 300, 150, new KeyCoordinator.KeyInfo[] {
+            new KeyCoordinator.KeyInfo(100, 50, 'A'),
+            new KeyCoordinator.KeyInfo(200, 50, 'B'),
+            new KeyCoordinator.KeyInfo(100, 100, 'C'),
+            new KeyCoordinator.KeyInfo(200, 100, 'D'),
+        });
     }
 }
