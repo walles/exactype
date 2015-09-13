@@ -9,11 +9,11 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Installing on Johan's Phone
-* Find out why we have padding around the view and get rid of it
-* Size the letters properly
 * Insert characters in the text when the user presses the keys
 
 # TODO Before Getting the First Beta Tester
+* Size the letters properly
+* Find out why we have padding around the view and get rid of it
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
 * Implement a working SHIFT key
