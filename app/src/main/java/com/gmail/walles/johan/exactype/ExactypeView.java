@@ -52,19 +52,12 @@ public class ExactypeView extends View {
         canvas.drawColor(Color.BLUE);
 
         // Draw the keys
-        for (int row_number = 0; row_number < ROWS.length; row_number++) {
-            String row = ROWS[row_number];
-
-            for (int char_number = 0; char_number < row.length(); char_number++) {
-                char current_char = row.charAt(char_number);
-
-                float x =
-                        ((char_number + 1f) * getWidth()) / (row.length() + 1f);
-                float y =
-                        ((row_number + 1f) * getHeight()) / (ROWS.length + 1f) + verticalCenterOffset;
-
-                canvas.drawText(Character.toString(current_char), x, y, foreground);
-            }
+        for (KeyCoordinator.KeyInfo keyInfo : new KeyCoordinator(ROWS, getWidth(), getHeight())) {
+            canvas.drawText(
+                Character.toString(keyInfo.character),
+                keyInfo.x,
+                keyInfo.y + verticalCenterOffset,
+                foreground);
         }
     }
 

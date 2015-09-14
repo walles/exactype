@@ -16,9 +16,9 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.graphics.Paint;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Keeps track of coordinates for keys.
@@ -34,6 +34,31 @@ public class KeyCoordinator implements Iterable<KeyCoordinator.KeyInfo> {
             this.y = y;
             this.character = character;
         }
+
+        @Override
+        public String toString() {
+            return String.format("KeyInfo{x=%f, y=%f, c='%c'}", x, y, character);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            KeyInfo keyInfo = (KeyInfo) o;
+
+            if (character != keyInfo.character) return false;
+            if (Float.compare(keyInfo.x, x) != 0) return false;
+            return Float.compare(keyInfo.y, y) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) character;
+            result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
+            result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+            return result;
+        }
     }
 
     private final String[] rows;
@@ -48,6 +73,23 @@ public class KeyCoordinator implements Iterable<KeyCoordinator.KeyInfo> {
 
     @Override
     public Iterator<KeyInfo> iterator() {
-        return null;
+        List<KeyInfo> coordinates = new ArrayList<>();
+
+        for (int row_number = 0; row_number < rows.length; row_number++) {
+            String row = rows[row_number];
+
+            for (int char_number = 0; char_number < row.length(); char_number++) {
+                char current_char = row.charAt(char_number);
+
+                float x =
+                    ((char_number + 1f) * width) / (row.length() + 1f);
+                float y =
+                    ((row_number + 1f) * height) / (rows.length + 1f);
+
+                coordinates.add(new KeyInfo(x, y, current_char));
+            }
+        }
+
+        return coordinates.iterator();
     }
 }

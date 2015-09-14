@@ -12,6 +12,7 @@ Features (will) include:
 * Insert characters in the text when the user presses the keys
 
 # TODO Before Getting the First Beta Tester
+* Add a .travis.yml build config running the unit tests
 * Size the letters properly
 * Find out why we have padding around the view and get rid of it
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
