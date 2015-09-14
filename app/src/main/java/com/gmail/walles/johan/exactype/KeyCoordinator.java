@@ -82,9 +82,9 @@ public class KeyCoordinator implements Iterable<KeyCoordinator.KeyInfo> {
                 char current_char = row.charAt(char_number);
 
                 float x =
-                    ((char_number + 1f) * width) / (row.length() + 1f);
+                    ((char_number + 1f) * width) / row.length() - width / (2f * row.length());
                 float y =
-                    ((row_number + 1f) * height) / (rows.length + 1f);
+                    ((row_number + 1f) * height) / rows.length - height / (2f * rows.length);
 
                 coordinates.add(new KeyInfo(x, y, current_char));
             }

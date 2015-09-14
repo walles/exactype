@@ -43,11 +43,11 @@ public class KeyCoordinatorTest {
         });
 
         // Test 2x2 keyboard
-        testIteration(new String[] {"AB", "CD"}, 300, 150, new KeyCoordinator.KeyInfo[] {
-            new KeyCoordinator.KeyInfo(100, 50, 'A'),
-            new KeyCoordinator.KeyInfo(200, 50, 'B'),
-            new KeyCoordinator.KeyInfo(100, 100, 'C'),
-            new KeyCoordinator.KeyInfo(200, 100, 'D'),
+        testIteration(new String[] {"AB", "CD"}, 200, 100, new KeyCoordinator.KeyInfo[] {
+            new KeyCoordinator.KeyInfo(50, 25, 'A'),
+            new KeyCoordinator.KeyInfo(150, 25, 'B'),
+            new KeyCoordinator.KeyInfo(50, 75, 'C'),
+            new KeyCoordinator.KeyInfo(150, 75, 'D'),
         });
     }
 }
