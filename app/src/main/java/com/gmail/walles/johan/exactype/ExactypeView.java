@@ -21,8 +21,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.AttributeSet;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ExactypeView extends View {
@@ -30,6 +32,7 @@ public class ExactypeView extends View {
     private final Paint foreground;
     private float verticalCenterOffset;
     private final KeyCoordinator keyCoordinator;
+    private GestureDetector gestureDetector;
 
     private final static String[] ROWS = new String[] {
             "qwertyuiopå",
@@ -37,14 +40,17 @@ public class ExactypeView extends View {
             "SzxcvbnmB" // S=SHIFT, B=Backspace
     };
 
-    public ExactypeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public ExactypeView(Context exactype) {
+        super(exactype);
 
         foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
 
         keyCoordinator = new KeyCoordinator(ROWS);
+
+        gestureDetector =
+            new GestureDetector(exactype, new GestureListener((Exactype)exactype, keyCoordinator));
     }
 
     @Override
@@ -115,5 +121,10 @@ public class ExactypeView extends View {
         Log.i(TAG, "Setting dimensions to: " + width + "x" + height);
         setMeasuredDimension(width, height);
         keyCoordinator.setSize(width, height);
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 }

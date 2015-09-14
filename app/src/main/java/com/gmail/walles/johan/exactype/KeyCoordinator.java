@@ -111,13 +111,13 @@ public class KeyCoordinator {
     /**
      * Find the key closest to a coordinate.
      */
-    public char getClosestKey(int x, int y) {
+    public char getClosestKey(float x, float y) {
         KeyInfo closestKey = null;
-        int closestDistance2 = Integer.MAX_VALUE;
+        float closestDistance2 = Float.MAX_VALUE;
         for (KeyInfo keyInfo : keys) {
-            int dx = keyInfo.x - x;
-            int dy = keyInfo.y - y;
-            int distance2 = dx * dx + dy * dy;
+            float dx = keyInfo.x - x;
+            float dy = keyInfo.y - y;
+            float distance2 = dx * dx + dy * dy;
 
             if (distance2 < closestDistance2) {
                 closestKey = keyInfo;
