@@ -36,6 +36,23 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if (velocityX <= 0) {
+            // More left than right
+            return false;
+        }
+        if (Math.abs(velocityY) > velocityX) {
+            // More up / down than right
+            return false;
+        }
+
+        // Right fling, enter space!
+        exactype.onKeyTapped(' ');
+
+        return true;
+    }
+
+    @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
         exactype.onKeyTapped(tappedKey);

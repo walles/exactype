@@ -10,7 +10,6 @@ Features (will) include:
 
 # TODO Before Getting the First Beta Tester
 * Add a .travis.yml build config running the unit tests
-* Swipe right => insert a space
 * Size the letters properly
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
@@ -62,3 +61,4 @@ pauses during drawing operations.
 * Size the keyboard and its keys properly and automatically
 * Find out why we have padding around the view and get rid of it
 * Insert characters in the text when the user presses the keys
+* Swipe right => insert a space
