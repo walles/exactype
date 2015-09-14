@@ -19,20 +19,14 @@ package com.gmail.walles.johan.exactype;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class KeyCoordinatorTest {
     private void testIteration(
         String[] rows, int width, int height, KeyCoordinator.KeyInfo[] expectedCoordinates)
     {
-        KeyCoordinator testMe = new KeyCoordinator(rows, width, height);
-        List<KeyCoordinator.KeyInfo> coordinates = new ArrayList<>();
-        for (KeyCoordinator.KeyInfo keyInfo : testMe) {
-            coordinates.add(keyInfo);
-        }
+        KeyCoordinator testMe = new KeyCoordinator(rows);
+        testMe.setSize(width, height);
 
-        Assert.assertArrayEquals(expectedCoordinates, coordinates.toArray());
+        Assert.assertArrayEquals(expectedCoordinates, testMe.getKeys());
     }
 
     @Test
@@ -43,11 +37,23 @@ public class KeyCoordinatorTest {
         });
 
         // Test 2x2 keyboard
-        testIteration(new String[] {"AB", "CD"}, 200, 100, new KeyCoordinator.KeyInfo[] {
+        testIteration(new String[]{"AB", "CD"}, 200, 100, new KeyCoordinator.KeyInfo[] {
             new KeyCoordinator.KeyInfo(50, 25, 'A'),
             new KeyCoordinator.KeyInfo(150, 25, 'B'),
             new KeyCoordinator.KeyInfo(50, 75, 'C'),
             new KeyCoordinator.KeyInfo(150, 75, 'D'),
         });
+    }
+
+    @Test
+    public void testGetClosestKey() {
+        String rows[] = new String[] { "AB", "CD" };
+        KeyCoordinator testMe = new KeyCoordinator(rows);
+        testMe.setSize(200, 100);
+
+        Assert.assertEquals('A', testMe.getClosestKey(50, 25));
+        Assert.assertEquals('A', testMe.getClosestKey(100, 25));
+        Assert.assertEquals('B', testMe.getClosestKey(101, 25));
+        Assert.assertEquals('D', testMe.getClosestKey(200, 100));
     }
 }

@@ -29,6 +29,7 @@ public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private final Paint foreground;
     private float verticalCenterOffset;
+    private final KeyCoordinator keyCoordinator;
 
     private final static String[] ROWS = new String[] {
             "qwertyuiopå",
@@ -39,11 +40,11 @@ public class ExactypeView extends View {
     public ExactypeView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setPadding(0, 0, 0, 0);
-
         foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
+
+        keyCoordinator = new KeyCoordinator(ROWS);
     }
 
     @Override
@@ -52,11 +53,11 @@ public class ExactypeView extends View {
         canvas.drawColor(Color.BLUE);
 
         // Draw the keys
-        for (KeyCoordinator.KeyInfo keyInfo : new KeyCoordinator(ROWS, getWidth(), getHeight())) {
+        for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
             canvas.drawText(
                 Character.toString(keyInfo.character),
-                keyInfo.x,
-                keyInfo.y + verticalCenterOffset,
+                keyInfo.getX(),
+                keyInfo.getY() + verticalCenterOffset,
                 foreground);
         }
     }
@@ -113,5 +114,6 @@ public class ExactypeView extends View {
 
         Log.i(TAG, "Setting dimensions to: " + width + "x" + height);
         setMeasuredDimension(width, height);
+        keyCoordinator.setSize(width, height);
     }
 }

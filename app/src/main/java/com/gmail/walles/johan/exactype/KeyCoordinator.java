@@ -16,20 +16,25 @@
 
 package com.gmail.walles.johan.exactype;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Keeps track of coordinates for keys.
  */
-public class KeyCoordinator implements Iterable<KeyCoordinator.KeyInfo> {
+public class KeyCoordinator {
     public static class KeyInfo {
         public final char character;
-        public final float x;
-        public final float y;
 
-        public KeyInfo(float x, float y, char character) {
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        private int x;
+        private int y;
+
+        public KeyInfo(int x, int y, char character) {
             this.x = x;
             this.y = y;
             this.character = character;
@@ -37,7 +42,7 @@ public class KeyCoordinator implements Iterable<KeyCoordinator.KeyInfo> {
 
         @Override
         public String toString() {
-            return String.format("KeyInfo{x=%f, y=%f, c='%c'}", x, y, character);
+            return String.format("KeyInfo{x=%d, y=%d, c='%c'}", x, y, character);
         }
 
         @Override
@@ -62,34 +67,64 @@ public class KeyCoordinator implements Iterable<KeyCoordinator.KeyInfo> {
     }
 
     private final String[] rows;
-    private int width;
-    private int height;
+    private final KeyInfo[] keys;
 
-    public KeyCoordinator(String rows[], int width, int height) {
+    public KeyCoordinator(String rows[]) {
         this.rows = rows;
-        this.width = width;
-        this.height = height;
+
+        int keyCount = 0;
+        for (String row : rows) {
+            keyCount += row.length();
+        }
+        keys = new KeyInfo[keyCount];
+
+        int index = 0;
+        for (String row : rows) {
+            for (int column = 0; column < row.length(); column++) {
+                keys[index++] = new KeyInfo(0, 0, row.charAt(column));
+            }
+        }
     }
 
-    @Override
-    public Iterator<KeyInfo> iterator() {
-        List<KeyInfo> coordinates = new ArrayList<>();
-
+    public void setSize(int width, int height) {
+        int index = 0;
         for (int row_number = 0; row_number < rows.length; row_number++) {
             String row = rows[row_number];
 
             for (int char_number = 0; char_number < row.length(); char_number++) {
-                char current_char = row.charAt(char_number);
+                int x =
+                    ((char_number + 1) * width) / row.length() - width / (2 * row.length());
+                int y =
+                    ((row_number + 1) * height) / rows.length - height / (2 * rows.length);
 
-                float x =
-                    ((char_number + 1f) * width) / row.length() - width / (2f * row.length());
-                float y =
-                    ((row_number + 1f) * height) / rows.length - height / (2f * rows.length);
+                keys[index].x = x;
+                keys[index].y = y;
+                index++;
+            }
+        }
+    }
 
-                coordinates.add(new KeyInfo(x, y, current_char));
+    public KeyInfo[] getKeys() {
+        return keys;
+    }
+
+    /**
+     * Find the key closest to a coordinate.
+     */
+    public char getClosestKey(int x, int y) {
+        KeyInfo closestKey = null;
+        int closestDistance2 = Integer.MAX_VALUE;
+        for (KeyInfo keyInfo : keys) {
+            int dx = keyInfo.x - x;
+            int dy = keyInfo.y - y;
+            int distance2 = dx * dx + dy * dy;
+
+            if (distance2 < closestDistance2) {
+                closestKey = keyInfo;
+                closestDistance2 = distance2;
             }
         }
 
-        return coordinates.iterator();
+        return closestKey != null ? closestKey.character : '\0';
     }
 }
