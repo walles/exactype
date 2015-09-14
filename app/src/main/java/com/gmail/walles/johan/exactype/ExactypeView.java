@@ -21,14 +21,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.AttributeSet;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private final Paint foreground;
     private float verticalCenterOffset;
+    private final KeyCoordinator keyCoordinator;
+    private GestureDetector gestureDetector;
 
     private final static String[] ROWS = new String[] {
             "qwertyuiopå",
@@ -36,14 +40,17 @@ public class ExactypeView extends View {
             "SzxcvbnmB" // S=SHIFT, B=Backspace
     };
 
-    public ExactypeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-
-        setPadding(0, 0, 0, 0);
+    public ExactypeView(Context exactype) {
+        super(exactype);
 
         foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
+
+        keyCoordinator = new KeyCoordinator(ROWS);
+
+        gestureDetector =
+            new GestureDetector(exactype, new GestureListener((Exactype)exactype, keyCoordinator));
     }
 
     @Override
@@ -52,19 +59,12 @@ public class ExactypeView extends View {
         canvas.drawColor(Color.BLUE);
 
         // Draw the keys
-        for (int row_number = 0; row_number < ROWS.length; row_number++) {
-            String row = ROWS[row_number];
-
-            for (int char_number = 0; char_number < row.length(); char_number++) {
-                char current_char = row.charAt(char_number);
-
-                float x =
-                        ((char_number + 1f) * getWidth()) / (row.length() + 1f);
-                float y =
-                        ((row_number + 1f) * getHeight()) / (ROWS.length + 1f) + verticalCenterOffset;
-
-                canvas.drawText(Character.toString(current_char), x, y, foreground);
-            }
+        for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
+            canvas.drawText(
+                Character.toString(keyInfo.character),
+                keyInfo.getX(),
+                keyInfo.getY() + verticalCenterOffset,
+                foreground);
         }
     }
 
@@ -120,5 +120,11 @@ public class ExactypeView extends View {
 
         Log.i(TAG, "Setting dimensions to: " + width + "x" + height);
         setMeasuredDimension(width, height);
+        keyCoordinator.setSize(width, height);
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 }

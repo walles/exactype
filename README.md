@@ -8,12 +8,10 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
-# TODO Before Installing on Johan's Phone
-* Find out why we have padding around the view and get rid of it
-* Size the letters properly
-* Insert characters in the text when the user presses the keys
-
 # TODO Before Getting the First Beta Tester
+* Add a .travis.yml build config running the unit tests
+* Swipe right => insert a space
+* Size the letters properly
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
 * Implement a working SHIFT key
@@ -23,7 +21,6 @@ switching font or something
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
 being automatically shifted.
 * Test on different resolutions / screen sizes / screen rotations.
-* Swipe right => insert a space
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
 * Make long pressing show the numeric keyboard for the duration of the long press
@@ -52,6 +49,8 @@ activity. Note that we most likely need to match their licensing terms for this.
 * Think about emoji support, or can we do that after Google Play?
 
 # TODO Misc
+* Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
+pauses during drawing operations.
 * Think about keyboard transparency, especially on phones in landscape mode
 * Think about sending accessibility events
 * Enable users to change keyboard color
@@ -61,3 +60,5 @@ activity. Note that we most likely need to match their licensing terms for this.
 * Add licensing information (same as AOSP)
 * Draw a Swedish keyboard in the view
 * Size the keyboard and its keys properly and automatically
+* Find out why we have padding around the view and get rid of it
+* Insert characters in the text when the user presses the keys

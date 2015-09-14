@@ -22,7 +22,11 @@ import android.view.View;
 public class Exactype extends InputMethodService {
     @Override
     public View onCreateInputView() {
-        ExactypeView view = new ExactypeView(this, null);
+        ExactypeView view = new ExactypeView(this);
         return view;
+    }
+
+    public void onKeyTapped(char tappedKey) {
+        getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
     }
 }
