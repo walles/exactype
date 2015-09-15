@@ -33,14 +33,10 @@ public class ExactypeView extends View {
 
     private final Paint foreground;
     private float verticalCenterOffset;
-    private final KeyCoordinator keyCoordinator;
+    private KeyCoordinator keyCoordinator;
     private GestureDetector gestureDetector;
 
-    private final static String[] ROWS = new String[] {
-            "qwertyuiopå",
-            "asdfghjklöä",
-            "⇧zxcvbnm⌫" // ⇧ = SHIFT, ⌫ = Backspace
-    };
+    private String[] rows;
 
     public ExactypeView(Context exactype) {
         super(exactype);
@@ -48,11 +44,18 @@ public class ExactypeView extends View {
         foreground = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
+    }
 
-        keyCoordinator = new KeyCoordinator(ROWS);
+    public void setRows(String[] rows) {
+        this.rows = rows;
 
+        keyCoordinator = new KeyCoordinator(rows);
+
+        Exactype exactype = (Exactype)getContext();
         gestureDetector =
-            new GestureDetector(exactype, new GestureListener((Exactype)exactype, keyCoordinator));
+            new GestureDetector(exactype, new GestureListener(exactype, keyCoordinator));
+
+        requestLayout();
     }
 
     @Override
@@ -118,14 +121,14 @@ public class ExactypeView extends View {
 
         // Set foreground font size to 100 and compute the length of the longest line in px
         foreground.setTextSize(100);
-        float longestRowLength = getLongestRowLength(foreground, ROWS);
+        float longestRowLength = getLongestRowLength(foreground, rows);
 
         // Scale the font size so that the longest line matches the display width
         float factor = width / longestRowLength;
         foreground.setTextSize(100 * factor);
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
-        int height = sumRowHeights(foreground, ROWS);
+        int height = sumRowHeights(foreground, rows);
 
         foreground.setTextSize(foreground.getTextSize() / LETTER_ZOOM_OUT_FACTOR);
         verticalCenterOffset = computeVerticalCenterOffset(foreground);

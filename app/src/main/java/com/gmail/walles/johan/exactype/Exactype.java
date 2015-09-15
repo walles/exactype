@@ -20,17 +20,46 @@ import android.inputmethodservice.InputMethodService;
 import android.view.View;
 
 public class Exactype extends InputMethodService {
+    private final static String[] UNSHIFTED = new String[] {
+        "qwertyuiopå",
+        "asdfghjklöä",
+        "⇧zxcvbnm⌫" // ⇧ = SHIFT, ⌫ = Backspace
+    };
+
+    private final static String[] SHIFTED = new String[] {
+        "QWERTYUIOPÅ",
+        "ASDFGHJKLÖÄ",
+        "⇧ZXCVBNM⌫" // ⇧ = SHIFT, ⌫ = Backspace
+    };
+
+    private boolean shifted = false;
+    private ExactypeView view;
+
     @Override
     public View onCreateInputView() {
-        ExactypeView view = new ExactypeView(this);
+        view = new ExactypeView(this);
+        view.setRows(shifted ? SHIFTED : UNSHIFTED);
         return view;
+    }
+
+    public void setShifted(boolean shifted) {
+        if (shifted == this.shifted) {
+            return;
+        }
+        this.shifted = shifted;
+        view.setRows(shifted ? SHIFTED : UNSHIFTED);
     }
 
     public void onKeyTapped(char tappedKey) {
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
+        setShifted(false);
     }
 
     public void onDeleteTapped() {
         getCurrentInputConnection().deleteSurroundingText(1, 0);
+    }
+
+    public void shiftTapped() {
+        setShifted(!shifted);
     }
 }

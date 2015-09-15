@@ -57,6 +57,8 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
         char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
+        } else if (tappedKey == '⇧') {
+            exactype.shiftTapped();
         } else {
             exactype.onKeyTapped(tappedKey);
         }

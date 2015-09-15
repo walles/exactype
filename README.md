@@ -9,7 +9,7 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Getting the First Beta Tester
-* Implement a working SHIFT key
+* Make the keyboard not resize when pressing SHIFT
 * Make the SHIFT key look like a SHIFT key
 * Make the Backspace key look like a Backspace key
 * Swipe right after a space => ". "
@@ -68,3 +68,4 @@ pauses during drawing operations.
 * Size the letters properly
 * Implement a working backspace key
 * Treat double taps as two single taps
+* Implement a working SHIFT key
