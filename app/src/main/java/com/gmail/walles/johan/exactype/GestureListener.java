@@ -55,7 +55,11 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
-        exactype.onKeyTapped(tappedKey);
+        if (tappedKey == '⌫') {
+            exactype.onDeleteTapped();
+        } else {
+            exactype.onKeyTapped(tappedKey);
+        }
         return true;
     }
 }

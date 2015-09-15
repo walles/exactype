@@ -9,12 +9,11 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Getting the First Beta Tester
-* Implement a working backspace key
+* Make holding down backspace work as expected
 * Treat double taps as two single taps
 * Implement a working SHIFT key
 * Make the SHIFT key look like a SHIFT key
 * Make the Backspace key look like a Backspace key
-* Make holding down backspace work as expected
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
 * Automatic SHIFT handling depending on what kind of field we're editing
@@ -66,3 +65,4 @@ pauses during drawing operations.
 * Insert characters in the text when the user presses the keys
 * Swipe right => insert a space
 * Size the letters properly
+* Implement a working backspace key

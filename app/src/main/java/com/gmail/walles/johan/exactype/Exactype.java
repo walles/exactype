@@ -29,4 +29,8 @@ public class Exactype extends InputMethodService {
     public void onKeyTapped(char tappedKey) {
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
     }
+
+    public void onDeleteTapped() {
+        getCurrentInputConnection().deleteSurroundingText(1, 0);
+    }
 }

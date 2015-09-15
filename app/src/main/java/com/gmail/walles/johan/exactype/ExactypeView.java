@@ -39,7 +39,7 @@ public class ExactypeView extends View {
     private final static String[] ROWS = new String[] {
             "qwertyuiopå",
             "asdfghjklöä",
-            "SzxcvbnmB" // S=SHIFT, B=Backspace
+            "⇧zxcvbnm⌫" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
     public ExactypeView(Context exactype) {
@@ -62,8 +62,17 @@ public class ExactypeView extends View {
 
         // Draw the keys
         for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
+            String drawMe;
+            if (keyInfo.character == '⌫') {
+                drawMe = "Del";
+            } else if (keyInfo.character == '⇧') {
+                drawMe = "Sh";
+            } else {
+                drawMe = Character.toString(keyInfo.character);
+            }
+
             canvas.drawText(
-                Character.toString(keyInfo.character),
+                drawMe,
                 keyInfo.getX(),
                 keyInfo.getY() + verticalCenterOffset,
                 foreground);
