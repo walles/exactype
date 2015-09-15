@@ -9,19 +9,22 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Getting the First Beta Tester
-* Add a .travis.yml build config running the unit tests
-* Size the letters properly
-* Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
-switching font or something
+* Implement a working backspace key
+* Treat double taps as two single taps
 * Implement a working SHIFT key
 * Make the SHIFT key look like a SHIFT key
 * Make the Backspace key look like a Backspace key
+* Make holding down backspace work as expected
+* Swipe right after a space => ". "
+* Swipe right after ". " => "... "
 * Automatic SHIFT handling depending on what kind of field we're editing
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
 being automatically shifted.
+* Add a .travis.yml build config running the unit tests
+* Fix layout bounces, we do four layouts currently on Johan's phone
+* Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
+switching font or something
 * Test on different resolutions / screen sizes / screen rotations.
-* Swipe right after a space => ". "
-* Swipe right after ". " => "... "
 * Make long pressing show the numeric keyboard for the duration of the long press
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
@@ -62,3 +65,4 @@ pauses during drawing operations.
 * Find out why we have padding around the view and get rid of it
 * Insert characters in the text when the user presses the keys
 * Swipe right => insert a space
+* Size the letters properly

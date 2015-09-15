@@ -29,6 +29,8 @@ import android.view.View;
 
 public class ExactypeView extends View {
     private static final String TAG = "Exactype";
+    private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
+
     private final Paint foreground;
     private float verticalCenterOffset;
     private final KeyCoordinator keyCoordinator;
@@ -113,10 +115,11 @@ public class ExactypeView extends View {
         float factor = width / longestRowLength;
         foreground.setTextSize(100 * factor);
 
-        verticalCenterOffset = computeVerticalCenterOffset(foreground);
-
         // Sum up the heights of all keyboard rows with the new font size to get height in px
         int height = sumRowHeights(foreground, ROWS);
+
+        foreground.setTextSize(foreground.getTextSize() / LETTER_ZOOM_OUT_FACTOR);
+        verticalCenterOffset = computeVerticalCenterOffset(foreground);
 
         Log.i(TAG, "Setting dimensions to: " + width + "x" + height);
         setMeasuredDimension(width, height);
