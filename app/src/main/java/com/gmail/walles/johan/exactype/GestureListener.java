@@ -62,4 +62,12 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
         }
         return true;
     }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        onSingleTapConfirmed(e);
+        onSingleTapConfirmed(e);
+
+        return true;
+    }
 }
