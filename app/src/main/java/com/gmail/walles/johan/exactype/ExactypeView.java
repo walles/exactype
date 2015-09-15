@@ -45,7 +45,7 @@ public class ExactypeView extends View {
     public ExactypeView(Context exactype) {
         super(exactype);
 
-        foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
+        foreground = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
 
@@ -64,7 +64,7 @@ public class ExactypeView extends View {
         for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
             String drawMe;
             if (keyInfo.character == '⌫') {
-                drawMe = "Del";
+                drawMe = "Bs";
             } else if (keyInfo.character == '⇧') {
                 drawMe = "Sh";
             } else {
