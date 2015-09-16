@@ -9,17 +9,18 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Getting the First Beta Tester
+* Improve double tap handling; just have the GestureListener deliver two distinct tap events rather
+than detecting a double tap and pretending it was two single taps.
+* Make tapping Backspace with text selected remove the selected text
+* Automatic SHIFT handling depending on the kind of field we're editing
 * Make the keyboard not resize when pressing SHIFT
 * Make the SHIFT key look like a SHIFT key
 * Make the Backspace key look like a Backspace key
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
-* Automatic SHIFT handling depending on what kind of field we're editing
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
 being automatically shifted.
 * Make holding down backspace work as expected
-* Improve double tap handling; just have the GestureListener deliver two distinct tap events rather
-than detecting a double tap and pretending it was two single taps.
 * Add a .travis.yml build config running the unit tests
 * Fix layout bounces, we do four layouts currently on Johan's phone
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
