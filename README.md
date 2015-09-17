@@ -9,7 +9,6 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Johan can use Exactype as his Sole IME
-* Automatic SHIFT handling depending on the kind of field we're editing
 * Make long pressing show the numeric keyboard for the duration of the long press
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
@@ -26,6 +25,7 @@ being automatically shifted.
 * Make holding down backspace work as expected
 * Test on different resolutions / screen sizes / screen rotations.
 * Make long pressing SHIFT lock the numeric keyboard in place
+* Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * When sliding around the numeric keyboard, show what's under your finger in a small (fixed in
 place) frame above the keyboard
 * Add audio clicks on key presses
@@ -44,6 +44,8 @@ pressed.
 # TODO Before Publishing on Google Play
 * Take keyboard layouts from the AOSP keyboard and let users choose one or more in a Settings
 activity. Note that we most likely need to match their licensing terms for this.
+* Test an English layout and see how that looks; it has shorter rows than Swedish and could look
+bad.
 * Change keyboard layout by swiping left or right with two fingers.
 * Think about splitting the keyboard when wide enough
 * Think about emoji support, or can we do that after Google Play?
@@ -82,3 +84,4 @@ than detecting a double tap and pretending it was two single taps.
 * Pressing two different keys in rapid succession must insert both. Currently doing that inserts
 neither; most likely because of double tap detection messing things up.
 * Make tapping Backspace with text selected remove the selected text
+* Automatically start out in the correct Shift mode

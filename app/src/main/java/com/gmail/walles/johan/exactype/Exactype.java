@@ -19,6 +19,7 @@ package com.gmail.walles.johan.exactype;
 import android.inputmethodservice.InputMethodService;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 public class Exactype extends InputMethodService {
@@ -42,6 +43,14 @@ public class Exactype extends InputMethodService {
         view = new ExactypeView(this);
         view.setRows(shifted ? SHIFTED : UNSHIFTED);
         return view;
+    }
+
+    @Override
+    public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
+        // The initialCapsMode docs say that you should generally just take a non-zero value to mean
+        // "start out in caps mode":
+        // http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html#initialCapsMode
+        setShifted(editorInfo.initialCapsMode != 0);
     }
 
     public void setShifted(boolean shifted) {
