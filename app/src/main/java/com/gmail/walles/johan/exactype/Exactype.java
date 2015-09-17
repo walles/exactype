@@ -17,7 +17,9 @@
 package com.gmail.walles.johan.exactype;
 
 import android.inputmethodservice.InputMethodService;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputConnection;
 
 public class Exactype extends InputMethodService {
     private final static String[] UNSHIFTED = new String[] {
@@ -56,7 +58,15 @@ public class Exactype extends InputMethodService {
     }
 
     public void onDeleteTapped() {
-        getCurrentInputConnection().deleteSurroundingText(1, 0);
+        InputConnection inputConnection = getCurrentInputConnection();
+        CharSequence selection = inputConnection.getSelectedText(0);
+        if (TextUtils.isEmpty(selection)) {
+            // Nothing selected, just backspace
+            inputConnection.deleteSurroundingText(1, 0);
+        } else {
+            // Delete selection
+            inputConnection.commitText("", 1);
+        }
     }
 
     public void shiftTapped() {

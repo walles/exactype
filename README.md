@@ -9,7 +9,6 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Johan can use Exactype as his Sole IME
-* Make tapping Backspace with text selected remove the selected text
 * Automatic SHIFT handling depending on the kind of field we're editing
 * Make long pressing show the numeric keyboard for the duration of the long press
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
@@ -82,3 +81,4 @@ keyboard for each keypress?
 than detecting a double tap and pretending it was two single taps.
 * Pressing two different keys in rapid succession must insert both. Currently doing that inserts
 neither; most likely because of double tap detection messing things up.
+* Make tapping Backspace with text selected remove the selected text
