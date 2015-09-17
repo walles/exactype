@@ -16,10 +16,9 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-public class GestureListener implements GestureDetector.OnGestureListener {
+public class GestureListener {
     private final Exactype exactype;
     private final KeyCoordinator keyCoordinator;
 
@@ -28,20 +27,7 @@ public class GestureListener implements GestureDetector.OnGestureListener {
         this.keyCoordinator = keyCoordinator;
     }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        // From:
-        // http://developer.android.com/training/custom-views/making-interactive.html#inputgesture
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-        // This method intentionally left blank
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+    public boolean onFling(float velocityX, float velocityY) {
         if (velocityX <= 0) {
             // More left than right
             return false;
@@ -57,8 +43,7 @@ public class GestureListener implements GestureDetector.OnGestureListener {
         return true;
     }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
+    public boolean onSingleTap(MotionEvent e) {
         char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
@@ -68,15 +53,5 @@ public class GestureListener implements GestureDetector.OnGestureListener {
             exactype.onKeyTapped(tappedKey);
         }
         return true;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        // This method intentionally left blank
     }
 }

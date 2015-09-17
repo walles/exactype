@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -53,7 +52,7 @@ public class ExactypeView extends View {
 
         Exactype exactype = (Exactype)getContext();
         gestureDetector =
-            new GestureDetector(exactype, new GestureListener(exactype, keyCoordinator));
+            new GestureDetector(new GestureListener(exactype, keyCoordinator));
 
         requestLayout();
     }

@@ -17,6 +17,8 @@ numeric keyboard for a while
 * Add a .travis.yml build config running the unit tests
 * Make the keyboard not resize when pressing SHIFT
 * Make the SHIFT key look like a SHIFT key
+* Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
+modify the casing of the current word, but if you keep typing it only affects the upcoming letters.
 * Make the Backspace key look like a Backspace key
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
@@ -28,9 +30,9 @@ being automatically shifted.
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * When sliding around the numeric keyboard, show what's under your finger in a small (fixed in
 place) frame above the keyboard
+* Flash an image of where on the keyboard the user hit above the keyboard on every tap
 * Add audio clicks on key presses
 * Add vibrations on key presses
-* Flash an image of where on the keyboard the user hit above the keyboard on every tap
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed.
 * Hint user to swipe right for space unless (s)he has already done that
@@ -64,8 +66,6 @@ pauses during drawing operations.
 * Think about sending accessibility events
 * Enable users to change keyboard color
 * Fix layout bounces, we do four layouts currently on Johan's phone
-* Maybe we should feed back to the user by flashing an image of where the user hit right above the
-keyboard for each keypress?
 
 # DONE
 * Create an IME that when selected shows an empty view
