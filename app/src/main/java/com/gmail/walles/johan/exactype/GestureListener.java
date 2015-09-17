@@ -19,7 +19,7 @@ package com.gmail.walles.johan.exactype;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-public class GestureListener extends GestureDetector.SimpleOnGestureListener {
+public class GestureListener implements GestureDetector.OnGestureListener {
     private final Exactype exactype;
     private final KeyCoordinator keyCoordinator;
 
@@ -33,6 +33,11 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
         // From:
         // http://developer.android.com/training/custom-views/making-interactive.html#inputgesture
         return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        // This method intentionally left blank
     }
 
     @Override
@@ -53,7 +58,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
+    public boolean onSingleTapUp(MotionEvent e) {
         char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
@@ -66,10 +71,12 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
-    public boolean onDoubleTap(MotionEvent e) {
-        onSingleTapConfirmed(e);
-        onSingleTapConfirmed(e);
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
 
-        return true;
+    @Override
+    public void onLongPress(MotionEvent e) {
+        // This method intentionally left blank
     }
 }
