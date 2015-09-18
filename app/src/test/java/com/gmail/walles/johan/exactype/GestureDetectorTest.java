@@ -137,14 +137,14 @@ public class GestureDetectorTest {
     @Test
     public void testPerfectSwipe() {
         GestureListener listener = doSwipe(97, 23, 42);
-        Mockito.verify(listener.onSwipe(97f, 23f));
+        Mockito.verify(listener).onSwipe(97f, 23f);
         Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
     public void testSlowSwipe() {
         GestureListener listener = doSwipe(97, 23, 4200);
-        Mockito.verify(listener.onSwipe(97f, 23f));
+        Mockito.verify(listener).onSwipe(97f, 23f);
         Mockito.verifyNoMoreInteractions(listener);
     }
 
