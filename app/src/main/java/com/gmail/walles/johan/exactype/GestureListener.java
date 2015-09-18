@@ -27,17 +27,17 @@ public class GestureListener {
         this.keyCoordinator = keyCoordinator;
     }
 
-    public boolean onFling(float velocityX, float velocityY) {
-        if (velocityX <= 0) {
+    public boolean onSwipe(float dx, float dy) {
+        if (dx <= 0) {
             // More left than right
             return false;
         }
-        if (Math.abs(velocityY) > velocityX) {
+        if (Math.abs(dy) > dx) {
             // More up / down than right
             return false;
         }
 
-        // Right fling, enter space!
+        // Right swipe, enter space!
         exactype.onKeyTapped(' ');
 
         return true;

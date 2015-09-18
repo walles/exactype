@@ -20,7 +20,6 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -112,10 +111,48 @@ public class GestureDetectorTest {
         Mockito.verifyNoMoreInteractions(listener);
     }
 
-    @Test
-    public void testOnFling() {
-        Assert.fail("Test not implemented");
+    private GestureListener doSwipe(int dx, int dy, int dt) {
+        mockViewConfiguration();
+
+        GestureListener listener = Mockito.mock(GestureListener.class);
+        Context context = Mockito.mock(Context.class);
+
+        GestureDetector testMe = new GestureDetector(context, listener);
+
+        testMe.onTouchEvent(INITIAL_DOWN);
+
+        // Move half way
+        MotionEvent move =
+            createMotionEvent(10, 10 + dt / 2, MotionEvent.ACTION_MOVE, 30 + dx / 2, 40 + dy / 2);
+        testMe.onTouchEvent(move);
+
+        // Release after moving the rest of the way
+        MotionEvent up =
+            createMotionEvent(10, 10 + dt, MotionEvent.ACTION_UP, 30 + dx, 40 + dy);
+        testMe.onTouchEvent(up);
+
+        return listener;
     }
 
-    // FIXME: Add more negative fling tests
+    @Test
+    public void testPerfectSwipe() {
+        GestureListener listener = doSwipe(97, 23, 42);
+        Mockito.verify(listener.onSwipe(97f, 23f));
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testSlowSwipe() {
+        GestureListener listener = doSwipe(97, 23, 4200);
+        Mockito.verify(listener.onSwipe(97f, 23f));
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testSlowAndShortSwipe() {
+        GestureListener listener = doSwipe(TOUCH_SLOP - 1, 0, 4200);
+
+        // We moved too short, that shouldn't count as a swipe
+        Mockito.verifyNoMoreInteractions(listener);
+    }
 }
