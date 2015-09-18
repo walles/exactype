@@ -14,6 +14,7 @@ Features (will) include:
 numeric keyboard for a while
 
 # TODO Before Getting the First Beta Tester
+* Flash an image of where on the keyboard the user hit above the keyboard on every tap
 * Add a .travis.yml build config running the unit tests
 * Make the keyboard not resize when pressing SHIFT
 * Make the SHIFT key look like a SHIFT key
@@ -30,7 +31,6 @@ being automatically shifted.
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * When sliding around the numeric keyboard, show what's under your finger in a small (fixed in
 place) frame above the keyboard
-* Flash an image of where on the keyboard the user hit above the keyboard on every tap
 * Add audio clicks on key presses
 * Add vibrations on key presses
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
