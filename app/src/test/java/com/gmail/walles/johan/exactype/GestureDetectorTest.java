@@ -31,11 +31,24 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( { ViewConfiguration.class })
 public class GestureDetectorTest {
+    private final static int LONG_PRESS_TIMEOUT = 29;
+
+    private MotionEvent createMotionEvent(long downTime, long eventTime, int action, float x, float y) {
+        MotionEvent returnMe = Mockito.mock(MotionEvent.class);
+        Mockito.when(returnMe.getDownTime()).thenReturn(downTime);
+        Mockito.when(returnMe.getEventTime()).thenReturn(eventTime);
+        Mockito.when(returnMe.getAction()).thenReturn(action);
+        Mockito.when(returnMe.getX()).thenReturn(x);
+        Mockito.when(returnMe.getY()).thenReturn(y);
+        return returnMe;
+    }
+
     @Test
-    public void testSingleTap() {
+    public void testPerfectSingleTap() {
         ViewConfiguration viewConfiguration = Mockito.mock(ViewConfiguration.class);
 
         PowerMockito.mockStatic(ViewConfiguration.class);
+        Mockito.when(ViewConfiguration.getLongPressTimeout()).thenReturn(LONG_PRESS_TIMEOUT);
         Mockito.when(ViewConfiguration.get((Context)Mockito.any())).thenReturn(viewConfiguration);
 
         GestureListener listener = Mockito.mock(GestureListener.class);
@@ -43,10 +56,11 @@ public class GestureDetectorTest {
 
         GestureDetector testMe = new GestureDetector(context, listener);
 
-        MotionEvent down = Mockito.mock(MotionEvent.class);
+        MotionEvent down = createMotionEvent(10, 20, MotionEvent.ACTION_DOWN, 30, 40);
         testMe.onTouchEvent(down);
 
-        MotionEvent up = Mockito.mock(MotionEvent.class);
+        MotionEvent up =
+            createMotionEvent(10, 20 + LONG_PRESS_TIMEOUT - 1, MotionEvent.ACTION_UP, 30, 40);
         testMe.onTouchEvent(up);
 
         Mockito.verify(listener).onSingleTap(down);
