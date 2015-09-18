@@ -52,7 +52,7 @@ public class ExactypeView extends View {
 
         Exactype exactype = (Exactype)getContext();
         gestureDetector =
-            new GestureDetector(new GestureListener(exactype, keyCoordinator));
+            new GestureDetector(exactype, new GestureListener(exactype, keyCoordinator));
 
         requestLayout();
     }

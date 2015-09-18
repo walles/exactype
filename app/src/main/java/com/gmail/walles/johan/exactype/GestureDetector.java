@@ -16,13 +16,21 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.content.Context;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 public class GestureDetector {
     private final GestureListener gestureListener;
+    private final int touchSlop;
+    private final int longPressTimeout;
 
-    public GestureDetector(GestureListener gestureListener) {
+    public GestureDetector(Context context, GestureListener gestureListener) {
         this.gestureListener = gestureListener;
+
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        touchSlop = configuration.getScaledTouchSlop();
+        longPressTimeout = ViewConfiguration.getLongPressTimeout();
     }
 
     public boolean onTouchEvent(MotionEvent event) {
