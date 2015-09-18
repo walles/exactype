@@ -18,16 +18,29 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest( { ViewConfiguration.class })
 public class GestureDetectorTest {
     @Test
     public void testSingleTap() {
+        ViewConfiguration viewConfiguration = Mockito.mock(ViewConfiguration.class);
+
+        PowerMockito.mockStatic(ViewConfiguration.class);
+        Mockito.when(ViewConfiguration.get((Context)Mockito.any())).thenReturn(viewConfiguration);
+
         GestureListener listener = Mockito.mock(GestureListener.class);
         Context context = Mockito.mock(Context.class);
+
         GestureDetector testMe = new GestureDetector(context, listener);
 
         MotionEvent down = Mockito.mock(MotionEvent.class);
