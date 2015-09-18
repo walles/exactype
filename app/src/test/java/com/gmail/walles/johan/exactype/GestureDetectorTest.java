@@ -31,7 +31,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( { ViewConfiguration.class })
 public class GestureDetectorTest {
-    private final static int LONG_PRESS_TIMEOUT = 29;
+    private static final int LONG_PRESS_TIMEOUT = 29;
+    private static final int TOUCH_SLOP = 7;
 
     private MotionEvent createMotionEvent(long downTime, long eventTime, int action, float x, float y) {
         MotionEvent returnMe = Mockito.mock(MotionEvent.class);
@@ -43,13 +44,22 @@ public class GestureDetectorTest {
         return returnMe;
     }
 
-    @Test
-    public void testPerfectSingleTap() {
+    /**
+     * Set up the ViewConfiguration static methods.
+     */
+    private void mockViewConfiguration() {
         ViewConfiguration viewConfiguration = Mockito.mock(ViewConfiguration.class);
 
         PowerMockito.mockStatic(ViewConfiguration.class);
         Mockito.when(ViewConfiguration.getLongPressTimeout()).thenReturn(LONG_PRESS_TIMEOUT);
-        Mockito.when(ViewConfiguration.get((Context)Mockito.any())).thenReturn(viewConfiguration);
+        Mockito.when(ViewConfiguration.get((Context) Mockito.any())).thenReturn(viewConfiguration);
+
+        Mockito.when(viewConfiguration.getScaledTouchSlop()).thenReturn(TOUCH_SLOP);
+    }
+
+    @Test
+    public void testPerfectSingleTap() {
+        mockViewConfiguration();
 
         GestureListener listener = Mockito.mock(GestureListener.class);
         Context context = Mockito.mock(Context.class);
@@ -64,11 +74,34 @@ public class GestureDetectorTest {
         testMe.onTouchEvent(up);
 
         Mockito.verify(listener).onSingleTap(down);
+        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
     public void testSloppySingleTap() {
-        Assert.fail("Test not implemented");
+        mockViewConfiguration();
+
+        GestureListener listener = Mockito.mock(GestureListener.class);
+        Context context = Mockito.mock(Context.class);
+
+        GestureDetector testMe = new GestureDetector(context, listener);
+
+        MotionEvent down = createMotionEvent(10, 20, MotionEvent.ACTION_DOWN, 30, 40);
+        testMe.onTouchEvent(down);
+
+        // Sloppy move down
+        MotionEvent move =
+            createMotionEvent(10, 22, MotionEvent.ACTION_MOVE, 30, 40 + TOUCH_SLOP - 1);
+        testMe.onTouchEvent(move);
+
+        // Release after sloppy move right
+        MotionEvent up =
+            createMotionEvent(10, 20 + LONG_PRESS_TIMEOUT - 1, MotionEvent.ACTION_UP,
+                30 + TOUCH_SLOP - 1, 40);
+        testMe.onTouchEvent(up);
+
+        Mockito.verify(listener).onSingleTap(down);
+        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
