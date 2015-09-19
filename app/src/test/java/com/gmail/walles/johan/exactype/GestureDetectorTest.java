@@ -168,4 +168,28 @@ public class GestureDetectorTest {
         // We moved too short, that shouldn't count as a swipe
         Mockito.verifyNoMoreInteractions(listener);
     }
+
+    @Test
+    public void testLongPress() {
+        mockViewConfiguration();
+
+        GestureListener listener = Mockito.mock(GestureListener.class);
+        Context context = Mockito.mock(Context.class);
+
+        GestureDetector testMe = new GestureDetector(context, listener);
+        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
+
+        // FIXME: Simulate waiting LONG_PRESS_TIMEOUT
+
+        Mockito.verify(listener).onLongPress();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        int x1 = X0 + 29;
+        int y1 = Y0 + 31;
+        testMe.onTouchEvent(motionEvent(
+            10, 10 + 2 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1));
+
+        Mockito.verify(listener).onLongPressUp(x1, y1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
 }
