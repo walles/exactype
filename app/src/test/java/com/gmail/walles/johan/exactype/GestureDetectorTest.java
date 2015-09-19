@@ -108,6 +108,10 @@ public class GestureDetectorTest {
     @Test
     public void testTooFarSingleTap() {
         GestureListener listener = doSingleTap(TOUCH_SLOP + 1, 0);
+
+        // Tapping too far == swipe
+        Mockito.verify(listener).onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
+
         Mockito.verifyNoMoreInteractions(listener);
     }
 

@@ -37,6 +37,59 @@ public class GestureDetector {
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
     }
 
+    private boolean handleTapEnd(MotionEvent event) {
+        if (startEvent == null) {
+            // We don't know how this started, can't work with this
+            return false;
+        }
+
+        long dt = event.getEventTime() - startEvent.getEventTime();
+        if (dt >= longPressTimeout) {
+            // End of event but not a tap, never mind
+            return false;
+        }
+
+        float dx = event.getX() - startEvent.getX();
+        if (Math.abs(dx) > touchSlop) {
+            // End of event but not a tap, never mind
+            return false;
+        }
+
+        float dy = event.getY() - startEvent.getY();
+        if (Math.abs(dy) > touchSlop) {
+            // End of event but not a tap, never mind
+            return false;
+        }
+
+        // Close enough, quick enough
+        gestureListener.onSingleTap(startEvent);
+        startEvent = null;
+
+        return true;
+    }
+
+    private boolean handleSwipeEnd(MotionEvent event) {
+        if (startEvent == null) {
+            // We don't know how this started, can't work with this
+            return false;
+        }
+
+        float dx = event.getX() - startEvent.getX();
+        float dy = event.getY() - startEvent.getY();
+
+        if (Math.abs(dx) < touchSlop && Math.abs(dy) < touchSlop) {
+            // Too short for a swipe, never mind
+            return false;
+        }
+
+        // Far enough
+        gestureListener.onSwipe(dx, dy);
+        startEvent = null;
+
+        return true;
+
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             startEvent = event;
@@ -48,36 +101,16 @@ public class GestureDetector {
             return false;
         }
 
-        if (startEvent == null) {
-            // We don't know how this started, can't work with this
-            return false;
-        }
-
-        long dt = event.getEventTime() - startEvent.getEventTime();
-        if (dt >= longPressTimeout) {
-            // End of event but not a tap, never mind
-            startEvent = null;
+        if (handleTapEnd(event)) {
             return true;
         }
 
-        float dx = event.getX() - startEvent.getX();
-        if (Math.abs(dx) > touchSlop) {
-            // End of event but not a tap, never mind
-            startEvent = null;
+        if (handleSwipeEnd(event)) {
             return true;
         }
 
-        float dy = event.getY() - startEvent.getY();
-        if (Math.abs(dy) > touchSlop) {
-            // End of event but not a tap, never mind
-            startEvent = null;
-            return true;
-        }
-
-        // Close enough, quick enough
-        gestureListener.onSingleTap(startEvent);
+        // Gesture ended but we don't know how
         startEvent = null;
-
-        return true;
+        return false;
     }
 }
