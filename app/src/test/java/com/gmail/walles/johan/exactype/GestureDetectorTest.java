@@ -39,6 +39,7 @@ public class GestureDetectorTest {
     private static final int LONG_PRESS_TIMEOUT = 29;
     private static final int TOUCH_SLOP = 7;
 
+    private static final long T0 = 10;
     private static final int X0 = 30;
     private static final int Y0 = 40;
 
@@ -49,9 +50,9 @@ public class GestureDetectorTest {
      * that in the unit tests as well.
      */
     private static MotionEvent motionEvent(
-        long downTime, long eventTime, int action, float x, float y)
+        long eventTime, int action, float x, float y)
     {
-        Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(downTime);
+        Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(T0);
         Mockito.when(MOTION_EVENT.getEventTime()).thenReturn(eventTime);
         Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
         Mockito.when(MOTION_EVENT.getX()).thenReturn(x);
@@ -81,16 +82,16 @@ public class GestureDetectorTest {
 
         GestureDetector testMe = new GestureDetector(context, listener);
 
-        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
+        testMe.onTouchEvent(motionEvent(T0, MotionEvent.ACTION_DOWN, X0, Y0));
 
         if (sloppiness > 0) {
             // Sloppy move down
             testMe.onTouchEvent(motionEvent(
-                10, 10 + dt / 2, MotionEvent.ACTION_MOVE, X0, Y0 + sloppiness));
+                T0 + dt / 2, MotionEvent.ACTION_MOVE, X0, Y0 + sloppiness));
         }
 
         // Release after sloppy move right
-        testMe.onTouchEvent(motionEvent(10, 10 + dt, MotionEvent.ACTION_UP, X0 + sloppiness, Y0));
+        testMe.onTouchEvent(motionEvent(T0 + dt, MotionEvent.ACTION_UP, X0 + sloppiness, Y0));
 
         return listener;
     }
@@ -135,14 +136,14 @@ public class GestureDetectorTest {
 
         GestureDetector testMe = new GestureDetector(context, listener);
 
-        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
+        testMe.onTouchEvent(motionEvent(T0, MotionEvent.ACTION_DOWN, X0, Y0));
 
         // Move half way
         testMe.onTouchEvent(motionEvent(
-            10, 10 + dt / 2, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2));
+            T0 + dt / 2, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2));
 
         // Release after moving the rest of the way
-        testMe.onTouchEvent(motionEvent(10, 10 + dt, MotionEvent.ACTION_UP, X0 + dx, Y0 + dy));
+        testMe.onTouchEvent(motionEvent(T0 + dt, MotionEvent.ACTION_UP, X0 + dx, Y0 + dy));
 
         return listener;
     }
@@ -177,7 +178,7 @@ public class GestureDetectorTest {
         Context context = Mockito.mock(Context.class);
 
         GestureDetector testMe = new GestureDetector(context, listener);
-        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
+        testMe.onTouchEvent(motionEvent(T0, MotionEvent.ACTION_DOWN, X0, Y0));
 
         // FIXME: Simulate waiting LONG_PRESS_TIMEOUT
 
@@ -187,9 +188,37 @@ public class GestureDetectorTest {
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
         testMe.onTouchEvent(motionEvent(
-            10, 10 + 2 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1));
+            T0 + 2 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1));
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testMoveCancelsLongPress() {
+        mockViewConfiguration();
+
+        GestureListener listener = Mockito.mock(GestureListener.class);
+        Context context = Mockito.mock(Context.class);
+
+        GestureDetector testMe = new GestureDetector(context, listener);
+        testMe.onTouchEvent(motionEvent(T0, MotionEvent.ACTION_DOWN, X0, Y0));
+        testMe.onTouchEvent(motionEvent(
+            T0 + LONG_PRESS_TIMEOUT / 2,
+            MotionEvent.ACTION_MOVE,
+            X0 + TOUCH_SLOP + 1, Y0 + TOUCH_SLOP + 1));
+
+        // FIXME: Simulate waiting LONG_PRESS_TIMEOUT
+
+        // In particular, we should *not* have received any long press notification
+        Mockito.verifyNoMoreInteractions(listener);
+
+        int x1 = X0 + 29;
+        int y1 = Y0 + 31;
+        testMe.onTouchEvent(motionEvent(
+            T0 + 2 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1));
+
+        // In particular, we should *not* have received any long press up notification
         Mockito.verifyNoMoreInteractions(listener);
     }
 }
