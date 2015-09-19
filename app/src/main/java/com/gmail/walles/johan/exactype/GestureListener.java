@@ -16,10 +16,7 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-
-public class GestureListener implements GestureDetector.OnGestureListener {
+public class GestureListener {
     private final Exactype exactype;
     private final KeyCoordinator keyCoordinator;
 
@@ -28,38 +25,24 @@ public class GestureListener implements GestureDetector.OnGestureListener {
         this.keyCoordinator = keyCoordinator;
     }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        // From:
-        // http://developer.android.com/training/custom-views/making-interactive.html#inputgesture
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-        // This method intentionally left blank
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if (velocityX <= 0) {
+    public boolean onSwipe(float dx, float dy) {
+        if (dx <= 0) {
             // More left than right
             return false;
         }
-        if (Math.abs(velocityY) > velocityX) {
+        if (Math.abs(dy) > dx) {
             // More up / down than right
             return false;
         }
 
-        // Right fling, enter space!
+        // Right swipe, enter space!
         exactype.onKeyTapped(' ');
 
         return true;
     }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
+    public boolean onSingleTap(float x, float y) {
+        char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
         } else if (tappedKey == '⇧') {
@@ -68,15 +51,5 @@ public class GestureListener implements GestureDetector.OnGestureListener {
             exactype.onKeyTapped(tappedKey);
         }
         return true;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        // This method intentionally left blank
     }
 }

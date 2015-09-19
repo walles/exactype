@@ -1,0 +1,171 @@
+/*
+ * Copyright 2015 Johan Walles <johan.walles@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.gmail.walles.johan.exactype;
+
+import android.content.Context;
+import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+/**
+ * Tests for the {@link GestureDetector}.
+ * <p>
+ * Note that {@link MotionEvent}s are re-used in real-life, so tests need to re-use events as well.
+ * </p>
+ */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest( { ViewConfiguration.class })
+public class GestureDetectorTest {
+    private static final int LONG_PRESS_TIMEOUT = 29;
+    private static final int TOUCH_SLOP = 7;
+
+    private static final int X0 = 30;
+    private static final int Y0 = 40;
+
+    private static final MotionEvent MOTION_EVENT = Mockito.mock(MotionEvent.class);
+
+    /**
+     * Re-purpose a motion event. The Android code re-uses motion events, that's why we want to do
+     * that in the unit tests as well.
+     */
+    private static MotionEvent motionEvent(
+        long downTime, long eventTime, int action, float x, float y)
+    {
+        Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(downTime);
+        Mockito.when(MOTION_EVENT.getEventTime()).thenReturn(eventTime);
+        Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
+        Mockito.when(MOTION_EVENT.getX()).thenReturn(x);
+        Mockito.when(MOTION_EVENT.getY()).thenReturn(y);
+
+        return MOTION_EVENT;
+    }
+
+    /**
+     * Set up the ViewConfiguration static methods.
+     */
+    private void mockViewConfiguration() {
+        ViewConfiguration viewConfiguration = Mockito.mock(ViewConfiguration.class);
+
+        PowerMockito.mockStatic(ViewConfiguration.class);
+        Mockito.when(ViewConfiguration.getLongPressTimeout()).thenReturn(LONG_PRESS_TIMEOUT);
+        Mockito.when(ViewConfiguration.get((Context) Mockito.any())).thenReturn(viewConfiguration);
+
+        Mockito.when(viewConfiguration.getScaledTouchSlop()).thenReturn(TOUCH_SLOP);
+    }
+
+    private GestureListener doSingleTap(int sloppiness, int dt) {
+        mockViewConfiguration();
+
+        GestureListener listener = Mockito.mock(GestureListener.class);
+        Context context = Mockito.mock(Context.class);
+
+        GestureDetector testMe = new GestureDetector(context, listener);
+
+        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
+
+        if (sloppiness > 0) {
+            // Sloppy move down
+            testMe.onTouchEvent(motionEvent(
+                10, 10 + dt / 2, MotionEvent.ACTION_MOVE, X0, Y0 + sloppiness));
+        }
+
+        // Release after sloppy move right
+        testMe.onTouchEvent(motionEvent(10, 10 + dt, MotionEvent.ACTION_UP, X0 + sloppiness, Y0));
+
+        return listener;
+    }
+
+    @Test
+    public void testPerfectSingleTap() {
+        GestureListener listener = doSingleTap(0, 0);
+
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testSloppySingleTap() {
+        GestureListener listener = doSingleTap(TOUCH_SLOP - 1, LONG_PRESS_TIMEOUT - 1);
+
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testTooLongSingleTap() {
+        GestureListener listener = doSingleTap(0, LONG_PRESS_TIMEOUT + 1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testTooFarSingleTap() {
+        GestureListener listener = doSingleTap(TOUCH_SLOP + 1, 0);
+
+        // Tapping too far == swipe
+        Mockito.verify(listener).onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
+
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    private GestureListener doSwipe(int dx, int dy, int dt) {
+        mockViewConfiguration();
+
+        GestureListener listener = Mockito.mock(GestureListener.class);
+        Context context = Mockito.mock(Context.class);
+
+        GestureDetector testMe = new GestureDetector(context, listener);
+
+        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
+
+        // Move half way
+        testMe.onTouchEvent(motionEvent(
+            10, 10 + dt / 2, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2));
+
+        // Release after moving the rest of the way
+        testMe.onTouchEvent(motionEvent(10, 10 + dt, MotionEvent.ACTION_UP, X0 + dx, Y0 + dy));
+
+        return listener;
+    }
+
+    @Test
+    public void testPerfectSwipe() {
+        GestureListener listener = doSwipe(97, 23, 42);
+        Mockito.verify(listener).onSwipe(97f, 23f);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testSlowSwipe() {
+        GestureListener listener = doSwipe(97, 23, 4200);
+        Mockito.verify(listener).onSwipe(97f, 23f);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testSlowAndShortSwipe() {
+        GestureListener listener = doSwipe(TOUCH_SLOP - 1, 0, 4200);
+
+        // We moved too short, that shouldn't count as a swipe
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+}
