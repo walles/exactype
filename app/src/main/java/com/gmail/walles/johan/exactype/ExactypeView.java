@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.Arrays;
+
 public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
@@ -60,6 +62,10 @@ public class ExactypeView extends View {
     }
 
     public void setRows(String[] rows) {
+        if (Arrays.equals(rows, this.rows)) {
+            return;
+        }
+
         keyCoordinator = new KeyCoordinator(rows);
         keyCoordinator.setSize(getWidth(), getHeight());
 

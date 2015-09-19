@@ -35,6 +35,12 @@ public class Exactype extends InputMethodService {
         "⇧ZXCVBNM⌫" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
+    private static final String[] NUMERIC = new String[] {
+        "1234567890",
+        "&/:;()-+$",
+        ".,?!'\"*#@"
+    };
+
     private boolean shifted = false;
     private ExactypeView view;
 
@@ -54,11 +60,12 @@ public class Exactype extends InputMethodService {
     }
 
     public void setShifted(boolean shifted) {
-        if (shifted == this.shifted) {
-            return;
-        }
         this.shifted = shifted;
         view.setRows(shifted ? SHIFTED : UNSHIFTED);
+    }
+
+    public void onLongPress() {
+        view.setRows(NUMERIC);
     }
 
     public void onKeyTapped(char tappedKey) {

@@ -18,6 +18,9 @@ numeric keyboard for a while
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap
+* Add vibrations on key presses
+* Add audio clicks on key presses
+* Make the keyboard not resize when pressing SHIFT
 * Add a .travis.yml build config running the unit tests
 * Make the SHIFT key look like a SHIFT key
 * Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
@@ -34,8 +37,6 @@ being automatically shifted.
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * When sliding around the numeric keyboard, show what's under your finger in a small (fixed in
 place) frame above the keyboard
-* Add audio clicks on key presses
-* Add vibrations on key presses
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed.
 * Hint user to swipe right for space unless (s)he has already done that
