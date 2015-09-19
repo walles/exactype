@@ -27,22 +27,37 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+/**
+ * Tests for the {@link GestureDetector}.
+ * <p>
+ * Note that {@link MotionEvent}s are re-used in real-life, so tests need to re-use events as well.
+ * </p>
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( { ViewConfiguration.class })
 public class GestureDetectorTest {
     private static final int LONG_PRESS_TIMEOUT = 29;
     private static final int TOUCH_SLOP = 7;
-    private static final MotionEvent INITIAL_DOWN =
-        createMotionEvent(10, 10, MotionEvent.ACTION_DOWN, 30, 40);
 
-    private static MotionEvent createMotionEvent(long downTime, long eventTime, int action, float x, float y) {
-        MotionEvent returnMe = Mockito.mock(MotionEvent.class);
-        Mockito.when(returnMe.getDownTime()).thenReturn(downTime);
-        Mockito.when(returnMe.getEventTime()).thenReturn(eventTime);
-        Mockito.when(returnMe.getAction()).thenReturn(action);
-        Mockito.when(returnMe.getX()).thenReturn(x);
-        Mockito.when(returnMe.getY()).thenReturn(y);
-        return returnMe;
+    private static final int X0 = 30;
+    private static final int Y0 = 40;
+
+    private static final MotionEvent MOTION_EVENT = Mockito.mock(MotionEvent.class);
+
+    /**
+     * Re-purpose a motion event. The Android code re-uses motion events, that's why we want to do
+     * that in the unit tests as well.
+     */
+    private static MotionEvent motionEvent(
+        long downTime, long eventTime, int action, float x, float y)
+    {
+        Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(downTime);
+        Mockito.when(MOTION_EVENT.getEventTime()).thenReturn(eventTime);
+        Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
+        Mockito.when(MOTION_EVENT.getX()).thenReturn(x);
+        Mockito.when(MOTION_EVENT.getY()).thenReturn(y);
+
+        return MOTION_EVENT;
     }
 
     /**
@@ -66,19 +81,16 @@ public class GestureDetectorTest {
 
         GestureDetector testMe = new GestureDetector(context, listener);
 
-        testMe.onTouchEvent(INITIAL_DOWN);
+        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
 
         if (sloppiness > 0) {
             // Sloppy move down
-            MotionEvent move =
-                createMotionEvent(10, 10 + dt / 2, MotionEvent.ACTION_MOVE, 30, 40 + sloppiness);
-            testMe.onTouchEvent(move);
+            testMe.onTouchEvent(motionEvent(
+                10, 10 + dt / 2, MotionEvent.ACTION_MOVE, X0, Y0 + sloppiness));
         }
 
         // Release after sloppy move right
-        MotionEvent up =
-            createMotionEvent(10, 10 + dt, MotionEvent.ACTION_UP, 30 + sloppiness, 40);
-        testMe.onTouchEvent(up);
+        testMe.onTouchEvent(motionEvent(10, 10 + dt, MotionEvent.ACTION_UP, X0 + sloppiness, Y0));
 
         return listener;
     }
@@ -87,7 +99,7 @@ public class GestureDetectorTest {
     public void testPerfectSingleTap() {
         GestureListener listener = doSingleTap(0, 0);
 
-        Mockito.verify(listener).onSingleTap(INITIAL_DOWN);
+        Mockito.verify(listener).onSingleTap(X0, Y0);
         Mockito.verifyNoMoreInteractions(listener);
     }
 
@@ -95,7 +107,7 @@ public class GestureDetectorTest {
     public void testSloppySingleTap() {
         GestureListener listener = doSingleTap(TOUCH_SLOP - 1, LONG_PRESS_TIMEOUT - 1);
 
-        Mockito.verify(listener).onSingleTap(INITIAL_DOWN);
+        Mockito.verify(listener).onSingleTap(X0, Y0);
         Mockito.verifyNoMoreInteractions(listener);
     }
 
@@ -123,17 +135,14 @@ public class GestureDetectorTest {
 
         GestureDetector testMe = new GestureDetector(context, listener);
 
-        testMe.onTouchEvent(INITIAL_DOWN);
+        testMe.onTouchEvent(motionEvent(10, 10, MotionEvent.ACTION_DOWN, X0, Y0));
 
         // Move half way
-        MotionEvent move =
-            createMotionEvent(10, 10 + dt / 2, MotionEvent.ACTION_MOVE, 30 + dx / 2, 40 + dy / 2);
-        testMe.onTouchEvent(move);
+        testMe.onTouchEvent(motionEvent(
+            10, 10 + dt / 2, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2));
 
         // Release after moving the rest of the way
-        MotionEvent up =
-            createMotionEvent(10, 10 + dt, MotionEvent.ACTION_UP, 30 + dx, 40 + dy);
-        testMe.onTouchEvent(up);
+        testMe.onTouchEvent(motionEvent(10, 10 + dt, MotionEvent.ACTION_UP, X0 + dx, Y0 + dy));
 
         return listener;
     }

@@ -26,8 +26,11 @@ public class GestureDetector {
     private final int touchSlop;
     private final int longPressTimeout;
 
-    @Nullable
-    private MotionEvent startEvent;
+    // Motion events are re-used, so we can't just save the motion event. Instead we save all
+    // relevant field values.
+    private float startX;
+    private float startY;
+    private long startTime;
 
     public GestureDetector(Context context, GestureListener gestureListener) {
         this.gestureListener = gestureListener;
@@ -37,45 +40,60 @@ public class GestureDetector {
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
     }
 
+    private void setStart(@Nullable MotionEvent e) {
+        if (e == null) {
+            startTime = 0;
+            return;
+        }
+
+        startX = e.getX();
+        startY = e.getY();
+        startTime = e.getEventTime();
+    }
+
+    private boolean isStarted() {
+        return startTime != 0;
+    }
+
     private boolean handleTapEnd(MotionEvent event) {
-        if (startEvent == null) {
+        if (!isStarted()) {
             // We don't know how this started, can't work with this
             return false;
         }
 
-        long dt = event.getEventTime() - startEvent.getEventTime();
+        long dt = event.getEventTime() - startTime;
         if (dt >= longPressTimeout) {
             // End of event but not a tap, never mind
             return false;
         }
 
-        float dx = event.getX() - startEvent.getX();
+        float dx = event.getX() - startX;
         if (Math.abs(dx) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
         }
 
-        float dy = event.getY() - startEvent.getY();
+        float dy = event.getY() - startY;
         if (Math.abs(dy) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
         }
 
         // Close enough, quick enough
-        gestureListener.onSingleTap(startEvent);
-        startEvent = null;
+        gestureListener.onSingleTap(startX, startY);
+        setStart(null);
 
         return true;
     }
 
     private boolean handleSwipeEnd(MotionEvent event) {
-        if (startEvent == null) {
+        if (!isStarted()) {
             // We don't know how this started, can't work with this
             return false;
         }
 
-        float dx = event.getX() - startEvent.getX();
-        float dy = event.getY() - startEvent.getY();
+        float dx = event.getX() - startX;
+        float dy = event.getY() - startY;
 
         if (Math.abs(dx) < touchSlop && Math.abs(dy) < touchSlop) {
             // Too short for a swipe, never mind
@@ -84,7 +102,7 @@ public class GestureDetector {
 
         // Far enough
         gestureListener.onSwipe(dx, dy);
-        startEvent = null;
+        setStart(null);
 
         return true;
 
@@ -92,7 +110,7 @@ public class GestureDetector {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            startEvent = event;
+            setStart(event);
             return true;
         }
 
@@ -110,7 +128,7 @@ public class GestureDetector {
         }
 
         // Gesture ended but we don't know how
-        startEvent = null;
+        setStart(null);
         return false;
     }
 }

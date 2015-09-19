@@ -16,8 +16,6 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.view.MotionEvent;
-
 public class GestureListener {
     private final Exactype exactype;
     private final KeyCoordinator keyCoordinator;
@@ -43,8 +41,8 @@ public class GestureListener {
         return true;
     }
 
-    public boolean onSingleTap(MotionEvent e) {
-        char tappedKey = keyCoordinator.getClosestKey(e.getX(), e.getY());
+    public boolean onSingleTap(float x, float y) {
+        char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
         } else if (tappedKey == '⇧') {
