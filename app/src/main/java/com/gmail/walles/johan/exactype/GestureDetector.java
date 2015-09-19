@@ -17,6 +17,7 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -25,28 +26,57 @@ public class GestureDetector {
     private final int touchSlop;
     private final int longPressTimeout;
 
+    @Nullable
+    private MotionEvent startEvent;
+
     public GestureDetector(Context context, GestureListener gestureListener) {
         this.gestureListener = gestureListener;
 
-        ViewConfiguration configuration = ViewConfiguration.get(context);
-        touchSlop = configuration.getScaledTouchSlop();
+        ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
+        touchSlop = viewConfiguration.getScaledTouchSlop();
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        // FIXME: Detect single tap and call gestureListener.onSingleTap()
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            startEvent = event;
+            return true;
+        }
 
-        // FIXME: Detect fling and call gestureListener.onFling()
+        if (event.getAction() != MotionEvent.ACTION_UP) {
+            // We ignore non-up events
+            return false;
+        }
 
-        // FIXME: Detect long press and call gestureListener.onLongPressDown(). For switching to
-        // showing the numeric keyboard
+        if (startEvent == null) {
+            // We don't know how this started, can't work with this
+            return false;
+        }
 
-        // FIXME: Detect long press continuing on the same spot and call
-        // gestureListener.onLongPressHeld(). For switching back to the letter keyboard and bringing
-        // up alternative characters (like @ for A or É for E)
+        long dt = event.getEventTime() - startEvent.getEventTime();
+        if (dt >= longPressTimeout) {
+            // End of event but not a tap, never mind
+            startEvent = null;
+            return true;
+        }
 
-        // FIXME: Detect long press release and call gestureListener.onLongPressUp(). For entering
-        // something from the numeric keyboard or from the alternative characters keyboard
+        float dx = event.getX() - startEvent.getX();
+        if (Math.abs(dx) > touchSlop) {
+            // End of event but not a tap, never mind
+            startEvent = null;
+            return true;
+        }
+
+        float dy = event.getY() - startEvent.getY();
+        if (Math.abs(dy) > touchSlop) {
+            // End of event but not a tap, never mind
+            startEvent = null;
+            return true;
+        }
+
+        // Close enough, quick enough
+        gestureListener.onSingleTap(startEvent);
+        startEvent = null;
 
         return true;
     }
