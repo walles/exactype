@@ -62,7 +62,7 @@ public class ExactypeView extends View {
     }
 
     public void setRows(String[] rows) {
-        if (Arrays.equals(rows, this.rows)) {
+        if (keyCoordinator != null && keyCoordinator.hasRows(rows)) {
             return;
         }
 
