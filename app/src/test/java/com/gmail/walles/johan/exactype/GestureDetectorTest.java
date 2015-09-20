@@ -59,6 +59,10 @@ public class GestureDetectorTest {
         testMe = new GestureDetector(context, listener);
     }
 
+    public void checkHandlers() {
+        // FIXME: Verify that any posted messages have either triggered or been removed
+    }
+
     /**
      * Re-purpose a motion event. The Android code re-uses motion events, that's why we want to do
      * that in the unit tests as well.
