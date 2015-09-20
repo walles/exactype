@@ -30,7 +30,7 @@ public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
-    private static final String ALL_HEIGHTS = "Mjg^Å|";
+    private static final String ALL_HEIGHTS = "M";
     private static final String LONG_ROW = "qwertyuiopå";
 
     private final float fontSize100HeightPx;
