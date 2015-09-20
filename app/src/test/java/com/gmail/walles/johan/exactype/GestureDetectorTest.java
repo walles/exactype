@@ -189,7 +189,10 @@ public class GestureDetectorTest {
     @Test
     public void testTooLongSingleTap() {
         doSingleTap(0, LONG_PRESS_TIMEOUT + 1);
-        Mockito.verifyNoMoreInteractions(listener);
+
+        // A too long single tap is really a long press, but we just verify it wasn't a single tap
+        Mockito.verify(listener, Mockito.never())
+            .onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
     }
 
     @Test
