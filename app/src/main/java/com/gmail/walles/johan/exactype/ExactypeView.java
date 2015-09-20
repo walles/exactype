@@ -61,18 +61,14 @@ public class ExactypeView extends View {
 
     public void setRows(String[] rows) {
         keyCoordinator = new KeyCoordinator(rows);
+        keyCoordinator.setSize(getWidth(), getHeight());
 
         Exactype exactype = (Exactype)getContext();
         gestureDetector =
             new GestureDetector(exactype, new GestureListener(exactype, keyCoordinator));
 
-        // FIXME: Request redraw, not layout
-        requestLayout();
+        invalidate();
     }
-
-    pressing shift doesn't change the keyboard's look
-
-    keyboard is somewhat too high
 
     @Override
     protected void onDraw(Canvas canvas) {

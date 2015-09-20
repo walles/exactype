@@ -23,13 +23,13 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 public class Exactype extends InputMethodService {
-    private final static String[] UNSHIFTED = new String[] {
+    private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
         "⇧zxcvbnm⌫" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
-    private final static String[] SHIFTED = new String[] {
+    private static final String[] SHIFTED = new String[] {
         "QWERTYUIOPÅ",
         "ASDFGHJKLÖÄ",
         "⇧ZXCVBNM⌫" // ⇧ = SHIFT, ⌫ = Backspace
