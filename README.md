@@ -14,6 +14,9 @@ Features (will) include:
 numeric keyboard for a while
 
 # TODO Before Getting the First Beta Tester
+* Make keyboard a bit higher
+* Think about the vertical spacing of the keys; there seems to be more distance between adjacent
+lines than between the lines and the edges. Should this be adjusted?
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap
 * Add a .travis.yml build config running the unit tests
 * Make the SHIFT key look like a SHIFT key
