@@ -30,12 +30,17 @@ public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
+    private static final String ALL_HEIGHTS = "M";
+    private static final String LONG_ROW = "qwertyuiopå";
+
+    private final float fontSize100HeightPx;
+    private final float fontSize100LongestRowLength;
+
     private final Paint foreground;
+
     private float verticalCenterOffset;
     private KeyCoordinator keyCoordinator;
     private GestureDetector gestureDetector;
-
-    private String[] rows;
 
     public ExactypeView(Context exactype) {
         super(exactype);
@@ -43,18 +48,26 @@ public class ExactypeView extends View {
         foreground = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
         foreground.setColor(Color.WHITE);
         foreground.setTextAlign(Paint.Align.CENTER);
+
+        foreground.setTextSize(100);
+
+        Rect bounds = new Rect();
+        foreground.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
+        fontSize100HeightPx = bounds.height();
+
+        foreground.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
+        fontSize100LongestRowLength = bounds.width();
     }
 
     public void setRows(String[] rows) {
-        this.rows = rows;
-
         keyCoordinator = new KeyCoordinator(rows);
+        keyCoordinator.setSize(getWidth(), getHeight());
 
         Exactype exactype = (Exactype)getContext();
         gestureDetector =
             new GestureDetector(exactype, new GestureListener(exactype, keyCoordinator));
 
-        requestLayout();
+        invalidate();
     }
 
     @Override
@@ -81,26 +94,6 @@ public class ExactypeView extends View {
         }
     }
 
-    private static int getLongestRowLength(Paint paint, String rows[]) {
-        int maxRowLength = 0;
-        Rect bounds = new Rect();
-        for (String row : rows) {
-            paint.getTextBounds(row, 0, row.length(), bounds);
-            maxRowLength = Math.max(maxRowLength, bounds.width());
-        }
-        return maxRowLength;
-    }
-
-    private static int sumRowHeights(Paint paint, String rows[]) {
-        int rowLengthSum = 0;
-        Rect bounds = new Rect();
-        for (String row : rows) {
-            paint.getTextBounds(row, 0, row.length(), bounds);
-            rowLengthSum += bounds.height();
-        }
-        return rowLengthSum;
-    }
-
     private static float computeVerticalCenterOffset(Paint paint) {
         // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
         Rect bounds = new Rect();
@@ -118,16 +111,12 @@ public class ExactypeView extends View {
 
         int width = MeasureSpec.getSize(widthMeasureSpec);
 
-        // Set foreground font size to 100 and compute the length of the longest line in px
-        foreground.setTextSize(100);
-        float longestRowLength = getLongestRowLength(foreground, rows);
-
         // Scale the font size so that the longest line matches the display width
-        float factor = width / longestRowLength;
+        float factor = width / fontSize100LongestRowLength;
         foreground.setTextSize(100 * factor);
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
-        int height = sumRowHeights(foreground, rows);
+        int height = Math.round(3 * fontSize100HeightPx * factor);
 
         foreground.setTextSize(foreground.getTextSize() / LETTER_ZOOM_OUT_FACTOR);
         verticalCenterOffset = computeVerticalCenterOffset(foreground);

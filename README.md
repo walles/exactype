@@ -16,7 +16,6 @@ numeric keyboard for a while
 # TODO Before Getting the First Beta Tester
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap
 * Add a .travis.yml build config running the unit tests
-* Make the keyboard not resize when pressing SHIFT
 * Make the SHIFT key look like a SHIFT key
 * Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
 modify the casing of the current word, but if you keep typing it only affects the upcoming letters.
@@ -26,6 +25,7 @@ modify the casing of the current word, but if you keep typing it only affects th
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
 being automatically shifted.
 * Make holding down backspace work as expected
+* Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Test on different resolutions / screen sizes / screen rotations.
 * Make long pressing SHIFT lock the numeric keyboard in place
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
@@ -85,3 +85,4 @@ than detecting a double tap and pretending it was two single taps.
 neither; most likely because of double tap detection messing things up.
 * Make tapping Backspace with text selected remove the selected text
 * Automatically start out in the correct Shift mode
+* Make the keyboard not resize when pressing SHIFT
