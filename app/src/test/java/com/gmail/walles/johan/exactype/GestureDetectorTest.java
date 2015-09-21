@@ -22,10 +22,13 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -51,6 +54,9 @@ public class GestureDetectorTest {
     private GestureDetector testMe;
     private GestureListener listener;
 
+    private Runnable handlerRunnable;
+    private long handlerTimeout;
+
     @Before
     public void setUp() {
         mockViewConfiguration();
@@ -59,14 +65,36 @@ public class GestureDetectorTest {
 
         Context context = Mockito.mock(Context.class);
 
+        handlerRunnable = null;
+        handlerTimeout = 0L;
+
         Handler handler = Mockito.mock(Handler.class);
+        Mockito.stub(handler.postAtTime(
+            Mockito.any(Runnable.class),
+            Mockito.anyObject(),
+            Mockito.anyLong())).toAnswer(new Answer<Boolean>() {
+            @Override
+            public Boolean answer(InvocationOnMock invocation) {
+                // We support only one posted event
+                Assert.assertNull(GestureDetectorTest.this.handlerRunnable);
+                Assert.assertEquals(0L, GestureDetectorTest.this.handlerTimeout);
+
+                GestureDetectorTest.this.handlerRunnable = (Runnable)invocation.getArguments()[0];
+                GestureDetectorTest.this.handlerTimeout = (Long)invocation.getArguments()[2];
+
+                return true;
+            }
+        });
 
         testMe = new GestureDetector(context, listener, handler);
     }
 
     @After
     public void checkHandlers() {
-        // FIXME: Verify that any posted messages have either triggered or been removed
+        Assert.assertNull("Handler should be triggered or removed but is still here",
+            handlerRunnable);
+        Assert.assertEquals("Handler should be triggered or removed but is still here",
+            0L, handlerTimeout);
     }
 
     /**
