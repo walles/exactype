@@ -142,10 +142,6 @@ public class GestureDetectorTest {
      * <p>
      * Triggers timeout handler before that if the motion is after the timeout.
      * </p>
-     * @param eventTime
-     * @param action
-     * @param x
-     * @param y
      */
     private void doMotion(long eventTime, int action, float x, float y) {
         if (eventTime > handlerTimeout && handlerRunnable != null) {
@@ -208,30 +204,36 @@ public class GestureDetectorTest {
     private void doSwipe(int dx, int dy, int dt) {
         doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
 
+        int halfWayDt = dt / 2;
+        if (dt > LONG_PRESS_TIMEOUT) {
+            // Move before the half way timeout to indicate this is not a long press
+            halfWayDt = LONG_PRESS_TIMEOUT - 2;
+        }
+
         // Move half way
-        doMotion(T0 + dt / 2, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2);
+        doMotion(T0 + halfWayDt, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2);
 
         // Release after moving the rest of the way
         doMotion(T0 + dt, MotionEvent.ACTION_UP, X0 + dx, Y0 + dy);
     }
 
     @Test
-    public void testPerfectSwipe() {
-        doSwipe(97, 23, 42);
+    public void testFastSwipe() {
+        doSwipe(97, 23, LONG_PRESS_TIMEOUT / 2);
         Mockito.verify(listener).onSwipe(97f, 23f);
         Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
     public void testSlowSwipe() {
-        doSwipe(97, 23, 4200);
+        doSwipe(97, 23, LONG_PRESS_TIMEOUT * 2);
         Mockito.verify(listener).onSwipe(97f, 23f);
         Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
     public void testSlowAndShortSwipe() {
-        doSwipe(TOUCH_SLOP - 1, 0, 4200);
+        doSwipe(TOUCH_SLOP - 1, 0, LONG_PRESS_TIMEOUT * 2);
 
         // We moved too short, that shouldn't count as a swipe
         Mockito.verifyNoMoreInteractions(listener);

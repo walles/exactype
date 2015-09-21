@@ -32,6 +32,8 @@ public class GestureDetector {
     // relevant field values.
     private float startX;
     private float startY;
+    private float mostRecentX;
+    private float mostRecentY;
     private long startTime;
     private boolean isLongPressing;
 
@@ -57,9 +59,21 @@ public class GestureDetector {
         startY = e.getY();
         startTime = e.getEventTime();
 
+        mostRecentX = startX;
+        mostRecentY = startY;
+
         handler.postAtTime(new Runnable() {
                                @Override
                                public void run() {
+                                   if (Math.abs(mostRecentX - startX) > touchSlop) {
+                                       // We moved too much for a long press, never mind
+                                       return;
+                                   }
+                                   if (Math.abs(mostRecentY - startY) > touchSlop) {
+                                       // We moved too much for a long press, never mind
+                                       return;
+                                   }
+
                                    isLongPressing = true;
                                    gestureListener.onLongPress();
                                }
@@ -147,6 +161,12 @@ public class GestureDetector {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             setStart(event);
+            return true;
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            mostRecentX = event.getX();
+            mostRecentY = event.getY();
             return true;
         }
 
