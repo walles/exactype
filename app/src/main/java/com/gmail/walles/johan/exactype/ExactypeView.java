@@ -39,11 +39,10 @@ public class ExactypeView extends View {
 
     private final Paint foreground;
 
-    private final Handler handler;
+    private final GestureDetector gestureDetector;
 
     private float verticalCenterOffset;
     private KeyCoordinator keyCoordinator;
-    private GestureDetector gestureDetector;
 
     public ExactypeView(Context exactype) {
         super(exactype);
@@ -61,7 +60,7 @@ public class ExactypeView extends View {
         foreground.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
         fontSize100LongestRowLength = bounds.width();
 
-        handler = new Handler();
+        gestureDetector = new GestureDetector(getContext(), new Handler());
     }
 
     public void setRows(String[] rows) {
@@ -73,9 +72,7 @@ public class ExactypeView extends View {
         keyCoordinator.setSize(getWidth(), getHeight());
 
         Exactype exactype = (Exactype)getContext();
-        gestureDetector =
-            new GestureDetector(
-                exactype, new GestureListener(exactype, keyCoordinator), handler);
+        gestureDetector.setListener(new GestureListener(exactype, keyCoordinator));
 
         invalidate();
     }

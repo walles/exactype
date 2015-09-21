@@ -23,7 +23,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 public class GestureDetector {
-    private final GestureListener gestureListener;
+    private GestureListener listener;
     private final int touchSlop;
     private final int longPressTimeout;
     private final Handler handler;
@@ -37,14 +37,16 @@ public class GestureDetector {
     private long startTime;
     private boolean isLongPressing;
 
-    public GestureDetector(Context context, GestureListener gestureListener, Handler handler) {
-        this.gestureListener = gestureListener;
-
+    public GestureDetector(Context context, Handler handler) {
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
         touchSlop = viewConfiguration.getScaledTouchSlop();
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
 
         this.handler = handler;
+    }
+
+    public void setListener(GestureListener listener) {
+        this.listener = listener;
     }
 
     private void setStart(@Nullable MotionEvent e) {
@@ -75,7 +77,7 @@ public class GestureDetector {
                                    }
 
                                    isLongPressing = true;
-                                   gestureListener.onLongPress();
+                                   listener.onLongPress();
                                }
                            },
             GestureDetector.this,
@@ -111,7 +113,7 @@ public class GestureDetector {
         }
 
         // Close enough, quick enough
-        gestureListener.onSingleTap(startX, startY);
+        listener.onSingleTap(startX, startY);
         setStart(null);
 
         return true;
@@ -136,7 +138,7 @@ public class GestureDetector {
         }
 
         // Far enough
-        gestureListener.onSwipe(dx, dy);
+        listener.onSwipe(dx, dy);
         setStart(null);
 
         return true;
@@ -152,7 +154,7 @@ public class GestureDetector {
             return false;
         }
 
-        gestureListener.onLongPressUp(event.getX(), event.getY());
+        listener.onLongPressUp(event.getX(), event.getY());
         setStart(null);
 
         return true;
