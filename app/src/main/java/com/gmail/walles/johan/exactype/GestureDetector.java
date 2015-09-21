@@ -17,6 +17,7 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -31,6 +32,7 @@ public class GestureDetector {
     private float startX;
     private float startY;
     private long startTime;
+    private boolean isLongPressing;
 
     public GestureDetector(Context context, GestureListener gestureListener) {
         this.gestureListener = gestureListener;
@@ -43,12 +45,23 @@ public class GestureDetector {
     private void setStart(@Nullable MotionEvent e) {
         if (e == null) {
             startTime = 0;
+            isLongPressing = false;
+            new Handler().removeCallbacksAndMessages(this);
             return;
         }
 
         startX = e.getX();
         startY = e.getY();
         startTime = e.getEventTime();
+
+        new Handler().postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                isLongPressing = true;
+                gestureListener.onLongPress();
+            }},
+            GestureDetector.this,
+            e.getEventTime() + longPressTimeout);
     }
 
     private boolean isStarted() {
@@ -92,6 +105,10 @@ public class GestureDetector {
             return false;
         }
 
+        if (isLongPressing) {
+            return false;
+        }
+
         float dx = event.getX() - startX;
         float dy = event.getY() - startY;
 
@@ -105,7 +122,22 @@ public class GestureDetector {
         setStart(null);
 
         return true;
+    }
 
+    private boolean handleLongPressEnd(MotionEvent event) {
+        if (!isStarted()) {
+            // We don't know how this started, can't work with this
+            return false;
+        }
+
+        if (!isLongPressing) {
+            return false;
+        }
+
+        gestureListener.onLongPressUp(event.getX(), event.getY());
+        setStart(null);
+
+        return true;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -124,6 +156,10 @@ public class GestureDetector {
         }
 
         if (handleSwipeEnd(event)) {
+            return true;
+        }
+
+        if (handleLongPressEnd(event)) {
             return true;
         }
 
