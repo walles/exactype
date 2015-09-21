@@ -236,7 +236,8 @@ public class GestureDetectorTest {
         doSwipe(TOUCH_SLOP - 1, 0, LONG_PRESS_TIMEOUT * 2);
 
         // We moved too short, that shouldn't count as a swipe
-        Mockito.verifyNoMoreInteractions(listener);
+        Mockito.verify(listener, Mockito.never())
+            .onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
     }
 
     @Test
