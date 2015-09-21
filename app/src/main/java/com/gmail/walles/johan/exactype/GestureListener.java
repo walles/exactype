@@ -25,23 +25,21 @@ public class GestureListener {
         this.keyCoordinator = keyCoordinator;
     }
 
-    public boolean onSwipe(float dx, float dy) {
+    public void onSwipe(float dx, float dy) {
         if (dx <= 0) {
             // More left than right
-            return false;
+            return;
         }
         if (Math.abs(dy) > dx) {
             // More up / down than right
-            return false;
+            return;
         }
 
         // Right swipe, enter space!
         exactype.onKeyTapped(' ');
-
-        return true;
     }
 
-    public boolean onSingleTap(float x, float y) {
+    public void onSingleTap(float x, float y) {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
@@ -50,6 +48,13 @@ public class GestureListener {
         } else {
             exactype.onKeyTapped(tappedKey);
         }
-        return true;
+    }
+
+    public void onLongPress() {
+        exactype.onLongPress();
+    }
+
+    public void onLongPressUp(float x, float y) {
+        onSingleTap(x, y);
     }
 }

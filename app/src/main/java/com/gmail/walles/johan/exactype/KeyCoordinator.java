@@ -16,10 +16,16 @@
 
 package com.gmail.walles.johan.exactype;
 
+import java.util.Arrays;
+
 /**
  * Keeps track of coordinates for keys.
  */
 public class KeyCoordinator {
+    public boolean hasRows(String[] rows) {
+        return Arrays.equals(this.rows, rows);
+    }
+
     public static class KeyInfo {
         public final char character;
 
