@@ -265,16 +265,20 @@ public class GestureDetectorTest {
             MotionEvent.ACTION_MOVE,
             X0 + TOUCH_SLOP + 1, Y0 + TOUCH_SLOP + 1);
 
-        // FIXME: Simulate waiting LONG_PRESS_TIMEOUT
+        // Making a move after LONG_PRESS_TIMEOUT simulates waiting for it
+        doMotion(
+            T0 + LONG_PRESS_TIMEOUT * 2,
+            MotionEvent.ACTION_MOVE,
+            X0 + TOUCH_SLOP + 1, Y0 + TOUCH_SLOP + 1);
 
         // In particular, we should *not* have received any long press notification
         Mockito.verifyNoMoreInteractions(listener);
 
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
-        doMotion(T0 + 2 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
 
-        // In particular, we should *not* have received any long press up notification
-        Mockito.verifyNoMoreInteractions(listener);
+        Mockito.verify(listener, Mockito.never())
+            .onLongPressUp(Mockito.anyFloat(), Mockito.anyFloat());
     }
 }
