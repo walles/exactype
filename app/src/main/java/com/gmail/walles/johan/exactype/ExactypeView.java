@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -37,6 +38,8 @@ public class ExactypeView extends View {
     private final float fontSize100LongestRowLength;
 
     private final Paint foreground;
+
+    private final Handler handler;
 
     private float verticalCenterOffset;
     private KeyCoordinator keyCoordinator;
@@ -57,6 +60,8 @@ public class ExactypeView extends View {
 
         foreground.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
         fontSize100LongestRowLength = bounds.width();
+
+        handler = new Handler();
     }
 
     public void setRows(String[] rows) {
@@ -70,7 +75,7 @@ public class ExactypeView extends View {
         Exactype exactype = (Exactype)getContext();
         gestureDetector =
             new GestureDetector(
-                exactype, new GestureListener(exactype, keyCoordinator), getHandler());
+                exactype, new GestureListener(exactype, keyCoordinator), handler);
 
         invalidate();
     }
