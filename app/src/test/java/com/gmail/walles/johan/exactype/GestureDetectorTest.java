@@ -86,6 +86,17 @@ public class GestureDetectorTest {
             }
         });
 
+        Mockito.doAnswer(
+            new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) {
+                    GestureDetectorTest.this.handlerTimeout = 0;
+                    GestureDetectorTest.this.handlerRunnable = null;
+
+                    return null;
+                }
+            }).when(handler).removeCallbacksAndMessages(Mockito.anyObject());
+
         testMe = new GestureDetector(context, listener, handler);
     }
 
@@ -126,7 +137,24 @@ public class GestureDetectorTest {
         Mockito.when(viewConfiguration.getScaledTouchSlop()).thenReturn(TOUCH_SLOP);
     }
 
+    /**
+     * Passes a motion to the GestureDetector.
+     * <p>
+     * Triggers timeout handler before that if the motion is after the timeout.
+     * </p>
+     * @param eventTime
+     * @param action
+     * @param x
+     * @param y
+     */
     private void doMotion(long eventTime, int action, float x, float y) {
+        if (eventTime > handlerTimeout && handlerRunnable != null) {
+            // Trigger the timeout handler
+            handlerRunnable.run();
+            handlerRunnable = null;
+            handlerTimeout = 0;
+        }
+
         testMe.onTouchEvent(motionEvent(eventTime, action, x, y));
     }
 
@@ -210,14 +238,15 @@ public class GestureDetectorTest {
     public void testLongPress() {
         doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
 
-        // FIXME: Simulate waiting LONG_PRESS_TIMEOUT
+        // Simulate waiting LONG_PRESS_TIMEOUT
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
 
         Mockito.verify(listener).onLongPress();
         Mockito.verifyNoMoreInteractions(listener);
 
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
-        doMotion(T0 + 2 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+        doMotion(T0 + LONG_PRESS_TIMEOUT * 2, MotionEvent.ACTION_UP, x1, y1);
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
         Mockito.verifyNoMoreInteractions(listener);
