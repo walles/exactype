@@ -26,6 +26,7 @@ public class GestureDetector {
     private final GestureListener gestureListener;
     private final int touchSlop;
     private final int longPressTimeout;
+    private final Handler handler;
 
     // Motion events are re-used, so we can't just save the motion event. Instead we save all
     // relevant field values.
@@ -34,19 +35,21 @@ public class GestureDetector {
     private long startTime;
     private boolean isLongPressing;
 
-    public GestureDetector(Context context, GestureListener gestureListener) {
+    public GestureDetector(Context context, GestureListener gestureListener, Handler handler) {
         this.gestureListener = gestureListener;
 
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
         touchSlop = viewConfiguration.getScaledTouchSlop();
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
+
+        this.handler = handler;
     }
 
     private void setStart(@Nullable MotionEvent e) {
         if (e == null) {
             startTime = 0;
             isLongPressing = false;
-            new Handler().removeCallbacksAndMessages(this);
+            handler.removeCallbacksAndMessages(this);
             return;
         }
 
@@ -54,12 +57,13 @@ public class GestureDetector {
         startY = e.getY();
         startTime = e.getEventTime();
 
-        new Handler().postAtTime(new Runnable() {
-            @Override
-            public void run() {
-                isLongPressing = true;
-                gestureListener.onLongPress();
-            }},
+        handler.postAtTime(new Runnable() {
+                               @Override
+                               public void run() {
+                                   isLongPressing = true;
+                                   gestureListener.onLongPress();
+                               }
+                           },
             GestureDetector.this,
             e.getEventTime() + longPressTimeout);
     }

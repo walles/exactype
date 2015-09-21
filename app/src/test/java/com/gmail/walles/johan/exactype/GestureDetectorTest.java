@@ -17,9 +17,11 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,9 +58,13 @@ public class GestureDetectorTest {
         listener = Mockito.mock(GestureListener.class);
 
         Context context = Mockito.mock(Context.class);
-        testMe = new GestureDetector(context, listener);
+
+        Handler handler = Mockito.mock(Handler.class);
+
+        testMe = new GestureDetector(context, listener, handler);
     }
 
+    @After
     public void checkHandlers() {
         // FIXME: Verify that any posted messages have either triggered or been removed
     }

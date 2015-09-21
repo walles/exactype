@@ -26,8 +26,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Arrays;
-
 public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
@@ -71,7 +69,8 @@ public class ExactypeView extends View {
 
         Exactype exactype = (Exactype)getContext();
         gestureDetector =
-            new GestureDetector(exactype, new GestureListener(exactype, keyCoordinator));
+            new GestureDetector(
+                exactype, new GestureListener(exactype, keyCoordinator), getHandler());
 
         invalidate();
     }
