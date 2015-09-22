@@ -9,19 +9,23 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Johan can use Exactype as his Sole IME
+* Add an "action" operation to the keyboard. Swipe up or down are my primary suggestions.
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
 
 # TODO Before Getting the First Beta Tester
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
-* Flash an image of where on the keyboard the user hit above the keyboard on every tap
+* Flash an image of where on the keyboard the user hit above the keyboard on every tap. Using
+[PopupWindow](http://developer.android.com/reference/android/widget/PopupWindow.html) perhaps?
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Auto space after punctuation?
 * No auto space after punctuation inside numbers.
 * Add a .travis.yml build config running the unit tests
 * Make the SHIFT key look like a SHIFT key
+* Think about how much a user should need to slide at the minimum to make a space; we want to avoid
+people making spaces by mistake when hitting buttons sloppily.
 * While long pressing for numeric keyboard, show an enlarged image of where we're hovering,
 somewhere mid screen and somewhere around one key big.
 * Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
@@ -40,6 +44,7 @@ being automatically shifted.
 place) frame above the keyboard
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed.
+* When the keyboard pops up, hint user what the Action swipe up will do.
 * Hint user to swipe right for space unless (s)he has already done that
 * Hint user to swipe right twice for . unless (s)he has already done that
 * Hint user to swipe right three times for ... unless (s)he has already done that
