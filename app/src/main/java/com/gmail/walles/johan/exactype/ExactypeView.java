@@ -31,6 +31,11 @@ public class ExactypeView extends View {
     private static final String TAG = "Exactype";
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
+    /**
+     * Put some air between the keyboard rows.
+     */
+    private static final float KEYBOARD_HEIGHT_MULTIPLIER = 1.3f;
+
     private static final String ALL_HEIGHTS = "M";
     private static final String LONG_ROW = "qwertyuiopå";
 
@@ -123,7 +128,7 @@ public class ExactypeView extends View {
         foreground.setTextSize(100 * factor);
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
-        int height = Math.round(3 * fontSize100HeightPx * factor);
+        int height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
 
         foreground.setTextSize(foreground.getTextSize() / LETTER_ZOOM_OUT_FACTOR);
         verticalCenterOffset = computeVerticalCenterOffset(foreground);

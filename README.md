@@ -13,7 +13,6 @@ Features (will) include:
 numeric keyboard for a while
 
 # TODO Before Getting the First Beta Tester
-* Make keyboard a bit higher
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap
@@ -93,3 +92,4 @@ neither; most likely because of double tap detection messing things up.
 * Automatically start out in the correct Shift mode
 * Make the keyboard not resize when pressing SHIFT
 * Make long pressing show the numeric keyboard for the duration of the long press
+* Make keyboard a bit higher
