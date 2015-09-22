@@ -9,7 +9,6 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Johan can use Exactype as his Sole IME
-* Add an "action" operation to the keyboard. Swipe up or down are my primary suggestions.
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
 
@@ -24,7 +23,7 @@ lines than between the lines and the edges. Should this be adjusted?
 * No auto space after punctuation inside numbers.
 * Add a .travis.yml build config running the unit tests
 * Make the SHIFT key look like a SHIFT key
-* Think about how much a user should need to slide at the minimum to make a space; we want to avoid
+* Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
 people making spaces by mistake when hitting buttons sloppily.
 * While long pressing for numeric keyboard, show an enlarged image of where we're hovering,
 somewhere mid screen and somewhere around one key big.
@@ -98,3 +97,4 @@ neither; most likely because of double tap detection messing things up.
 * Make the keyboard not resize when pressing SHIFT
 * Make long pressing show the numeric keyboard for the duration of the long press
 * Make keyboard a bit higher
+* Swipe down for "action" operation to the keyboard.

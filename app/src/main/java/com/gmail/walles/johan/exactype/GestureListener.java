@@ -25,18 +25,41 @@ public class GestureListener {
         this.keyCoordinator = keyCoordinator;
     }
 
-    public void onSwipe(float dx, float dy) {
+    private boolean handleRightSwipe(float dx, float dy) {
         if (dx <= 0) {
             // More left than right
-            return;
+            return false;
         }
         if (Math.abs(dy) > dx) {
             // More up / down than right
-            return;
+            return false;
         }
 
         // Right swipe, enter space!
         exactype.onKeyTapped(' ');
+        return true;
+    }
+
+    private boolean handleDownSwipe(float dx, float dy) {
+        if (dy <= 0) {
+            // More up than down
+            return false;
+        }
+        if (Math.abs(dx) > dy) {
+            // More left / right than down
+            return false;
+        }
+
+        // Down swipe, action!
+        exactype.onActionTapped();
+        return true;
+    }
+
+    public void onSwipe(float dx, float dy) {
+        if (handleRightSwipe(dx, dy)) {
+            return;
+        }
+        handleDownSwipe(dx, dy);
     }
 
     public void onSingleTap(float x, float y) {

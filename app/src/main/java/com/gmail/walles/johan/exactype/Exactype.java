@@ -43,6 +43,7 @@ public class Exactype extends InputMethodService {
 
     private boolean shifted = false;
     private ExactypeView view;
+    private EditorInfo editorInfo;
 
     @Override
     public View onCreateInputView() {
@@ -57,6 +58,7 @@ public class Exactype extends InputMethodService {
         // "start out in caps mode":
         // http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html#initialCapsMode
         setShifted(editorInfo.initialCapsMode != 0);
+        this.editorInfo = editorInfo;
     }
 
     public void setShifted(boolean shifted) {
@@ -87,5 +89,10 @@ public class Exactype extends InputMethodService {
 
     public void shiftTapped() {
         setShifted(!shifted);
+    }
+
+    public void onActionTapped() {
+        getCurrentInputConnection()
+            .performEditorAction(editorInfo.imeOptions | EditorInfo.IME_MASK_ACTION);
     }
 }
