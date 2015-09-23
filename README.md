@@ -9,6 +9,7 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Johan can use Exactype as his Sole IME
+* Swiping down when composing a mail in Inbox slides the keyboard down out of view. It should really insert a newline.
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
 
@@ -75,6 +76,8 @@ pauses during drawing operations.
 * Think about sending accessibility events
 * Enable users to change keyboard color
 * Fix layout bounces, we do four layouts currently on Johan's phone
+* Write a test that goes through all keyboard layouts and ensures all layouts can type all glyphs
+available in Android's standard font.
 
 # DONE
 * Create an IME that when selected shows an empty view
