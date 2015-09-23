@@ -38,7 +38,7 @@ public class Exactype extends InputMethodService {
     private static final String[] NUMERIC = new String[] {
         "1234567890",
         "&/:;()-+$",
-        ".,?!'\"*#@"
+        "@'\"*#?!,."
     };
 
     private boolean shifted = false;
