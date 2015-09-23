@@ -12,38 +12,39 @@ Features (will) include:
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
 
-# TODO Before Getting the First Beta Tester
-* Think about the vertical spacing of the keys; there seems to be more distance between adjacent
-lines than between the lines and the edges. Should this be adjusted?
+# TODO Before Getting the First Supervised Beta Tester
+A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Using
 [PopupWindow](http://developer.android.com/reference/android/widget/PopupWindow.html) perhaps?
 * Add vibrations on key presses
 * Add audio clicks on key presses
-* Auto space after punctuation?
-* No auto space after punctuation inside numbers.
-* Add a .travis.yml build config running the unit tests
-* Make the SHIFT key look like a SHIFT key
-* Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
-people making spaces by mistake when hitting buttons sloppily.
-* While long pressing for numeric keyboard, show an enlarged image of where we're hovering,
-somewhere mid screen and somewhere around one key big.
-* Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
-modify the casing of the current word, but if you keep typing it only affects the upcoming letters.
-* Make the Backspace key look like a Backspace key
+* Condition audio / vibration feedback on how close the hit was to the key we think the user
+pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
+* Think about which versions of Android we should build for / support
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
+* Auto space after punctuation?
+* No auto space after punctuation inside numbers.
+* Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
+people making spaces by mistake when hitting buttons sloppily.
+* When sliding around the numeric or a popup keyboard, show what's under your finger in a small
+(fixed in place) frame above the keyboard containing an enlarged image.
+* Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
+modify the casing of the current word, but if you keep typing it only affects the upcoming letters.
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
 being automatically shifted.
 * Make holding down backspace work as expected
-* Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Test on different resolutions / screen sizes / screen rotations.
 * Make long pressing SHIFT lock the numeric keyboard in place
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
-* When sliding around the numeric keyboard, show what's under your finger in a small (fixed in
-place) frame above the keyboard
-* Condition audio / vibration feedback on how close the hit was to the key we think the user
-pressed.
-* When the keyboard pops up, hint user what the Action swipe up will do.
+
+# TODO Before Getting the First Remote Beta Tester
+A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
+/ himself.
+* Make the SHIFT key look like a SHIFT key
+* Make the Backspace key look like a Backspace key
+* Add a .travis.yml build config running the unit tests
+* When the keyboard pops up, hint user what the Action swipe down will do?
 * Hint user to swipe right for space unless (s)he has already done that
 * Hint user to swipe right twice for . unless (s)he has already done that
 * Hint user to swipe right three times for ... unless (s)he has already done that
@@ -64,11 +65,11 @@ bad.
 switching font or something
 
 # User Feedback
-* "Hitting "ä" is too hard, maybe it's too close to the right edge?"
 * "I prefer having all keys the same size"
 * "I prefer a slanted layout, maybe we'd get that by having all keys the same size?"
 
 # TODO Misc
+* Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
 pauses during drawing operations.
 * Think about keyboard transparency, especially on phones in landscape mode
@@ -77,6 +78,8 @@ pauses during drawing operations.
 * Fix layout bounces, we do four layouts currently on Johan's phone
 * Write a test that goes through all keyboard layouts and ensures all layouts can type all glyphs
 available in Android's standard font.
+* Think about the vertical spacing of the keys; there seems to be more distance between adjacent
+lines than between the lines and the edges. Should this be adjusted?
 
 # DONE
 * Create an IME that when selected shows an empty view
@@ -101,3 +104,4 @@ neither; most likely because of double tap detection messing things up.
 * Make keyboard a bit higher
 * Swipe down for "action" operation to the keyboard.
 * Insert newline when swiping down when composing a mail in Inbox.
+* "Hitting "ä" is too hard, maybe it's too close to the right edge?"
