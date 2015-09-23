@@ -92,6 +92,11 @@ public class Exactype extends InputMethodService {
     }
 
     public void onActionTapped() {
+        if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+            getCurrentInputConnection().commitText("\n", 1);
+            return;
+        }
+
         getCurrentInputConnection()
             .performEditorAction(editorInfo.imeOptions | EditorInfo.IME_MASK_ACTION);
     }

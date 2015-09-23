@@ -9,7 +9,6 @@ Features (will) include:
 * Gestures for common operations (including typing space)
 
 # TODO Before Johan can use Exactype as his Sole IME
-* Swiping down when composing a mail in Inbox slides the keyboard down out of view. It should really insert a newline.
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
 
@@ -101,3 +100,4 @@ neither; most likely because of double tap detection messing things up.
 * Make long pressing show the numeric keyboard for the duration of the long press
 * Make keyboard a bit higher
 * Swipe down for "action" operation to the keyboard.
+* Insert newline when swiping down when composing a mail in Inbox.
