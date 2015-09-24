@@ -248,7 +248,7 @@ public class GestureDetectorTest {
         // Simulate waiting LONG_PRESS_TIMEOUT
         doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
 
-        Mockito.verify(listener).onLongPress();
+        Mockito.verify(listener).onLongPress(X0, Y0);
         Mockito.verifyNoMoreInteractions(listener);
 
         int x1 = X0 + 29;
