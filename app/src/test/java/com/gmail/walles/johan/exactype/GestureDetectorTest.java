@@ -283,4 +283,51 @@ public class GestureDetectorTest {
         Mockito.verify(listener, Mockito.never())
             .onLongPressUp(Mockito.anyFloat(), Mockito.anyFloat());
     }
+
+    @Test
+    public void testLongLongPress() {
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+
+        // Simulate waiting LONG_PRESS_TIMEOUT
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
+
+        Mockito.verify(listener).onLongPress(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Simulate waiting LONG_PRESS_TIMEOUT
+        doMotion(T0 + 2 * LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
+
+        Mockito.verify(listener).onLongLongPress(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        int x1 = X0 + 29;
+        int y1 = Y0 + 31;
+        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+
+        Mockito.verify(listener).onLongPressUp(x1, y1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testMoveCancelsLongLongPress() {
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+
+        // Simulate waiting LONG_PRESS_TIMEOUT
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
+
+        Mockito.verify(listener).onLongPress(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Simulate moving after the long press but before the long long press
+        int x1 = X0 + 29;
+        int y1 = Y0 + 31;
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 2, MotionEvent.ACTION_MOVE, x1, y1);
+
+        // Give the long long press notification a chance to trigger even though it should have been
+        // canceled, then release.
+        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+
+        Mockito.verify(listener).onLongPressUp(x1, y1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
 }
