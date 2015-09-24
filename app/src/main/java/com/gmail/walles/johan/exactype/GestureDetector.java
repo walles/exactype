@@ -77,7 +77,7 @@ public class GestureDetector {
                                    }
 
                                    isLongPressing = true;
-                                   listener.onLongPress();
+                                   listener.onLongPress(mostRecentX, mostRecentY);
                                }
                            },
             GestureDetector.this,

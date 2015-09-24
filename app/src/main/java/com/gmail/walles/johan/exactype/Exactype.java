@@ -18,9 +18,14 @@ package com.gmail.walles.johan.exactype;
 
 import android.inputmethodservice.InputMethodService;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.PopupWindow;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Exactype extends InputMethodService {
     private static final String[] UNSHIFTED = new String[] {
@@ -41,9 +46,25 @@ public class Exactype extends InputMethodService {
         "@'\"*#?!,."
     };
 
+    private final Map<Character, String> popupKeysForKey;
+
+    private final PopupKeyboardView popupKeyboardView;
+    private final PopupWindow popupKeyboardWindow;
+
     private boolean shifted = false;
     private ExactypeView view;
     private EditorInfo editorInfo;
+
+    public Exactype() {
+        popupKeysForKey = new HashMap<>();
+
+        // FIXME: Since we already have å and ä on the primary keyboard, they really shouldn't be
+        // part of the popup keys for a
+        popupKeysForKey.put('a', "@áàäå");
+
+        popupKeyboardView = new PopupKeyboardView(this);
+        popupKeyboardWindow = new PopupWindow(popupKeyboardView);
+    }
 
     @Override
     public View onCreateInputView() {
@@ -71,6 +92,7 @@ public class Exactype extends InputMethodService {
     }
 
     public void onKeyTapped(char tappedKey) {
+        popupKeyboardWindow.dismiss();
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
         setShifted(false);
     }
@@ -99,5 +121,16 @@ public class Exactype extends InputMethodService {
 
         getCurrentInputConnection()
             .performEditorAction(editorInfo.imeOptions | EditorInfo.IME_MASK_ACTION);
+    }
+
+    public void onRequestPopupKeyboard(char baseKey, float x, float y) {
+        String popupKeys = popupKeysForKey.get(baseKey);
+        if (popupKeys == null) {
+            // No popup keys available for this keypress
+            return;
+        }
+
+        popupKeyboardView.setKeys(popupKeys);
+        popupKeyboardWindow.showAtLocation(view, Gravity.CENTER, (int)x, (int)y);
     }
 }

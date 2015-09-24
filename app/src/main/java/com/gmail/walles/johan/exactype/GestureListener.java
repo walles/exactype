@@ -19,6 +19,7 @@ package com.gmail.walles.johan.exactype;
 public class GestureListener {
     private final Exactype exactype;
     private final KeyCoordinator keyCoordinator;
+    private char longPressKey;
 
     public GestureListener(Exactype exactype, KeyCoordinator keyCoordinator) {
         this.exactype = exactype;
@@ -73,11 +74,19 @@ public class GestureListener {
         }
     }
 
-    public void onLongPress() {
+    public void onLongPress(float x, float y) {
+        longPressKey = keyCoordinator.getClosestKey(x, y);
         exactype.onLongPress();
     }
 
+    public void onLongLongPress(float x, float y) {
+        exactype.onRequestPopupKeyboard(longPressKey, x, y);
+    }
+
     public void onLongPressUp(float x, float y) {
+        // FIXME: What if this "up" is on the popup keyboard? How do we know? How do we find the key
+        // that was pressed?
+
         onSingleTap(x, y);
     }
 }
