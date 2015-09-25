@@ -37,6 +37,9 @@ being automatically shifted.
 * Test on different resolutions / screen sizes / screen rotations.
 * Make long pressing SHIFT lock the numeric keyboard in place
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
+* Make sure popup keyboard is ignored if finger is released outside of it
+* Make sure long press is canceled if finger is released outside of keyboard
+* Make sure swipe is canceled if finger is released outside of keyboard
 
 # TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself

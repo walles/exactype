@@ -76,12 +76,20 @@ public class GestureDetector {
                                        return;
                                    }
 
-                                   isLongPressing = true;
-                                   listener.onLongPress(mostRecentX, mostRecentY);
+                                   if (isLongPressing) {
+                                       listener.onLongLongPress(mostRecentX, mostRecentY);
+                                   } else {
+                                       isLongPressing = true;
+                                       listener.onLongPress(mostRecentX, mostRecentY);
+                                       handler.postAtTime(
+                                           this,
+                                           GestureDetector.this,
+                                           startTime + 2 * longPressTimeout);
+                                   }
                                }
                            },
             GestureDetector.this,
-            e.getEventTime() + longPressTimeout);
+            startTime + longPressTimeout);
     }
 
     private boolean isStarted() {
