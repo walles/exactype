@@ -67,9 +67,6 @@ public class GestureDetectorTest {
             this.runnable = runnable;
             this.timeout = timeout;
         }
-        public void run() {
-            runnable.run();
-        }
     }
 
     @Before
