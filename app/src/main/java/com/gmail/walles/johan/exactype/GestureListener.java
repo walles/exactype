@@ -18,11 +18,14 @@ package com.gmail.walles.johan.exactype;
 
 public class GestureListener {
     private final Exactype exactype;
-    private final KeyCoordinator keyCoordinator;
+    private KeyCoordinator keyCoordinator;
     private char longPressKey;
 
-    public GestureListener(Exactype exactype, KeyCoordinator keyCoordinator) {
+    public GestureListener(Exactype exactype) {
         this.exactype = exactype;
+    }
+
+    public void setKeyCoordinator(KeyCoordinator keyCoordinator) {
         this.keyCoordinator = keyCoordinator;
     }
 

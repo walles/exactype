@@ -48,8 +48,8 @@ public class Exactype extends InputMethodService {
 
     private final Map<Character, String> popupKeysForKey;
 
-    private final PopupKeyboardView popupKeyboardView;
-    private final PopupWindow popupKeyboardWindow;
+    private PopupKeyboardView popupKeyboardView;
+    private PopupWindow popupKeyboardWindow;
 
     private boolean shifted = false;
     private ExactypeView view;
@@ -61,13 +61,13 @@ public class Exactype extends InputMethodService {
         // FIXME: Since we already have å and ä on the primary keyboard, they really shouldn't be
         // part of the popup keys for a
         popupKeysForKey.put('a', "@áàäå");
-
-        popupKeyboardView = new PopupKeyboardView(this);
-        popupKeyboardWindow = new PopupWindow(popupKeyboardView);
     }
 
     @Override
     public View onCreateInputView() {
+        popupKeyboardView = new PopupKeyboardView(this);
+        popupKeyboardWindow = new PopupWindow(popupKeyboardView);
+
         view = new ExactypeView(this);
         view.setRows(shifted ? SHIFTED : UNSHIFTED);
         return view;

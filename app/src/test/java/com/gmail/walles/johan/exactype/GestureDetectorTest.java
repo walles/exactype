@@ -104,8 +104,7 @@ public class GestureDetectorTest {
                 }
             }).when(handler).removeCallbacksAndMessages(Mockito.anyObject());
 
-        testMe = new GestureDetector(context, handler);
-        testMe.setListener(listener);
+        testMe = new GestureDetector(context, handler, listener);
     }
 
     @After
