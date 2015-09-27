@@ -71,6 +71,10 @@ public class ExactypeView extends View {
         gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
     }
 
+    public float getTextSize() {
+        return foreground.getTextSize();
+    }
+
     public void setRows(String[] rows) {
         if (keyCoordinator != null && keyCoordinator.hasRows(rows)) {
             return;

@@ -17,14 +17,43 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.view.View;
 
 public class PopupKeyboardView extends View {
+    private String keys;
+    private KeyboardTheme theme;
+    private float textSize;
+
     public PopupKeyboardView(Context context) {
         super(context);
+
+        theme = new KeyboardTheme();
+    }
+
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
     }
 
     public void setKeys(String keys) {
+        this.keys = keys;
+    }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // Clear the background
+        canvas.drawColor(Color.BLUE);
+
+        // Draw surrounding box
+        canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, theme.getPaint());
+
+        // FIXME: Draw keys
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        theme.setBounds(widthMeasureSpec, heightMeasureSpec, keys, textSize);
+        setMeasuredDimension(theme.getWidth(), theme.getHeight());
     }
 }
