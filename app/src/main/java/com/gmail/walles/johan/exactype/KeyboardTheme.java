@@ -16,11 +16,35 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class KeyboardTheme {
-    public Paint getPaint() {
+    private static final String ALL_HEIGHTS = "M";
+    private static final String LONG_ROW = "qwertyuiopå";
 
+    private final Paint paint;
+    private final float fontSize100HeightPx;
+    private final float fontSize100CharWidthPx;
+
+    public KeyboardTheme() {
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
+        paint.setColor(Color.WHITE);
+        paint.setTextAlign(Paint.Align.CENTER);
+
+        paint.setTextSize(100);
+
+        Rect bounds = new Rect();
+        paint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
+        fontSize100HeightPx = bounds.height();
+
+        paint.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
+        fontSize100CharWidthPx = bounds.width() / (float)LONG_ROW.length();
+    }
+
+    public Paint getPaint() {
+        return paint;
     }
 
     /**

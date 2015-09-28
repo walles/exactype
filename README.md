@@ -18,6 +18,7 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 [PopupWindow](http://developer.android.com/reference/android/widget/PopupWindow.html) perhaps?
 * Add vibrations on key presses
 * Add audio clicks on key presses
+* Make long pressing SHIFT lock the numeric keyboard in place
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
 * Think about which versions of Android we should build for / support
@@ -35,7 +36,6 @@ modify the casing of the current word, but if you keep typing it only affects th
 being automatically shifted.
 * Make holding down backspace work as expected
 * Test on different resolutions / screen sizes / screen rotations.
-* Make long pressing SHIFT lock the numeric keyboard in place
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard
