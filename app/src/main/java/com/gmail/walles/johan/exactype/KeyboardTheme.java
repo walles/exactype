@@ -19,17 +19,22 @@ package com.gmail.walles.johan.exactype;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 
 public class KeyboardTheme {
     public static final int BACKGROUND_COLOR = Color.BLUE;
+    private static final int COLOR = Color.WHITE;
 
     private static final String ALL_HEIGHTS = "M";
     private static final String LONG_ROW = "qwertyuiopå";
-    private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
-    private final Paint paint;
+    private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
+    private static final int POPUP_BORDER_WIDTH_DP = 2;
+
+    private final Paint textPaint;
+    private final Paint strokePaint;
     private final int fontSize100HeightPx;
     private final float fontSize100CharWidthPx;
     private final float fontSize100VerticalCenterOffset;
@@ -38,28 +43,41 @@ public class KeyboardTheme {
     private int height;
     private float verticalCenterOffset;
 
-    public KeyboardTheme() {
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setTextAlign(Paint.Align.CENTER);
+    public KeyboardTheme(DisplayMetrics displayMetrics) {
+        strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
+        strokePaint.setStyle(Paint.Style.STROKE);
+        strokePaint.setColor(COLOR);
 
-        paint.setTextSize(100);
+        float borderWidthPx =
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, POPUP_BORDER_WIDTH_DP, displayMetrics);
+        strokePaint.setStrokeWidth(borderWidthPx);
+
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
+        textPaint.setColor(COLOR);
+
+        textPaint.setTextAlign(Paint.Align.CENTER);
+
+        textPaint.setTextSize(100);
 
         Rect bounds = new Rect();
-        paint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
+        textPaint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
         fontSize100HeightPx = bounds.height();
 
-        paint.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
+        textPaint.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
         fontSize100CharWidthPx = bounds.width() / (float)LONG_ROW.length();
 
         // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
-        paint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
+        textPaint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
         fontSize100VerticalCenterOffset = -bounds.top - bounds.height() / 2;
     }
 
-    public Paint getPaint() {
-        return paint;
+    public Paint getTextPaint() {
+        return textPaint;
+    }
+
+    public Paint getStrokePaint() {
+        return strokePaint;
     }
 
     /**
@@ -86,7 +104,7 @@ public class KeyboardTheme {
                 width,
                 View.MeasureSpec.getSize(widthMeasureSpec)));
         }
-        paint.setTextSize(textSize);
+        textPaint.setTextSize(textSize);
     }
 
     public int getWidth() {

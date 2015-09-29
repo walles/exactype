@@ -18,7 +18,6 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.view.View;
 
 public class PopupKeyboardView extends View {
@@ -31,7 +30,7 @@ public class PopupKeyboardView extends View {
     public PopupKeyboardView(Context context) {
         super(context);
 
-        theme = new KeyboardTheme();
+        theme = new KeyboardTheme(getResources().getDisplayMetrics());
     }
 
     public void setTextSize(float textSize) {
@@ -49,7 +48,7 @@ public class PopupKeyboardView extends View {
         canvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
 
         // Draw surrounding box
-        canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, theme.getPaint());
+        canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, theme.getStrokePaint());
 
         // Draw keys
         for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
@@ -57,7 +56,7 @@ public class PopupKeyboardView extends View {
                 Character.toString(keyInfo.character),
                 keyInfo.getX(),
                 keyInfo.getY() + theme.getVerticalCenterOffset(),
-                theme.getPaint());
+                theme.getTextPaint());
         }
     }
 
