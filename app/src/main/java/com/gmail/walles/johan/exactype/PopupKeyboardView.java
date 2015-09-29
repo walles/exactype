@@ -18,9 +18,12 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.View;
 
 public class PopupKeyboardView extends View {
+    private static final String TAG = "Exactype";
+
     private KeyCoordinator keyCoordinator;
     private KeyboardTheme theme;
     private String keys;
@@ -35,11 +38,33 @@ public class PopupKeyboardView extends View {
 
     public void setTextSize(float textSize) {
         this.textSize = textSize;
+        recomputeSize();
     }
 
     public void setKeys(String keys) {
         this.keys = keys;
         this.keyCoordinator = new KeyCoordinator(new String[] { keys });
+        recomputeSize();
+    }
+
+    private void recomputeSize() {
+        if (keys == null) {
+            // Not enough information
+            return;
+        }
+
+        if (textSize == 0) {
+            // Not enough information
+            return;
+        }
+
+        theme.setContents(keys, textSize);
+        Log.d(TAG, String.format("Popup keyboard view size set to %dx%d",
+            theme.getWidth(), theme.getHeight()));
+        keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
+        setMeasuredDimension(theme.getWidth(), theme.getHeight());
+        Log.d(TAG, String.format("Popup keyboard view size is %dx%d",
+            getWidth(), getHeight()));
     }
 
     @Override
@@ -62,7 +87,7 @@ public class PopupKeyboardView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        theme.setBounds(widthMeasureSpec, heightMeasureSpec, keys, textSize);
+        theme.setBounds(widthMeasureSpec, heightMeasureSpec);
         keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
         setMeasuredDimension(theme.getWidth(), theme.getHeight());
     }

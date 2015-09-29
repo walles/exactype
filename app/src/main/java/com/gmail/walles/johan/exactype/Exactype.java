@@ -18,6 +18,7 @@ package com.gmail.walles.johan.exactype;
 
 import android.inputmethodservice.InputMethodService;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Exactype extends InputMethodService {
+    private static final String TAG = "Exactype";
+
     private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
@@ -133,9 +136,12 @@ public class Exactype extends InputMethodService {
         popupKeyboardView.setKeys(popupKeys);
         popupKeyboardView.setTextSize(view.getTextSize());
 
-        // FIXME: Size the window properly
-        popupKeyboardWindow.setWidth(500);
-        popupKeyboardWindow.setHeight(500);
+        popupKeyboardWindow.setWidth(popupKeyboardView.getMeasuredWidth());
+        popupKeyboardWindow.setHeight(popupKeyboardView.getMeasuredHeight());
+
+        Log.d(TAG, String.format("Popup keyboard window size set to %dx%d",
+            popupKeyboardView.getWidth(),
+            popupKeyboardView.getHeight()));
 
         popupKeyboardWindow.showAtLocation(view, Gravity.CENTER, (int)x, (int)y);
     }

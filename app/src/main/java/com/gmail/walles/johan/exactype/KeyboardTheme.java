@@ -81,14 +81,12 @@ public class KeyboardTheme {
     }
 
     /**
-     * Helper for {@link android.view.View#onMeasure(int, int)}
+     * Recomputes width, height and vertical center offset.
      *
-     * @param widthMeasureSpec Width spec from onMeasure()
-     * @param heightMeasureSpec Height spec from onMeasure()
      * @param keys The single line of keys the keyboard should display
      * @param textSize The wanted font size to use
      */
-    public void setBounds(int widthMeasureSpec, int heightMeasureSpec, String keys, float textSize) {
+    public void setContents(String keys, float textSize) {
         verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
 
         float fontHeight = (fontSize100HeightPx * textSize) / 100f;
@@ -97,13 +95,6 @@ public class KeyboardTheme {
         float fontWidth = (fontSize100CharWidthPx * textSize) / 100f;
         width = Math.round(fontWidth * keys.length() * LETTER_ZOOM_OUT_FACTOR);
 
-        if (width > View.MeasureSpec.getSize(widthMeasureSpec)) {
-            // FIXME: Mostly shouldn't be necessary but we should definitely do it
-            throw new RuntimeException(String.format(
-                "FIXME: Scale down popup view from w=%d to w=%d",
-                width,
-                View.MeasureSpec.getSize(widthMeasureSpec)));
-        }
         textPaint.setTextSize(textSize);
     }
 
@@ -117,5 +108,24 @@ public class KeyboardTheme {
 
     public float getVerticalCenterOffset() {
         return verticalCenterOffset;
+    }
+
+    /**
+     * Rescale to fit within bounds if necessary.
+     *
+     * @param widthMeasureSpec From {@link View#onMeasure(int, int)}
+     * @param heightMeasureSpec From {@link View#onMeasure(int, int)}
+     */
+    public void setBounds(int widthMeasureSpec, int heightMeasureSpec) {
+        if (width > View.MeasureSpec.getSize(widthMeasureSpec)) {
+            height = (height * View.MeasureSpec.getSize(widthMeasureSpec)) / width;
+            width = View.MeasureSpec.getSize(widthMeasureSpec);
+        }
+
+        if (height > View.MeasureSpec.getSize(heightMeasureSpec)) {
+            // This shouldn't happen; how can we become too high?
+            width = (width * View.MeasureSpec.getSize(heightMeasureSpec)) / height;
+            height = View.MeasureSpec.getSize(heightMeasureSpec);
+        }
     }
 }
