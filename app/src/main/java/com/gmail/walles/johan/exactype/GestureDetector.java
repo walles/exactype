@@ -23,7 +23,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 public class GestureDetector {
-    private GestureListener listener;
+    private final GestureListener listener;
     private final int touchSlop;
     private final int longPressTimeout;
     private final Handler handler;
@@ -37,15 +37,12 @@ public class GestureDetector {
     private long startTime;
     private boolean isLongPressing;
 
-    public GestureDetector(Context context, Handler handler) {
+    public GestureDetector(Context context, Handler handler, GestureListener listener) {
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
         touchSlop = viewConfiguration.getScaledTouchSlop();
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
 
         this.handler = handler;
-    }
-
-    public void setListener(GestureListener listener) {
         this.listener = listener;
     }
 
@@ -76,12 +73,20 @@ public class GestureDetector {
                                        return;
                                    }
 
-                                   isLongPressing = true;
-                                   listener.onLongPress();
+                                   if (isLongPressing) {
+                                       listener.onLongLongPress(mostRecentX, mostRecentY);
+                                   } else {
+                                       isLongPressing = true;
+                                       listener.onLongPress(mostRecentX, mostRecentY);
+                                       handler.postAtTime(
+                                           this,
+                                           GestureDetector.this,
+                                           startTime + 2 * longPressTimeout);
+                                   }
                                }
                            },
             GestureDetector.this,
-            e.getEventTime() + longPressTimeout);
+            startTime + longPressTimeout);
     }
 
     private boolean isStarted() {

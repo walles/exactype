@@ -18,10 +18,14 @@ package com.gmail.walles.johan.exactype;
 
 public class GestureListener {
     private final Exactype exactype;
-    private final KeyCoordinator keyCoordinator;
+    private KeyCoordinator keyCoordinator;
+    private char longPressKey;
 
-    public GestureListener(Exactype exactype, KeyCoordinator keyCoordinator) {
+    public GestureListener(Exactype exactype) {
         this.exactype = exactype;
+    }
+
+    public void setKeyCoordinator(KeyCoordinator keyCoordinator) {
         this.keyCoordinator = keyCoordinator;
     }
 
@@ -73,11 +77,22 @@ public class GestureListener {
         }
     }
 
-    public void onLongPress() {
+    public void onLongPress(float x, float y) {
+        longPressKey = keyCoordinator.getClosestKey(x, y);
         exactype.onLongPress();
     }
 
+    public void onLongLongPress(float x, float y) {
+        exactype.onRequestPopupKeyboard(longPressKey, x, y);
+    }
+
     public void onLongPressUp(float x, float y) {
-        onSingleTap(x, y);
+        if (exactype.isPopupKeyboardShowing()) {
+            // Is this really the way to deal with popup keyboard events? I have a feeling we're
+            // breaking some kind of abstraction here...
+            exactype.popupKeyboardTapped(x, y);
+        } else {
+            onSingleTap(x, y);
+        }
     }
 }

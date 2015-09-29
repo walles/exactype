@@ -33,6 +33,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Tests for the {@link GestureDetector}.
  * <p>
@@ -54,8 +58,16 @@ public class GestureDetectorTest {
     private GestureDetector testMe;
     private GestureListener listener;
 
-    private Runnable handlerRunnable;
-    private long handlerTimeout;
+    private List<PostedEvent> postedEvents;
+
+    private static class PostedEvent {
+        public Runnable runnable;
+        public long timeout;
+        public PostedEvent(Runnable runnable, long timeout) {
+            this.runnable = runnable;
+            this.timeout = timeout;
+        }
+    }
 
     @Before
     public void setUp() {
@@ -65,8 +77,7 @@ public class GestureDetectorTest {
 
         Context context = Mockito.mock(Context.class);
 
-        handlerRunnable = null;
-        handlerTimeout = 0L;
+        postedEvents = new ArrayList<>();
 
         Handler handler = Mockito.mock(Handler.class);
         Mockito.stub(handler.postAtTime(
@@ -75,12 +86,9 @@ public class GestureDetectorTest {
             Mockito.anyLong())).toAnswer(new Answer<Boolean>() {
             @Override
             public Boolean answer(InvocationOnMock invocation) {
-                // We support only one posted event
-                Assert.assertNull(GestureDetectorTest.this.handlerRunnable);
-                Assert.assertEquals(0L, GestureDetectorTest.this.handlerTimeout);
-
-                GestureDetectorTest.this.handlerRunnable = (Runnable)invocation.getArguments()[0];
-                GestureDetectorTest.this.handlerTimeout = (Long)invocation.getArguments()[2];
+                postedEvents.add(new PostedEvent(
+                    (Runnable)invocation.getArguments()[0],
+                    (long)invocation.getArguments()[2]));
 
                 return true;
             }
@@ -90,23 +98,19 @@ public class GestureDetectorTest {
             new Answer<Void>() {
                 @Override
                 public Void answer(InvocationOnMock invocation) {
-                    GestureDetectorTest.this.handlerTimeout = 0;
-                    GestureDetectorTest.this.handlerRunnable = null;
+                    postedEvents.clear();
 
                     return null;
                 }
             }).when(handler).removeCallbacksAndMessages(Mockito.anyObject());
 
-        testMe = new GestureDetector(context, handler);
-        testMe.setListener(listener);
+        testMe = new GestureDetector(context, handler, listener);
     }
 
     @After
     public void checkHandlers() {
-        Assert.assertNull("Handler should be triggered or removed but is still here",
-            handlerRunnable);
         Assert.assertEquals("Handler should be triggered or removed but is still here",
-            0L, handlerTimeout);
+            0, postedEvents.size());
     }
 
     /**
@@ -145,11 +149,18 @@ public class GestureDetectorTest {
      * </p>
      */
     private void doMotion(long eventTime, int action, float x, float y) {
-        if (eventTime > handlerTimeout && handlerRunnable != null) {
-            // Trigger the timeout handler
-            handlerRunnable.run();
-            handlerRunnable = null;
-            handlerTimeout = 0;
+        List<Runnable> runUs = new ArrayList<>();
+        Iterator<PostedEvent> iterator = postedEvents.iterator();
+        while (iterator.hasNext()) {
+            PostedEvent event = iterator.next();
+
+            if (eventTime > event.timeout) {
+                runUs.add(event.runnable);
+                iterator.remove();
+            }
+        }
+        for (Runnable runnable : runUs) {
+            runnable.run();
         }
 
         testMe.onTouchEvent(motionEvent(eventTime, action, x, y));
@@ -248,7 +259,7 @@ public class GestureDetectorTest {
         // Simulate waiting LONG_PRESS_TIMEOUT
         doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
 
-        Mockito.verify(listener).onLongPress();
+        Mockito.verify(listener).onLongPress(X0, Y0);
         Mockito.verifyNoMoreInteractions(listener);
 
         int x1 = X0 + 29;
@@ -282,5 +293,55 @@ public class GestureDetectorTest {
 
         Mockito.verify(listener, Mockito.never())
             .onLongPressUp(Mockito.anyFloat(), Mockito.anyFloat());
+    }
+
+    @Test
+    public void testLongLongPress() {
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+
+        // Simulate waiting LONG_PRESS_TIMEOUT
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
+
+        // X0 here because we didn't move to X0 + 1 until after the long press timeout
+        Mockito.verify(listener).onLongPress(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Simulate waiting another LONG_PRESS_TIMEOUT
+        doMotion(T0 + 2 * LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 2, Y0);
+
+        // X0 + 1 here is because we didn't move to X0 + 2 until after the second long press timeout
+        // had expired
+        Mockito.verify(listener).onLongLongPress(X0 + 1, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        int x1 = X0 + 29;
+        int y1 = Y0 + 31;
+        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+
+        Mockito.verify(listener).onLongPressUp(x1, y1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testMoveCancelsLongLongPress() {
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+
+        // Simulate waiting LONG_PRESS_TIMEOUT
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
+
+        Mockito.verify(listener).onLongPress(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Simulate moving after the long press but before the long long press
+        int x1 = X0 + 29;
+        int y1 = Y0 + 31;
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 2, MotionEvent.ACTION_MOVE, x1, y1);
+
+        // Give the long long press notification a chance to trigger even though it should have been
+        // canceled, then release.
+        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+
+        Mockito.verify(listener).onLongPressUp(x1, y1);
+        Mockito.verifyNoMoreInteractions(listener);
     }
 }

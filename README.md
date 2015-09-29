@@ -8,16 +8,20 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
-# TODO Before Johan can use Exactype as his Sole IME
-* Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
-numeric keyboard for a while
-
 # TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Using
 [PopupWindow](http://developer.android.com/reference/android/widget/PopupWindow.html) perhaps?
+Fleksy does show stuff outside of the keyboard view itself, so it is possible.
 * Add vibrations on key presses
 * Add audio clicks on key presses
+* Make long pressing SHIFT lock the numeric keyboard in place
+* Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
+that finger. Adjust position so that no part of the popup window is off screen.
+* Maybe commit things to the view in the background when just adding chars? Keyboard sometimes feels
+laggy right now. If the reason for that is that the receiving view is slow, doing feeding that view
+in the background could help. Maybe we need a repro case to work with this.
+* Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
 * Think about which versions of Android we should build for / support
@@ -35,8 +39,10 @@ modify the casing of the current word, but if you keep typing it only affects th
 being automatically shifted.
 * Make holding down backspace work as expected
 * Test on different resolutions / screen sizes / screen rotations.
-* Make long pressing SHIFT lock the numeric keyboard in place
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
+* Make sure popup keyboard is ignored if finger is released outside of it
+* Make sure long press is canceled if finger is released outside of keyboard
+* Make sure swipe is canceled if finger is released outside of keyboard
 
 # TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -105,3 +111,7 @@ neither; most likely because of double tap detection messing things up.
 * Swipe down for "action" operation to the keyboard.
 * Insert newline when swiping down when composing a mail in Inbox.
 * "Hitting "ä" is too hard, maybe it's too close to the right edge?"
+* Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
+numeric keyboard for a while
+* Add long long press support to some key at the right of the keyboard and make sure the popup gets
+a reasonable position.

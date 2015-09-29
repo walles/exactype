@@ -18,11 +18,19 @@ package com.gmail.walles.johan.exactype;
 
 import android.inputmethodservice.InputMethodService;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.PopupWindow;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Exactype extends InputMethodService {
+    private static final String TAG = "Exactype";
+
     private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
@@ -41,12 +49,36 @@ public class Exactype extends InputMethodService {
         "@'\"*#?!,."
     };
 
+    private final Map<Character, String> popupKeysForKey;
+
+    private PopupKeyboardView popupKeyboardView;
+    private PopupWindow popupKeyboardWindow;
+
     private boolean shifted = false;
     private ExactypeView view;
     private EditorInfo editorInfo;
 
+    private float popupX0;
+    private float popupY0;
+
+    public Exactype() {
+        popupKeysForKey = new HashMap<>();
+
+        // FIXME: Maybe we should implicitly have the base key at the end of each of these lists?
+
+        // Since we already have å and ä on the primary keyboard, they shouldn't be part of the
+        // popup keys for a
+        popupKeysForKey.put('a', "@áàa");
+        popupKeysForKey.put('A', "@ÁÀA");
+        popupKeysForKey.put('e', "éèëe");
+        popupKeysForKey.put('e', "ÉÈË€E");
+    }
+
     @Override
     public View onCreateInputView() {
+        popupKeyboardView = new PopupKeyboardView(this);
+        popupKeyboardWindow = new PopupWindow(popupKeyboardView);
+
         view = new ExactypeView(this);
         view.setRows(shifted ? SHIFTED : UNSHIFTED);
         return view;
@@ -71,6 +103,7 @@ public class Exactype extends InputMethodService {
     }
 
     public void onKeyTapped(char tappedKey) {
+        popupKeyboardWindow.dismiss();
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
         setShifted(false);
     }
@@ -99,5 +132,50 @@ public class Exactype extends InputMethodService {
 
         getCurrentInputConnection()
             .performEditorAction(editorInfo.imeOptions | EditorInfo.IME_MASK_ACTION);
+    }
+
+    public void onRequestPopupKeyboard(char baseKey, float x, float y) {
+        String popupKeys = popupKeysForKey.get(baseKey);
+        if (popupKeys == null) {
+            // No popup keys available for this keypress
+            return;
+        }
+
+        popupKeyboardView.setKeys(popupKeys);
+        popupKeyboardView.setTextSize(view.getTextSize());
+
+        popupKeyboardWindow.setWidth(popupKeyboardView.getMeasuredWidth());
+        popupKeyboardWindow.setHeight(popupKeyboardView.getMeasuredHeight());
+
+        Log.d(TAG, String.format("Popup keyboard window size set to %dx%d",
+            popupKeyboardView.getWidth(),
+            popupKeyboardView.getHeight()));
+
+        popupX0 = x;
+        if (popupX0 + popupKeyboardWindow.getWidth() > view.getWidth()) {
+            // If we put the popup keyboard too far to the right it will be moved left by the system
+            // without us being informed about it. Move it ourselves to prevent that from happening.
+            popupX0 = view.getWidth() - popupKeyboardWindow.getWidth();
+        }
+        popupY0 = y;
+
+        // Note that the gravity here decides *where the popup window anchors inside its parent*.
+        //
+        // This means that if we want the popup window anywhere but to the bottom right of where
+        // the user touched, we'll need do the math ourselves.
+        popupKeyboardWindow.showAtLocation(view, Gravity.NO_GRAVITY, (int)x, (int)y);
+    }
+
+    public boolean isPopupKeyboardShowing() {
+        return popupKeyboardWindow.isShowing();
+    }
+
+    public void popupKeyboardTapped(float x, float y) {
+        // FIXME: Are we even on the popup keyboard? Abort otherwise.
+
+        float popupX = x - popupX0;
+        float popupY = y - popupY0;
+
+        onKeyTapped(popupKeyboardView.getClosestKey(popupX, popupY));
     }
 }
