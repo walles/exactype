@@ -69,6 +69,7 @@
           <option name="BRACE_STYLE" value="5" />
           <option name="CLASS_BRACE_STYLE" value="5" />
           <option name="METHOD_BRACE_STYLE" value="5" />
+          <option name="SPACE_AFTER_TYPE_CAST" value="false" />
           <indentOptions>
             <option name="CONTINUATION_INDENT_SIZE" value="4" />
           </indentOptions>

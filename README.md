@@ -11,6 +11,10 @@ Features (will) include:
 # TODO Before Johan can use Exactype as his Sole IME
 * Make long pressing "a" and keeping still show alternative "a"s like "@" after first showing the
 numeric keyboard for a while
+* Add long long press support to some key at the right of the keyboard and make sure the popup gets
+a reasonable position.
+* Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
+that finger. Adjust position so that no part of the popup window is off screen.
 
 # TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.

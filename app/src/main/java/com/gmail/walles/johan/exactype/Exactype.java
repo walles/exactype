@@ -143,6 +143,10 @@ public class Exactype extends InputMethodService {
             popupKeyboardView.getWidth(),
             popupKeyboardView.getHeight()));
 
-        popupKeyboardWindow.showAtLocation(view, Gravity.CENTER, (int)x, (int)y);
+        // Note that the gravity here decides *where the popup window anchors inside its parent*.
+        //
+        // This means that if we want the popup window anywhere but to the bottom right of where
+        // the user touched, we'll need do the math ourselves.
+        popupKeyboardWindow.showAtLocation(view, Gravity.NO_GRAVITY, (int)x, (int)y);
     }
 }
