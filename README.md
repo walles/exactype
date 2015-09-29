@@ -8,6 +8,29 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
+# Outside-keyboard popups
+We want to do them for:
+* Popup keyboards
+* The what-key-did-I-press hint
+
+Just using a PopupWindow doesn't work; it won't show outside of the keyboard view.
+
+Maybe this is the answer: http://stackoverflow.com/a/4275853/473672
+
+```java
+AlertDialog dialog;
+
+dialog = builder.create();
+Window window = dialog.getWindow();
+WindowManager.LayoutParams lp = window.getAttributes();
+lp.token = mInputView.getWindowToken();
+lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+window.setAttributes(lp);
+window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+alert.show();
+```
+
 # TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Using
