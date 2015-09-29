@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.View;
 
 public class KeyboardTheme {
     public static final int BACKGROUND_COLOR = Color.BLUE;
@@ -77,7 +78,13 @@ public class KeyboardTheme {
         float fontWidth = (fontSize100CharWidthPx * textSize) / 100f;
         width = Math.round(fontWidth * keys.length() * LETTER_ZOOM_OUT_FACTOR);
 
-        // FIXME: Scale down if width > widthMeasureSpec
+        if (width > View.MeasureSpec.getSize(widthMeasureSpec)) {
+            // FIXME: Mostly shouldn't be necessary but we should definitely do it
+            throw new RuntimeException(String.format(
+                "FIXME: Scale down popup view from w=%d to w=%d",
+                width,
+                View.MeasureSpec.getSize(width)));
+        }
         paint.setTextSize(textSize);
     }
 
