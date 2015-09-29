@@ -91,4 +91,8 @@ public class PopupKeyboardView extends View {
         keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
         setMeasuredDimension(theme.getWidth(), theme.getHeight());
     }
+
+    public char getClosestKey(float x, float y) {
+        return keyCoordinator.getClosestKey(x, y);
+    }
 }

@@ -20,6 +20,7 @@ that finger. Adjust position so that no part of the popup window is off screen.
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Using
 [PopupWindow](http://developer.android.com/reference/android/widget/PopupWindow.html) perhaps?
+Fleksy does show stuff outside of the keyboard view itself, so it is possible.
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Make long pressing SHIFT lock the numeric keyboard in place

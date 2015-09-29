@@ -58,6 +58,9 @@ public class Exactype extends InputMethodService {
     private ExactypeView view;
     private EditorInfo editorInfo;
 
+    private float popupX0;
+    private float popupY0;
+
     public Exactype() {
         popupKeysForKey = new HashMap<>();
 
@@ -147,6 +150,21 @@ public class Exactype extends InputMethodService {
         //
         // This means that if we want the popup window anywhere but to the bottom right of where
         // the user touched, we'll need do the math ourselves.
+        popupX0 = x;
+        popupY0 = y;
         popupKeyboardWindow.showAtLocation(view, Gravity.NO_GRAVITY, (int)x, (int)y);
+    }
+
+    public boolean isPopupKeyboardShowing() {
+        return popupKeyboardWindow.isShowing();
+    }
+
+    public void popupKeyboardTapped(float x, float y) {
+        // FIXME: Are we even on the popup keyboard? Abort otherwise.
+
+        float popupX = x - popupX0;
+        float popupY = y - popupY0;
+
+        onKeyTapped(popupKeyboardView.getClosestKey(popupX, popupY));
     }
 }

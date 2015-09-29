@@ -87,9 +87,12 @@ public class GestureListener {
     }
 
     public void onLongPressUp(float x, float y) {
-        // FIXME: What if this "up" is on the popup keyboard? How do we know? How do we find the key
-        // that was pressed?
-
-        onSingleTap(x, y);
+        if (exactype.isPopupKeyboardShowing()) {
+            // Is this really the way to deal with popup keyboard events? I have a feeling we're
+            // breaking some kind of abstraction here...
+            exactype.popupKeyboardTapped(x, y);
+        } else {
+            onSingleTap(x, y);
+        }
     }
 }
