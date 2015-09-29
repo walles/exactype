@@ -19,6 +19,9 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Make long pressing SHIFT lock the numeric keyboard in place
+* Maybe commit things to the view in the background when just adding chars? Keyboard sometimes feels
+laggy right now. If the reason for that is that the receiving view is slow, doing feeding that view
+in the background could help.
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
 * Think about which versions of Android we should build for / support

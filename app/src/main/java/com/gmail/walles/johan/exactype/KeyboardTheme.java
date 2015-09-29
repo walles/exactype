@@ -19,14 +19,23 @@ package com.gmail.walles.johan.exactype;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class KeyboardTheme {
+    public static final int BACKGROUND_COLOR = Color.BLUE;
+
     private static final String ALL_HEIGHTS = "M";
     private static final String LONG_ROW = "qwertyuiopå";
+    private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
     private final Paint paint;
-    private final float fontSize100HeightPx;
+    private final int fontSize100HeightPx;
     private final float fontSize100CharWidthPx;
+    private final float fontSize100VerticalCenterOffset;
+
+    private int width;
+    private int height;
+    private float verticalCenterOffset;
 
     public KeyboardTheme() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
@@ -41,6 +50,10 @@ public class KeyboardTheme {
 
         paint.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
         fontSize100CharWidthPx = bounds.width() / (float)LONG_ROW.length();
+
+        // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
+        paint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
+        fontSize100VerticalCenterOffset = -bounds.top - bounds.height() / 2;
     }
 
     public Paint getPaint() {
@@ -56,14 +69,27 @@ public class KeyboardTheme {
      * @param textSize The wanted font size to use
      */
     public void setBounds(int widthMeasureSpec, int heightMeasureSpec, String keys, float textSize) {
+        verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
 
+        float fontHeight = (fontSize100HeightPx * textSize) / 100f;
+        height = Math.round(fontHeight * LETTER_ZOOM_OUT_FACTOR);
+
+        float fontWidth = (fontSize100CharWidthPx * textSize) / 100f;
+        width = Math.round(fontWidth * keys.length() * LETTER_ZOOM_OUT_FACTOR);
+
+        // FIXME: Scale down if width > widthMeasureSpec
+        paint.setTextSize(textSize);
     }
 
     public int getWidth() {
-
+        return width;
     }
 
     public int getHeight() {
+        return height;
+    }
 
+    public float getVerticalCenterOffset() {
+        return verticalCenterOffset;
     }
 }

@@ -91,7 +91,7 @@ public class ExactypeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         // Clear the background
-        canvas.drawColor(Color.BLUE);
+        canvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
 
         // Draw the keys
         for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {

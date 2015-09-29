@@ -22,8 +22,10 @@ import android.graphics.Color;
 import android.view.View;
 
 public class PopupKeyboardView extends View {
-    private String keys;
+    private KeyCoordinator keyCoordinator;
     private KeyboardTheme theme;
+    private String keys;
+
     private float textSize;
 
     public PopupKeyboardView(Context context) {
@@ -38,17 +40,25 @@ public class PopupKeyboardView extends View {
 
     public void setKeys(String keys) {
         this.keys = keys;
+        this.keyCoordinator = new KeyCoordinator(new String[] { keys });
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         // Clear the background
-        canvas.drawColor(Color.BLUE);
+        canvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
 
         // Draw surrounding box
         canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, theme.getPaint());
 
-        // FIXME: Draw keys
+        // Draw keys
+        for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
+            canvas.drawText(
+                Character.toString(keyInfo.character),
+                keyInfo.getX(),
+                keyInfo.getY() + theme.getVerticalCenterOffset(),
+                theme.getPaint());
+        }
     }
 
     @Override
