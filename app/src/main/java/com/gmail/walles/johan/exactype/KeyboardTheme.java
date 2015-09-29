@@ -41,6 +41,7 @@ public class KeyboardTheme {
     public KeyboardTheme() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
         paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
         paint.setTextAlign(Paint.Align.CENTER);
 
         paint.setTextSize(100);
@@ -83,7 +84,7 @@ public class KeyboardTheme {
             throw new RuntimeException(String.format(
                 "FIXME: Scale down popup view from w=%d to w=%d",
                 width,
-                View.MeasureSpec.getSize(width)));
+                View.MeasureSpec.getSize(widthMeasureSpec)));
         }
         paint.setTextSize(textSize);
     }

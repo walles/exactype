@@ -132,6 +132,11 @@ public class Exactype extends InputMethodService {
 
         popupKeyboardView.setKeys(popupKeys);
         popupKeyboardView.setTextSize(view.getTextSize());
+
+        // FIXME: Size the window properly
+        popupKeyboardWindow.setWidth(500);
+        popupKeyboardWindow.setHeight(500);
+
         popupKeyboardWindow.showAtLocation(view, Gravity.CENTER, (int)x, (int)y);
     }
 }
