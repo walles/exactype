@@ -64,6 +64,7 @@ public class PopupKeyboardView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         theme.setBounds(widthMeasureSpec, heightMeasureSpec, keys, textSize);
+        keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
         setMeasuredDimension(theme.getWidth(), theme.getHeight());
     }
 }
