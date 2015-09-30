@@ -71,7 +71,7 @@ public class Exactype extends InputMethodService {
         popupKeysForKey.put('a', "@áàa");
         popupKeysForKey.put('A', "@ÁÀA");
         popupKeysForKey.put('e', "éèëe");
-        popupKeysForKey.put('e', "ÉÈË€E");
+        popupKeysForKey.put('E', "ÉÈË€E");
     }
 
     @Override
@@ -147,14 +147,16 @@ public class Exactype extends InputMethodService {
         popupKeyboardWindow.setWidth(popupKeyboardView.getMeasuredWidth());
         popupKeyboardWindow.setHeight(popupKeyboardView.getMeasuredHeight());
 
+        // Without this the popup window will be constrained to the inside of the keyboard view
+        popupKeyboardWindow.setClippingEnabled(false);
+
         Log.d(TAG, String.format("Popup keyboard window size set to %dx%d",
             popupKeyboardView.getWidth(),
             popupKeyboardView.getHeight()));
 
         popupX0 = x;
         if (popupX0 + popupKeyboardWindow.getWidth() > view.getWidth()) {
-            // If we put the popup keyboard too far to the right it will be moved left by the system
-            // without us being informed about it. Move it ourselves to prevent that from happening.
+            // Make sure the popup keyboard is left enough to not extend outside of the screen
             popupX0 = view.getWidth() - popupKeyboardWindow.getWidth();
         }
         popupY0 = y;
@@ -163,7 +165,7 @@ public class Exactype extends InputMethodService {
         //
         // This means that if we want the popup window anywhere but to the bottom right of where
         // the user touched, we'll need do the math ourselves.
-        popupKeyboardWindow.showAtLocation(view, Gravity.NO_GRAVITY, (int)x, (int)y);
+        popupKeyboardWindow.showAtLocation(view, Gravity.NO_GRAVITY, (int)popupX0, (int)popupY0);
     }
 
     public boolean isPopupKeyboardShowing() {

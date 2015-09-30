@@ -8,34 +8,12 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
-# Outside-keyboard popups
-We want to do them for:
-* Popup keyboards
-* The what-key-did-I-press hint
-
-Just using a PopupWindow doesn't work; it won't show outside of the keyboard view.
-
-Maybe this is the answer: http://stackoverflow.com/a/4275853/473672
-
-```java
-AlertDialog dialog;
-
-dialog = builder.create();
-Window window = dialog.getWindow();
-WindowManager.LayoutParams lp = window.getAttributes();
-lp.token = mInputView.getWindowToken();
-lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
-window.setAttributes(lp);
-window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-
-alert.show();
-```
-
-# TODO Before Getting the First Supervised Beta Tester
+## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Flash an image of where on the keyboard the user hit above the keyboard on every tap. Using
-[PopupWindow](http://developer.android.com/reference/android/widget/PopupWindow.html) perhaps?
-Fleksy does show stuff outside of the keyboard view itself, so it is possible.
+* Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
+`PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
+find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
+`getLocationOnScreen()` on the `ExactypeView` first.
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Make long pressing SHIFT lock the numeric keyboard in place
@@ -67,7 +45,7 @@ being automatically shifted.
 * Make sure long press is canceled if finger is released outside of keyboard
 * Make sure swipe is canceled if finger is released outside of keyboard
 
-# TODO Before Getting the First Remote Beta Tester
+## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 * Make the SHIFT key look like a SHIFT key
@@ -82,7 +60,7 @@ A remote beta tester is somebody I'm not in daily contact with and who will have
 * Hint user to hold shift for numlock unless (s)he has already done that
 * Add an Activity that helps users enabling / choosing the new keyboard.
 
-# TODO Before Publishing on Google Play
+## TODO Before Publishing on Google Play
 * Take keyboard layouts from the AOSP keyboard and let users choose one or more in a Settings
 activity. Note that we most likely need to match their licensing terms for this.
 * Test an English layout and see how that looks; it has shorter rows than Swedish and could look
@@ -93,11 +71,11 @@ bad.
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
 
-# User Feedback
+## User Feedback
 * "I prefer having all keys the same size"
 * "I prefer a slanted layout, maybe we'd get that by having all keys the same size?"
 
-# TODO Misc
+## TODO Misc
 * Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
 pauses during drawing operations.
@@ -110,7 +88,7 @@ available in Android's standard font.
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
 
-# DONE
+## DONE
 * Create an IME that when selected shows an empty view
 * Add licensing information (same as AOSP)
 * Draw a Swedish keyboard in the view
