@@ -30,18 +30,30 @@ public class KeyboardTheme {
     private static final String ALL_HEIGHTS = "M";
     private static final String LONG_ROW = "qwertyuiopå";
 
+    /**
+     * Put some air between the letters.
+     */
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
+
     private static final int POPUP_BORDER_WIDTH_DP = 2;
+
+    /**
+     * Put some air between the keyboard rows.
+     */
+    private static final float KEYBOARD_HEIGHT_MULTIPLIER = 1.3f;
 
     private final Paint textPaint;
     private final Paint strokePaint;
     private final int fontSize100HeightPx;
     private final float fontSize100CharWidthPx;
+    private final float fontSize100LongestRowLength;
     private final float fontSize100VerticalCenterOffset;
 
     private int width;
     private int height;
     private float verticalCenterOffset;
+
+    private boolean shouldComputeTextSize;
 
     public KeyboardTheme(DisplayMetrics displayMetrics) {
         strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
@@ -65,6 +77,7 @@ public class KeyboardTheme {
         fontSize100HeightPx = bounds.height();
 
         textPaint.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
+        fontSize100LongestRowLength = bounds.width();
         fontSize100CharWidthPx = bounds.width() / (float)LONG_ROW.length();
 
         // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
@@ -87,6 +100,8 @@ public class KeyboardTheme {
      * @param textSize The wanted font size to use
      */
     public void setContents(String keys, float textSize) {
+        shouldComputeTextSize = false;
+
         verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
 
         float fontHeight = (fontSize100HeightPx * textSize) / 100f;
@@ -96,6 +111,10 @@ public class KeyboardTheme {
         width = Math.round(fontWidth * keys.length() * LETTER_ZOOM_OUT_FACTOR);
 
         textPaint.setTextSize(textSize);
+    }
+
+    public void setShouldComputeTextSize() {
+        shouldComputeTextSize = true;
     }
 
     public int getWidth() {
@@ -110,6 +129,24 @@ public class KeyboardTheme {
         return verticalCenterOffset;
     }
 
+    public float getTextSize() {
+        return textPaint.getTextSize();
+    }
+
+    private void computeTextSize(int widthMeasureSpec) {
+        width = View.MeasureSpec.getSize(widthMeasureSpec);
+
+        // Scale the font size so that the longest line matches the display width
+        float factor = width / fontSize100LongestRowLength;
+
+        // Sum up the heights of all keyboard rows with the new font size to get height in px
+        height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
+
+        float textSize = 100 * factor / LETTER_ZOOM_OUT_FACTOR;
+        textPaint.setTextSize(textSize);
+        verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
+    }
+
     /**
      * Rescale to fit within bounds if necessary.
      *
@@ -117,6 +154,11 @@ public class KeyboardTheme {
      * @param heightMeasureSpec From {@link View#onMeasure(int, int)}
      */
     public void setBounds(int widthMeasureSpec, int heightMeasureSpec) {
+        if (shouldComputeTextSize) {
+            computeTextSize(widthMeasureSpec);
+            return;
+        }
+
         if (width > View.MeasureSpec.getSize(widthMeasureSpec)) {
             height = (height * View.MeasureSpec.getSize(widthMeasureSpec)) / width;
             width = View.MeasureSpec.getSize(widthMeasureSpec);

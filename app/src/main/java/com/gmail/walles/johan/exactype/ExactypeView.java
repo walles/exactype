@@ -18,61 +18,31 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class ExactypeView extends View {
-    private static final String TAG = "Exactype";
-    private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
-
-    /**
-     * Put some air between the keyboard rows.
-     */
-    private static final float KEYBOARD_HEIGHT_MULTIPLIER = 1.3f;
-
-    private static final String ALL_HEIGHTS = "M";
-    private static final String LONG_ROW = "qwertyuiopå";
-
-    private final float fontSize100HeightPx;
-    private final float fontSize100LongestRowLength;
-
-    private final Paint foreground;
-
     private final GestureDetector gestureDetector;
     private final GestureListener gestureListener;
 
-    private float verticalCenterOffset;
     private KeyCoordinator keyCoordinator;
+
+    private final KeyboardTheme theme;
 
     public ExactypeView(Context context) {
         super(context);
         Exactype exactype = (Exactype)context;
 
-        foreground = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-        foreground.setColor(Color.WHITE);
-        foreground.setTextAlign(Paint.Align.CENTER);
-
-        foreground.setTextSize(100);
-
-        Rect bounds = new Rect();
-        foreground.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
-        fontSize100HeightPx = bounds.height();
-
-        foreground.getTextBounds(LONG_ROW, 0, LONG_ROW.length(), bounds);
-        fontSize100LongestRowLength = bounds.width();
+        theme = new KeyboardTheme(getResources().getDisplayMetrics());
 
         gestureListener = new GestureListener(exactype);
         gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
     }
 
     public float getTextSize() {
-        return foreground.getTextSize();
+        return theme.getTextSize();
     }
 
     public void setRows(String[] rows) {
@@ -80,8 +50,10 @@ public class ExactypeView extends View {
             return;
         }
 
+        theme.setShouldComputeTextSize();
+
         keyCoordinator = new KeyCoordinator(rows);
-        keyCoordinator.setSize(getWidth(), getHeight());
+        keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
 
         gestureListener.setKeyCoordinator(keyCoordinator);
 
@@ -107,41 +79,17 @@ public class ExactypeView extends View {
             canvas.drawText(
                 drawMe,
                 keyInfo.getX(),
-                keyInfo.getY() + verticalCenterOffset,
-                foreground);
+                keyInfo.getY() + theme.getVerticalCenterOffset(),
+                theme.getTextPaint());
         }
-    }
-
-    private static float computeVerticalCenterOffset(Paint paint) {
-        // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
-        Rect bounds = new Rect();
-        paint.getTextBounds("M", 0, 1, bounds);
-        Log.i(TAG, bounds.toString());
-        return -bounds.top - bounds.height() / 2;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.i(TAG,
-             MeasureSpec.toString(widthMeasureSpec) +
-             "x" +
-             MeasureSpec.toString(heightMeasureSpec));
+        theme.setBounds(widthMeasureSpec, heightMeasureSpec);
 
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-
-        // Scale the font size so that the longest line matches the display width
-        float factor = width / fontSize100LongestRowLength;
-        foreground.setTextSize(100 * factor);
-
-        // Sum up the heights of all keyboard rows with the new font size to get height in px
-        int height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-
-        foreground.setTextSize(foreground.getTextSize() / LETTER_ZOOM_OUT_FACTOR);
-        verticalCenterOffset = computeVerticalCenterOffset(foreground);
-
-        Log.i(TAG, "Setting dimensions to: " + width + "x" + height);
-        setMeasuredDimension(width, height);
-        keyCoordinator.setSize(width, height);
+        setMeasuredDimension(theme.getWidth(), theme.getHeight());
+        keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
     }
 
     @Override
