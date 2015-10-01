@@ -8,6 +8,9 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
+## TODO Before Johan can Uninstall the Other Keyboards from his Phone
+* Make long pressing SHIFT lock the numeric keyboard in place
+
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
@@ -16,7 +19,6 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 `getLocationOnScreen()` on the `ExactypeView` first.
 * Add vibrations on key presses
 * Add audio clicks on key presses
-* Make long pressing SHIFT lock the numeric keyboard in place
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
 * Maybe commit things to the view in the background when just adding chars? Keyboard sometimes feels
