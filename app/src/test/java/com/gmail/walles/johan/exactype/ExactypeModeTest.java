@@ -17,14 +17,21 @@
 package com.gmail.walles.johan.exactype;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExactypeModeTest {
     private static final String[] BASE = new String[] { "Base" };
     private static final String[] CAPS = new String[] { "Caps" };
     private static final String[] NUMERIC = new String[] { "Numeric" };
     private static final String[] NUMLOCK = new String[] { "Numlocked" };
+
+    private Set<ExactypeMode.Event> needsTesting;
 
     private abstract static class Generator {
         private final ExactypeMode mode;
@@ -38,9 +45,30 @@ public class ExactypeModeTest {
         }
 
         public abstract ExactypeMode setUp(ExactypeMode mode);
-    };
+    }
 
-    fixme: Make @Before and @After methods to ensure we checked assertModeTransition() on all event types
+    @Before
+    public void setUp() {
+        needsTesting = new HashSet<>();
+
+        Collections.addAll(needsTesting, ExactypeMode.Event.values());
+    }
+
+    @After
+    public void postVerification() {
+        Assert.assertEquals("These weren't tested: " + needsTesting.toString(),
+            0, needsTesting.size());
+    }
+
+    private void assertModeTransition(
+        Generator generator, ExactypeMode.Event event, String[] expected_outcome)
+    {
+        Assert.assertTrue(needsTesting.remove(event));
+
+        ExactypeMode mode = generator.getMode();
+        mode.register(event);
+        Assert.assertArrayEquals(expected_outcome, mode.getKeyboard());
+    }
 
     @Test
     public void testInitial() {
