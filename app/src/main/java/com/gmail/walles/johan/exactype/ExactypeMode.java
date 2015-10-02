@@ -20,30 +20,23 @@ package com.gmail.walles.johan.exactype;
  * Keeps track of which mode the keyboard should be in.
  */
 public class ExactypeMode {
+    public static enum Event {
+        INSERT_CHAR,
+        SHIFT,
+        LONG_PRESS,
+        NUM_LOCK,
+
+        /**
+         * Somebody pressed the let's-do-characters-again button on the numlocked keyboard.
+         */
+        ALPHABETIC
+    };
+
     public ExactypeMode(String[] base, String[] caps, String[] numeric, String[] numlocked) {
 
     }
 
-    public void registerInsertChar() {
-
-    }
-
-    public void registerShift() {
-
-    }
-
-    public void registerLongPress() {
-
-    }
-
-    public void registerNumLock() {
-
-    }
-
-    /**
-     * Somebody pressed the let's-do-characters-again button on the numlocked keyboard.
-     */
-    public void registerAlphabetic() {
+    public void register(Event event) {
 
     }
 

@@ -16,7 +16,7 @@
 
 package com.gmail.walles.johan.exactype;
 
-import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,44 +26,35 @@ public class ExactypeModeTest {
     private static final String[] NUMERIC = new String[] { "Numeric" };
     private static final String[] NUMLOCK = new String[] { "Numlocked" };
 
-    private ExactypeMode testMe;
+    private abstract static class Generator {
+        private final ExactypeMode mode;
 
-    @Before
-    public void setUp() {
-        testMe = new ExactypeMode(BASE, CAPS, NUMERIC, NUMLOCK);
-    }
+        public Generator() {
+            mode = setUp(new ExactypeMode(BASE, CAPS, NUMERIC, NUMLOCK));
+        }
+
+        public ExactypeMode getMode() {
+            return mode;
+        }
+
+        public abstract ExactypeMode setUp(ExactypeMode mode);
+    };
+
+    fixme: Make @Before and @After methods to ensure we checked assertModeTransition() on all event types
 
     @Test
     public void testInitial() {
-        Assert.assertArrayEquals(CAPS, testMe.getKeyboard());
+        Generator generator = new Generator() {
+            @Override
+            public ExactypeMode setUp(ExactypeMode mode) {
+                return mode;
+            }
+        };
+
+        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, BASE);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+        assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
+        assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
+        assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, CAPS);
     }
-
-    @Test
-    public void testShiftWhenCaps() {
-        testMe.registerShift();
-        Assert.assertArrayEquals(BASE, testMe.getKeyboard());
-    }
-
-    @Test
-    public void testInsertWhenCaps() {
-        testMe.registerInsertChar();
-        Assert.assertArrayEquals(BASE, testMe.getKeyboard());
-    }
-
-    @Test
-    public void testLongPressWhenCaps() {
-        testMe.registerLongPress();
-        Assert.assertArrayEquals(NUMERIC, testMe.getKeyboard());
-    }
-
-    @Test
-    public void testShiftWhenBase() {
-        testMe.registerShift();
-        Assert.assertArrayEquals(BASE, testMe.getKeyboard());
-
-        testMe.registerShift();
-        Assert.assertArrayEquals(CAPS, testMe.getKeyboard());
-    }
-
-    fixme: add more tests
 }
