@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ExactypeModeTest {
-    private static final String[] BASE = new String[] { "Base" };
+    private static final String[] LOWERCASE = new String[] { "Lowercase" };
     private static final String[] CAPS = new String[] { "Caps" };
     private static final String[] NUMERIC = new String[] { "Numeric" };
     private static final String[] NUMLOCK = new String[] { "Numlocked" };
@@ -37,14 +37,20 @@ public class ExactypeModeTest {
         private final ExactypeMode mode;
 
         public Generator() {
-            mode = setUp(new ExactypeMode(BASE, CAPS, NUMERIC, NUMLOCK));
+            mode = new ExactypeMode(LOWERCASE, CAPS, NUMERIC, NUMLOCK);
+            setUp(mode);
         }
 
         public ExactypeMode getMode() {
             return mode;
         }
 
-        public abstract ExactypeMode setUp(ExactypeMode mode);
+        /**
+         * Set up an initial mode for us to test.
+         *
+         * @param mode The mode instance to modify.
+         */
+        public abstract void setUp(ExactypeMode mode);
     }
 
     @Before
@@ -56,6 +62,9 @@ public class ExactypeModeTest {
 
     @After
     public void postVerification() {
+        // This assertion triggers either when you've forgotten to test for one event, or as a side
+        // effect of another event test failing. The second variant isn't optimal of course, but as
+        // long as everything else is fine this will be as well.
         Assert.assertEquals("These weren't tested: " + needsTesting.toString(),
             0, needsTesting.size());
     }
@@ -63,7 +72,7 @@ public class ExactypeModeTest {
     private void assertModeTransition(
         Generator generator, ExactypeMode.Event event, String[] expected_outcome)
     {
-        Assert.assertTrue(needsTesting.remove(event));
+        Assert.assertTrue("Each event should be tested only once", needsTesting.remove(event));
 
         ExactypeMode mode = generator.getMode();
         mode.register(event);
@@ -74,15 +83,88 @@ public class ExactypeModeTest {
     public void testInitial() {
         Generator generator = new Generator() {
             @Override
-            public ExactypeMode setUp(ExactypeMode mode) {
-                return mode;
+            public void setUp(ExactypeMode mode) {
+                Assert.assertArrayEquals(CAPS, mode.getKeyboard());
             }
         };
 
-        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, BASE);
+        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, LOWERCASE);
         assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
         assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
         assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
         assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, CAPS);
+    }
+
+    @Test
+    public void testCaps() {
+        Generator generator = new Generator() {
+            @Override
+            public void setUp(ExactypeMode mode) {
+                Assert.assertArrayEquals(CAPS, mode.getKeyboard());
+            }
+        };
+
+        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, LOWERCASE);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+        assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
+        assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
+        assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, CAPS);
+    }
+
+    @Test
+    public void testLowercase() {
+        Generator generator = new Generator() {
+            @Override
+            public void setUp(ExactypeMode mode) {
+                mode.register(ExactypeMode.Event.SHIFT);
+                Assert.assertArrayEquals(LOWERCASE, mode.getKeyboard());
+            }
+        };
+
+        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, LOWERCASE);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+        assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
+        assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
+        assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, LOWERCASE);
+    }
+
+    @Test
+    public void testNumeric() {
+        Generator generator = new Generator() {
+            @Override
+            public void setUp(ExactypeMode mode) {
+                mode.register(ExactypeMode.Event.LONG_PRESS);
+                Assert.assertArrayEquals(NUMERIC, mode.getKeyboard());
+            }
+        };
+
+        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, LOWERCASE);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+
+        // Long pressing the numeric keyboard shouldn't be possible, so anything goes here really
+        assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
+
+        assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
+        assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, LOWERCASE);
+    }
+
+    @Test
+    public void testNumlock() {
+        Generator generator = new Generator() {
+            @Override
+            public void setUp(ExactypeMode mode) {
+                mode.register(ExactypeMode.Event.NUM_LOCK);
+                Assert.assertArrayEquals(NUMLOCK, mode.getKeyboard());
+            }
+        };
+
+        assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, NUMLOCK);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+        assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMLOCK);
+
+        // The numlock keyboard shouldn't have any numlock key, so anything goes here really
+        assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, LOWERCASE);
+
+        assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, LOWERCASE);
     }
 }
