@@ -34,14 +34,9 @@ public class ExactypeModeTest {
     private Set<ExactypeMode.Event> needsTesting;
 
     private abstract static class Generator {
-        private final ExactypeMode mode;
-
-        public Generator() {
-            mode = new ExactypeMode(LOWERCASE, CAPS, NUMERIC, NUMLOCK);
-            setUp(mode);
-        }
-
         public ExactypeMode getMode() {
+            ExactypeMode mode = new ExactypeMode(LOWERCASE, CAPS, NUMERIC, NUMLOCK);
+            setUp(mode);
             return mode;
         }
 
@@ -89,7 +84,7 @@ public class ExactypeModeTest {
         };
 
         assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, LOWERCASE);
-        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, LOWERCASE);
         assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
         assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
         assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, CAPS);

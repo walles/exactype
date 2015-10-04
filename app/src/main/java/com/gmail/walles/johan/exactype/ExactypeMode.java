@@ -20,6 +20,12 @@ package com.gmail.walles.johan.exactype;
  * Keeps track of which mode the keyboard should be in.
  */
 public class ExactypeMode {
+    private final String[] lowercase;
+    private final String[] caps;
+    private final String[] numeric;
+    private final String[] numlocked;
+    private String[] currentKeyboard;
+
     public static enum Event {
         INSERT_CHAR,
         SHIFT,
@@ -32,15 +38,50 @@ public class ExactypeMode {
         ALPHABETIC
     };
 
-    public ExactypeMode(String[] base, String[] caps, String[] numeric, String[] numlocked) {
+    public ExactypeMode(String[] lowercase, String[] caps, String[] numeric, String[] numlocked) {
+        this.lowercase = lowercase;
+        this.caps = caps;
+        this.numeric = numeric;
+        this.numlocked = numlocked;
 
+        // This is how we start out
+        currentKeyboard = this.caps;
+    }
+
+    private void registerCaps(Event event) {
+        switch (event) {
+            case INSERT_CHAR:
+                currentKeyboard = lowercase;
+                break;
+
+            case SHIFT:
+                currentKeyboard = lowercase;
+                break;
+
+            case LONG_PRESS:
+                currentKeyboard = numeric;
+                break;
+
+            case NUM_LOCK:
+                currentKeyboard = numlocked;
+                break;
+
+            case ALPHABETIC:
+                // This branch intentionally left blank
+                break;
+
+            default:
+                throw new UnsupportedOperationException(event.toString());
+        }
     }
 
     public void register(Event event) {
-
+        if (currentKeyboard == caps) {
+            registerCaps(event);
+        }
     }
 
     public String[] getKeyboard() {
-        return null;
+        return currentKeyboard;
     }
 }
