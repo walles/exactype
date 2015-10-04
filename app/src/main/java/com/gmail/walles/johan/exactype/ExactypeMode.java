@@ -16,6 +16,8 @@
 
 package com.gmail.walles.johan.exactype;
 
+import java.util.Arrays;
+
 /**
  * Keeps track of which mode the keyboard should be in.
  */
@@ -26,7 +28,7 @@ public class ExactypeMode {
     private final String[] numlocked;
     private String[] currentKeyboard;
 
-    public static enum Event {
+    public enum Event {
         INSERT_CHAR,
         SHIFT,
         LONG_PRESS,
@@ -36,7 +38,7 @@ public class ExactypeMode {
          * Somebody pressed the let's-do-characters-again button on the numlocked keyboard.
          */
         ALPHABETIC
-    };
+    }
 
     public ExactypeMode(String[] lowercase, String[] caps, String[] numeric, String[] numlocked) {
         this.lowercase = lowercase;
@@ -75,9 +77,41 @@ public class ExactypeMode {
         }
     }
 
+    private void registerLowercase(Event event) {
+        switch (event) {
+            case INSERT_CHAR:
+                currentKeyboard = lowercase;
+                break;
+
+            case SHIFT:
+                currentKeyboard = caps;
+                break;
+
+            case LONG_PRESS:
+                currentKeyboard = numeric;
+                break;
+
+            case NUM_LOCK:
+                currentKeyboard = numlocked;
+                break;
+
+            case ALPHABETIC:
+                // This branch intentionally left blank
+                break;
+
+            default:
+                throw new UnsupportedOperationException(event.toString());
+        }
+    }
+
     public void register(Event event) {
         if (currentKeyboard == caps) {
             registerCaps(event);
+        } else if (currentKeyboard == lowercase) {
+            registerLowercase(event);
+        } else {
+            throw new UnsupportedOperationException(
+                "No event handler for keyboard: " + Arrays.toString(currentKeyboard));
         }
     }
 
