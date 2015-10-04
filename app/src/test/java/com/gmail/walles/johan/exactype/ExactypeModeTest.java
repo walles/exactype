@@ -100,7 +100,7 @@ public class ExactypeModeTest {
         };
 
         assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, LOWERCASE);
-        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+        assertModeTransition(generator, ExactypeMode.Event.SHIFT, LOWERCASE);
         assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
         assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
         assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, CAPS);
