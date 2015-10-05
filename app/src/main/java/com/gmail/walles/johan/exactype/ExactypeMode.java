@@ -131,6 +131,33 @@ public class ExactypeMode {
         }
     }
 
+    private void registerNumLocked(Event event) {
+        switch (event) {
+            case INSERT_CHAR:
+                // This branch intentionally left blank
+                break;
+
+            case SHIFT:
+                // This branch intentionally left blank
+                break;
+
+            case LONG_PRESS:
+                // This branch intentionally left blank
+                break;
+
+            case NUM_LOCK:
+                currentKeyboard = lowercase;
+                break;
+
+            case ALPHABETIC:
+                currentKeyboard = lowercase;
+                break;
+
+            default:
+                throw new UnsupportedOperationException(event.toString());
+        }
+    }
+
     public void register(Event event) {
         if (currentKeyboard == caps) {
             registerCaps(event);
@@ -138,6 +165,8 @@ public class ExactypeMode {
             registerLowercase(event);
         } else if (currentKeyboard == numeric) {
             registerNumeric(event);
+        } else if (currentKeyboard == numlocked) {
+            registerNumLocked(event);
         } else {
             throw new UnsupportedOperationException(
                 "No event handler for keyboard: " + Arrays.toString(currentKeyboard));

@@ -74,6 +74,10 @@ public class ExactypeModeTest {
         Assert.assertArrayEquals(expected_outcome, mode.getKeyboard());
     }
 
+    private void dontCare(ExactypeMode.Event event) {
+        Assert.assertTrue("Each event should be tested only once", needsTesting.remove(event));
+    }
+
     @Test
     public void testInitial() {
         Generator generator = new Generator() {
@@ -137,7 +141,7 @@ public class ExactypeModeTest {
         assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
 
         // Long pressing the numeric keyboard shouldn't be possible, so anything goes here really
-        assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMERIC);
+        dontCare(ExactypeMode.Event.LONG_PRESS);
 
         assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, NUMLOCK);
         assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, LOWERCASE);
@@ -154,11 +158,14 @@ public class ExactypeModeTest {
         };
 
         assertModeTransition(generator, ExactypeMode.Event.INSERT_CHAR, NUMLOCK);
-        assertModeTransition(generator, ExactypeMode.Event.SHIFT, CAPS);
+
+        // Numlock keyboard shouldn't have any shift key
+        dontCare(ExactypeMode.Event.SHIFT);
+
         assertModeTransition(generator, ExactypeMode.Event.LONG_PRESS, NUMLOCK);
 
         // The numlock keyboard shouldn't have any numlock key, so anything goes here really
-        assertModeTransition(generator, ExactypeMode.Event.NUM_LOCK, LOWERCASE);
+        dontCare(ExactypeMode.Event.NUM_LOCK);
 
         assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, LOWERCASE);
     }
