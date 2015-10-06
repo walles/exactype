@@ -33,9 +33,13 @@ public class ExactypeModeTest {
 
     private Set<ExactypeMode.Event> needsTesting;
 
+    private static ExactypeMode createMode() {
+        return new ExactypeMode(LOWERCASE, CAPS, NUMERIC, NUMLOCK);
+    }
+
     private abstract static class Generator {
         public ExactypeMode getMode() {
-            ExactypeMode mode = new ExactypeMode(LOWERCASE, CAPS, NUMERIC, NUMLOCK);
+            ExactypeMode mode = createMode();
             setUp(mode);
             return mode;
         }
@@ -168,5 +172,18 @@ public class ExactypeModeTest {
         dontCare(ExactypeMode.Event.NUM_LOCK);
 
         assertModeTransition(generator, ExactypeMode.Event.ALPHABETIC, LOWERCASE);
+    }
+
+    @Test
+    public void testSetShifted() {
+        ExactypeMode testMe = createMode();
+
+        testMe.setShifted(true);
+        Assert.assertArrayEquals(CAPS, testMe.getKeyboard());
+
+        testMe.setShifted(false);
+        Assert.assertArrayEquals(LOWERCASE, testMe.getKeyboard());
+
+        needsTesting.clear();
     }
 }

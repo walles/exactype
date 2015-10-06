@@ -176,4 +176,8 @@ public class ExactypeMode {
     public String[] getKeyboard() {
         return currentKeyboard;
     }
+
+    public void setShifted(boolean shifted) {
+        currentKeyboard = shifted ? caps : lowercase;
+    }
 }
