@@ -23,7 +23,7 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class ExactypeView extends View {
+public class ExactypeView extends View implements ExactypeMode.ModeChangeListener {
     private final GestureDetector gestureDetector;
     private final GestureListener gestureListener;
 
@@ -45,7 +45,7 @@ public class ExactypeView extends View {
         return theme.getTextSize();
     }
 
-    public void setRows(String[] rows) {
+    public void onModeChange(String[] rows) {
         if (keyCoordinator != null && keyCoordinator.hasRows(rows)) {
             return;
         }

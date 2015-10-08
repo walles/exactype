@@ -89,7 +89,7 @@ public class Exactype extends InputMethodService {
         popupKeyboardWindow = new PopupWindow(popupKeyboardView);
 
         view = new ExactypeView(this);
-        view.setRows(mode.getKeyboard());
+        mode.addModeChangeListener(view);
         return view;
     }
 
@@ -99,14 +99,12 @@ public class Exactype extends InputMethodService {
         // "start out in caps mode":
         // http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html#initialCapsMode
         mode.setShifted(editorInfo.initialCapsMode != 0);
-        view.setRows(mode.getKeyboard());
 
         this.editorInfo = editorInfo;
     }
 
     public void onLongPress() {
         mode.register(ExactypeMode.Event.LONG_PRESS);
-        view.setRows(mode.getKeyboard());
     }
 
     public void onKeyTapped(char tappedKey) {
@@ -114,7 +112,6 @@ public class Exactype extends InputMethodService {
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
 
         mode.register(ExactypeMode.Event.INSERT_CHAR);
-        view.setRows(mode.getKeyboard());
     }
 
     public void onDeleteTapped() {
@@ -131,17 +128,14 @@ public class Exactype extends InputMethodService {
 
     public void onShiftTapped() {
         mode.register(ExactypeMode.Event.SHIFT);
-        view.setRows(mode.getKeyboard());
     }
 
     public void onNumLockTapped() {
         mode.register(ExactypeMode.Event.NUM_LOCK);
-        view.setRows(mode.getKeyboard());
     }
 
     public void onAlphaTapped() {
         mode.register(ExactypeMode.Event.ALPHABETIC);
-        view.setRows(mode.getKeyboard());
     }
 
     public void onActionTapped() {
@@ -149,7 +143,6 @@ public class Exactype extends InputMethodService {
             getCurrentInputConnection().commitText("\n", 1);
 
             mode.register(ExactypeMode.Event.INSERT_CHAR);
-            view.setRows(mode.getKeyboard());
 
             return;
         }

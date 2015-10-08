@@ -16,17 +16,29 @@
 
 package com.gmail.walles.johan.exactype;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Keeps track of which mode the keyboard should be in.
  */
 public class ExactypeMode {
+    public static interface ModeChangeListener {
+        void onModeChange(String[] rows);
+    }
+
     private final String[] lowercase;
     private final String[] caps;
     private final String[] numeric;
     private final String[] numlocked;
     private String[] currentKeyboard;
+    private final List<ModeChangeListener> listeners;
+
+    public void addModeChangeListener(ModeChangeListener listener) {
+        listener.onModeChange(currentKeyboard);
+        listeners.add(listener);
+    }
 
     public enum Event {
         INSERT_CHAR,
@@ -48,6 +60,8 @@ public class ExactypeMode {
 
         // This is how we start out
         currentKeyboard = this.caps;
+
+        listeners = new ArrayList<>();
     }
 
     private void registerCaps(Event event) {
@@ -170,6 +184,10 @@ public class ExactypeMode {
         } else {
             throw new UnsupportedOperationException(
                 "No event handler for keyboard: " + Arrays.toString(currentKeyboard));
+        }
+
+        for (ModeChangeListener listener : listeners) {
+            listener.onModeChange(currentKeyboard);
         }
     }
 

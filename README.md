@@ -10,6 +10,10 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
+* In all keyboard modes, put Backspace bottom right
+* In all keyboard modes, put mode switch (shift, Shift, NumLock) bottom left
+* Reset keyboard state when popping up keyboard; right now if you NumLock, hide and re-show it
+you're still numlocked.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
 `PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
 find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
