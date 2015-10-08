@@ -129,17 +129,17 @@ public class Exactype extends InputMethodService {
         }
     }
 
-    public void shiftTapped() {
+    public void onShiftTapped() {
         mode.register(ExactypeMode.Event.SHIFT);
         view.setRows(mode.getKeyboard());
     }
 
-    public void numLockTapped() {
+    public void onNumLockTapped() {
         mode.register(ExactypeMode.Event.NUM_LOCK);
         view.setRows(mode.getKeyboard());
     }
 
-    public void alphaTapped() {
+    public void onAlphaTapped() {
         mode.register(ExactypeMode.Event.ALPHABETIC);
         view.setRows(mode.getKeyboard());
     }
@@ -196,7 +196,7 @@ public class Exactype extends InputMethodService {
         return popupKeyboardWindow.isShowing();
     }
 
-    public void popupKeyboardTapped(float x, float y) {
+    public void onPopupKeyboardTapped(float x, float y) {
         // FIXME: Are we even on the popup keyboard? Abort otherwise.
 
         float popupX = x - popupX0;

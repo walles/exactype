@@ -71,11 +71,11 @@ public class GestureListener {
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
         } else if (tappedKey == '⇧') {
-            exactype.shiftTapped();
+            exactype.onShiftTapped();
         } else if (tappedKey == '⓵') {
-            exactype.numLockTapped();
+            exactype.onNumLockTapped();
         } else if (tappedKey == 'ⓐ') {
-            exactype.alphaTapped();
+            exactype.onAlphaTapped();
         } else {
             exactype.onKeyTapped(tappedKey);
         }
@@ -94,7 +94,7 @@ public class GestureListener {
         if (exactype.isPopupKeyboardShowing()) {
             // Is this really the way to deal with popup keyboard events? I have a feeling we're
             // breaking some kind of abstraction here...
-            exactype.popupKeyboardTapped(x, y);
+            exactype.onPopupKeyboardTapped(x, y);
         } else {
             onSingleTap(x, y);
         }
