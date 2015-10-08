@@ -8,9 +8,6 @@ Features (will) include:
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
-## TODO Before Johan can Uninstall the Other Keyboards from his Phone
-* Make long pressing SHIFT lock the numeric keyboard in place
-
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
@@ -118,3 +115,4 @@ neither; most likely because of double tap detection messing things up.
 numeric keyboard for a while
 * Add long long press support to some key at the right of the keyboard and make sure the popup gets
 a reasonable position.
+* Make long pressing SHIFT lock the numeric keyboard in place

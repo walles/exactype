@@ -72,6 +72,10 @@ public class GestureListener {
             exactype.onDeleteTapped();
         } else if (tappedKey == '⇧') {
             exactype.shiftTapped();
+        } else if (tappedKey == '⓵') {
+            exactype.numLockTapped();
+        } else if (tappedKey == 'ⓐ') {
+            exactype.alphaTapped();
         } else {
             exactype.onKeyTapped(tappedKey);
         }

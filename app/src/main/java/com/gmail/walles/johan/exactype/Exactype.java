@@ -46,7 +46,13 @@ public class Exactype extends InputMethodService {
     private static final String[] NUMERIC = new String[] {
         "1234567890",
         "&/:;()-+$",
-        "@'\"*#?!,."
+        "⓵@'\"*#?!,."
+    };
+
+    private static final String[] NUMLOCK = new String[] {
+        "1234567890",
+        "&/:;()-+$",
+        "ⓐ@'\"*#?!,."
     };
 
     private final Map<Character, String> popupKeysForKey;
@@ -54,7 +60,8 @@ public class Exactype extends InputMethodService {
     private PopupKeyboardView popupKeyboardView;
     private PopupWindow popupKeyboardWindow;
 
-    private boolean shifted = false;
+    private final ExactypeMode mode;
+
     private ExactypeView view;
     private EditorInfo editorInfo;
 
@@ -72,6 +79,8 @@ public class Exactype extends InputMethodService {
         popupKeysForKey.put('A', "@ÁÀA");
         popupKeysForKey.put('e', "éèëe");
         popupKeysForKey.put('E', "ÉÈË€E");
+
+        mode = new ExactypeMode(UNSHIFTED, SHIFTED, NUMERIC, NUMLOCK);
     }
 
     @Override
@@ -80,7 +89,7 @@ public class Exactype extends InputMethodService {
         popupKeyboardWindow = new PopupWindow(popupKeyboardView);
 
         view = new ExactypeView(this);
-        view.setRows(shifted ? SHIFTED : UNSHIFTED);
+        view.setRows(mode.getKeyboard());
         return view;
     }
 
@@ -89,23 +98,23 @@ public class Exactype extends InputMethodService {
         // The initialCapsMode docs say that you should generally just take a non-zero value to mean
         // "start out in caps mode":
         // http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html#initialCapsMode
-        setShifted(editorInfo.initialCapsMode != 0);
+        mode.setShifted(editorInfo.initialCapsMode != 0);
+        view.setRows(mode.getKeyboard());
+
         this.editorInfo = editorInfo;
     }
 
-    public void setShifted(boolean shifted) {
-        this.shifted = shifted;
-        view.setRows(shifted ? SHIFTED : UNSHIFTED);
-    }
-
     public void onLongPress() {
-        view.setRows(NUMERIC);
+        mode.register(ExactypeMode.Event.LONG_PRESS);
+        view.setRows(mode.getKeyboard());
     }
 
     public void onKeyTapped(char tappedKey) {
         popupKeyboardWindow.dismiss();
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
-        setShifted(false);
+
+        mode.register(ExactypeMode.Event.INSERT_CHAR);
+        view.setRows(mode.getKeyboard());
     }
 
     public void onDeleteTapped() {
@@ -121,12 +130,27 @@ public class Exactype extends InputMethodService {
     }
 
     public void shiftTapped() {
-        setShifted(!shifted);
+        mode.register(ExactypeMode.Event.SHIFT);
+        view.setRows(mode.getKeyboard());
+    }
+
+    public void numLockTapped() {
+        mode.register(ExactypeMode.Event.NUM_LOCK);
+        view.setRows(mode.getKeyboard());
+    }
+
+    public void alphaTapped() {
+        mode.register(ExactypeMode.Event.ALPHABETIC);
+        view.setRows(mode.getKeyboard());
     }
 
     public void onActionTapped() {
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             getCurrentInputConnection().commitText("\n", 1);
+
+            mode.register(ExactypeMode.Event.INSERT_CHAR);
+            view.setRows(mode.getKeyboard());
+
             return;
         }
 
