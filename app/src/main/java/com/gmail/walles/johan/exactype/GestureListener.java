@@ -67,12 +67,15 @@ public class GestureListener {
     }
 
     public void onSingleTap(float x, float y) {
-        fixme: handle numlock and alpha in this method
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
         } else if (tappedKey == '⇧') {
             exactype.shiftTapped();
+        } else if (tappedKey == '⓵') {
+            exactype.numLockTapped();
+        } else if (tappedKey == 'ⓐ') {
+            exactype.alphaTapped();
         } else {
             exactype.onKeyTapped(tappedKey);
         }

@@ -134,6 +134,16 @@ public class Exactype extends InputMethodService {
         view.setRows(mode.getKeyboard());
     }
 
+    public void numLockTapped() {
+        mode.register(ExactypeMode.Event.NUM_LOCK);
+        view.setRows(mode.getKeyboard());
+    }
+
+    public void alphaTapped() {
+        mode.register(ExactypeMode.Event.ALPHABETIC);
+        view.setRows(mode.getKeyboard());
+    }
+
     public void onActionTapped() {
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             getCurrentInputConnection().commitText("\n", 1);

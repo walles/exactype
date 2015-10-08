@@ -75,7 +75,7 @@ public class ExactypeView extends View {
             } else if (keyInfo.character == '⓵') {
                 drawMe = "12";
             } else if (keyInfo.character == 'ⓐ') {
-                drawMe = "ab";
+                drawMe = "Ab";
             } else {
                 drawMe = Character.toString(keyInfo.character);
             }
