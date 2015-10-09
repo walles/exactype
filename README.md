@@ -10,8 +10,8 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* In all keyboard modes, put Backspace bottom right
 * In all keyboard modes, put mode switch (shift, Shift, NumLock) bottom left
+* Implicit numlock on typing first digit
 * Reset keyboard state when popping up keyboard; right now if you NumLock, hide and re-show it
 you're still numlocked.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
@@ -120,3 +120,4 @@ numeric keyboard for a while
 * Add long long press support to some key at the right of the keyboard and make sure the popup gets
 a reasonable position.
 * Make long pressing SHIFT lock the numeric keyboard in place
+* In all keyboard modes, put Backspace bottom right

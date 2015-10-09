@@ -46,13 +46,13 @@ public class Exactype extends InputMethodService {
     private static final String[] NUMERIC = new String[] {
         "1234567890",
         "&/:;()-+$",
-        "⓵@'\"*#?!,."
+        "⓵@'\"*#?!,.⌫"
     };
 
     private static final String[] NUMLOCK = new String[] {
         "1234567890",
         "&/:;()-+$",
-        "ⓐ@'\"*#?!,."
+        "ⓐ@'\"*#?!,.⌫"
     };
 
     private final Map<Character, String> popupKeysForKey;
