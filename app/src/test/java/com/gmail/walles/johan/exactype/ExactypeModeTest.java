@@ -21,20 +21,24 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ExactypeModeTest {
-    private static final String[] LOWERCASE = new String[] { "Lowercase", "", "" };
-    private static final String[] CAPS = new String[] { "Caps", "", "" };
-    private static final String[] NUMERIC = new String[] { "Numeric", "", "" };
+    private static final String[] LOWERCASE_LAYOUT = new String[] { "Lowercase", "", "" };
+    private static final String[] CAPS_LAYOUT = new String[] { "Caps", "", "" };
+    private static final String[] NUMERIC_LAYOUT = new String[] { "Numeric", "", "" };
+
+    private static final String[] LOWERCASE = new String[] { "Lowercase", "", "⇧⌫" };
+    private static final String[] CAPS = new String[] { "Caps", "", "⇧⌫" };
+    private static final String[] NUMERIC = new String[] { "Numeric", "", "⓵⌫" };
+    private static final String[] NUMLOCKED = new String[] { "Numeric", "", "⇧⌫" };
 
     private Set<ExactypeMode.Event> needsTesting;
 
     private static ExactypeMode createMode() {
-        return new ExactypeMode(LOWERCASE, CAPS, NUMERIC);
+        return new ExactypeMode(LOWERCASE_LAYOUT, CAPS_LAYOUT, NUMERIC_LAYOUT);
     }
 
     private abstract static class Generator {
@@ -88,16 +92,8 @@ public class ExactypeModeTest {
 
         ExactypeMode mode = generator.getMode();
         mode.register(event);
-        Assert.assertEquals(expected_outcome[0], mode.getKeyboard()[0]);
+        Assert.assertArrayEquals(expected_outcome, mode.getKeyboard());
         Assert.assertEquals(mode_switch_key_after, mode.getModeSwitchKey());
-
-        // All keyboards should have backspace at the end of the last line
-        Assert.assertEquals(Arrays.toString(mode.getKeyboard()),
-            '⌫', mode.getKeyboard()[2].charAt(1));
-
-        // All keyboards should have the correct mode switch key at the start of the last line
-        Assert.assertEquals(Arrays.toString(mode.getKeyboard()),
-            mode_switch_key_after.symbol, mode.getKeyboard()[2].charAt(0));
     }
 
     @Test
@@ -191,7 +187,7 @@ public class ExactypeModeTest {
         assertModeTransition(generator,
             ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.TO_LOWER);
+            ExactypeMode.Event.LONG_PRESS, NUMLOCKED, ExactypeMode.SwitchKey.TO_LOWER);
     }
 
     @Test
