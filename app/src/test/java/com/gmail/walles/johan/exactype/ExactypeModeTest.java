@@ -30,10 +30,9 @@ public class ExactypeModeTest {
     private static final String[] CAPS_LAYOUT = new String[] { "Caps", "", "" };
     private static final String[] NUMERIC_LAYOUT = new String[] { "Numeric", "", "" };
 
-    private static final String[] LOWERCASE = new String[] { "Lowercase", "", "⇧⌫" };
-    private static final String[] CAPS = new String[] { "Caps", "", "⇧⌫" };
-    private static final String[] NUMERIC = new String[] { "Numeric", "", "⓵⌫" };
-    private static final String[] NUMLOCKED = new String[] { "Numeric", "", "⇧⌫" };
+    private static final String[] LOWERCASE = new String[] { "Lowercase", "", "♻⌫" };
+    private static final String[] CAPS = new String[] { "Caps", "", "♻⌫" };
+    private static final String[] NUMERIC = new String[] { "Numeric", "", "♻⌫" };
 
     private Set<ExactypeMode.Event> needsTesting;
 
@@ -187,7 +186,7 @@ public class ExactypeModeTest {
         assertModeTransition(generator,
             ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.LONG_PRESS, NUMLOCKED, ExactypeMode.SwitchKey.TO_LOWER);
+            ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.TO_LOWER);
     }
 
     @Test
@@ -205,17 +204,24 @@ public class ExactypeModeTest {
 
     private static class LoggingListener implements ExactypeMode.ModeChangeListener {
         private String rows[];
+        private ExactypeMode.SwitchKey switchKey;
 
         @Override
-        public void onModeChange(String[] rows) {
+        public void onModeChange(String[] rows, ExactypeMode.SwitchKey switchKey) {
             Assert.assertNull(this.rows);
+
             this.rows = rows;
+            this.switchKey = switchKey;
         }
 
         public String[] getRows() {
             String[] returnMe = rows;
             rows = null;
             return returnMe;
+        }
+
+        public ExactypeMode.SwitchKey getSwitchKey() {
+            return switchKey;
         }
     }
 
@@ -228,16 +234,19 @@ public class ExactypeModeTest {
 
         // Assert that the listener was called with the expected initial keyboard (caps)
         Assert.assertArrayEquals(CAPS, listener.getRows());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, listener.getSwitchKey());
 
         testMe.register(ExactypeMode.Event.INSERT_CHAR);
 
         // Assert that the listener was called with the lowercase keyboard
         Assert.assertArrayEquals(LOWERCASE, listener.getRows());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_UPPER, listener.getSwitchKey());
 
         testMe.register(ExactypeMode.Event.INSERT_CHAR);
 
         // Assert that the listener was not called, since we should still be at the lowercase
         // keyboard
         Assert.assertNull(listener.getRows());
+        Assert.assertNull(listener.getSwitchKey());
     }
 }

@@ -28,6 +28,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     private final GestureListener gestureListener;
 
     private KeyCoordinator keyCoordinator;
+    private ExactypeMode.SwitchKey switchKey;
 
     private final KeyboardTheme theme;
 
@@ -45,17 +46,15 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
         return theme.getTextSize();
     }
 
-    public void onModeChange(String[] rows) {
-        if (keyCoordinator != null && keyCoordinator.hasRows(rows)) {
-            return;
-        }
-
+    public void onModeChange(String[] rows, ExactypeMode.SwitchKey switchKey) {
         theme.setShouldComputeTextSize();
 
         keyCoordinator = new KeyCoordinator(rows);
         keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
 
         gestureListener.setKeyCoordinator(keyCoordinator);
+
+        this.switchKey = switchKey;
 
         invalidate();
     }
@@ -70,12 +69,24 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
             String drawMe;
             if (keyInfo.character == '⌫') {
                 drawMe = "Bs";
-            } else if (keyInfo.character == '⇧') {
-                drawMe = "Sh";
-            } else if (keyInfo.character == '⓵') {
-                drawMe = "12";
-            } else if (keyInfo.character == 'ⓐ') {
-                drawMe = "Ab";
+            } else if (keyInfo.character == ExactypeMode.SwitchKey.MARKER) {
+                switch (switchKey) {
+                    case TO_UPPER:
+                        drawMe = "AB";
+                        break;
+
+                    case TO_LOWER:
+                        drawMe = "ab";
+                        break;
+
+                    case NUMLOCK:
+                        drawMe = "12";
+                        break;
+
+                    default:
+                        throw new UnsupportedOperationException(
+                            "Unsupported switch key mode: " + switchKey);
+                }
             } else {
                 drawMe = Character.toString(keyInfo.character);
             }

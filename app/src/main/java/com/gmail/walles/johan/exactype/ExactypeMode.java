@@ -28,31 +28,26 @@ public class ExactypeMode {
      * What kind of mode switch key should be showing.
      */
     public enum SwitchKey {
-        TO_UPPER('⇧'),
-        TO_LOWER('⇧'),
-        NUMLOCK('⓵');
+        TO_UPPER,
+        TO_LOWER,
+        NUMLOCK;
 
-        public final char symbol;
-
-        SwitchKey(char symbol) {
-            this.symbol = symbol;
-        }
+        public static final char MARKER = '♻';
     }
 
     public interface ModeChangeListener {
-        void onModeChange(String[] rows);
+        void onModeChange(String[] rows, SwitchKey switchKey);
     }
 
     private final String[] lowercase;
     private final String[] caps;
     private final String[] numeric;
-    private final String[] numlocked;
     private String[] currentKeyboard;
     private SwitchKey switchKey;
     private final List<ModeChangeListener> listeners;
 
     public void addModeChangeListener(ModeChangeListener listener) {
-        listener.onModeChange(currentKeyboard);
+        listener.onModeChange(currentKeyboard, switchKey);
         listeners.add(listener);
     }
 
@@ -62,21 +57,20 @@ public class ExactypeMode {
         LONG_PRESS,
     }
 
-    private String[] decorate(String[] base, SwitchKey switchKey) {
+    private String[] decorate(String[] base) {
         String[] decorated = Arrays.copyOf(base, base.length);
 
         String lastLine = decorated[decorated.length - 1];
-        lastLine = switchKey.symbol + lastLine + '⌫';
+        lastLine = SwitchKey.MARKER + lastLine + '⌫';
         decorated[decorated.length - 1] = lastLine;
 
         return decorated;
     }
 
     public ExactypeMode(String[] lowercase, String[] caps, String[] numeric) {
-        this.lowercase = decorate(lowercase, SwitchKey.TO_UPPER);
-        this.caps = decorate(caps, SwitchKey.TO_LOWER);
-        this.numeric = decorate(numeric, SwitchKey.NUMLOCK);
-        this.numlocked = decorate(numeric, SwitchKey.TO_LOWER);
+        this.lowercase = decorate(lowercase);
+        this.caps = decorate(caps);
+        this.numeric = decorate(numeric);
 
         // This is how we start out
         currentKeyboard = this.caps;
@@ -125,7 +119,7 @@ public class ExactypeMode {
 
         for (ModeChangeListener listener : listeners) {
             // FIXME: Only do this if something actually changed
-            listener.onModeChange(currentKeyboard);
+            listener.onModeChange(currentKeyboard, switchKey);
         }
     }
 
