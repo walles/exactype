@@ -200,8 +200,48 @@ public class ExactypeModeTest {
 
         testMe.setShifted(true);
         Assert.assertArrayEquals(CAPS, testMe.getKeyboard());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, testMe.getModeSwitchKey());
 
         testMe.setShifted(false);
         Assert.assertArrayEquals(LOWERCASE, testMe.getKeyboard());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_UPPER, testMe.getModeSwitchKey());
+    }
+
+    private static class LoggingListener implements ExactypeMode.ModeChangeListener {
+        private String rows[];
+
+        @Override
+        public void onModeChange(String[] rows) {
+            Assert.assertNull(this.rows);
+            this.rows = rows;
+        }
+
+        public String[] getRows() {
+            String[] returnMe = rows;
+            rows = null;
+            return returnMe;
+        }
+    }
+
+    @Test
+    public void testCallback() {
+        ExactypeMode testMe = createMode();
+
+        LoggingListener listener = new LoggingListener();
+        testMe.addModeChangeListener(listener);
+
+        // Assert that the listener was called with the expected initial keyboard (caps)
+        Assert.assertArrayEquals(CAPS, listener.getRows());
+
+        testMe.register(ExactypeMode.Event.INSERT_CHAR);
+
+        // Assert that the listener was called with the lowercase keyboard
+        Assert.assertArrayEquals(LOWERCASE, listener.getRows());
+
+        testMe.register(ExactypeMode.Event.INSERT_CHAR);
+
+        // Assert that the listener was not called, since we should still be at the lowercase
+        // keyboard
+        Assert.assertNull(listener.getRows());
     }
 }

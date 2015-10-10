@@ -47,6 +47,7 @@ public class ExactypeMode {
     private final String[] caps;
     private final String[] numeric;
     private String[] currentKeyboard;
+    private SwitchKey switchKey;
     private final List<ModeChangeListener> listeners;
 
     public void addModeChangeListener(ModeChangeListener listener) {
@@ -67,6 +68,7 @@ public class ExactypeMode {
 
         // This is how we start out
         currentKeyboard = this.caps;
+        switchKey = SwitchKey.TO_LOWER;
 
         listeners = new ArrayList<>();
     }
@@ -105,6 +107,7 @@ public class ExactypeMode {
         }
 
         for (ModeChangeListener listener : listeners) {
+            // FIXME: Only do this if something actually changed
             listener.onModeChange(currentKeyboard);
         }
     }
@@ -118,6 +121,6 @@ public class ExactypeMode {
     }
 
     public SwitchKey getModeSwitchKey() {
-        return null;
+        return switchKey;
     }
 }
