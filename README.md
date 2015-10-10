@@ -12,6 +12,9 @@ Features (will) include:
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 * In all keyboard modes, put mode switch (shift, Shift, NumLock) bottom left
 * Implicit numlock on typing first digit
+* Log the time taken by each text-modifying operation, make sure not to log parts of passwords
+* On both uppercase and lowercase keyboards, clicking mode switch once should switch case, clicking
+twice should numlock
 * Reset keyboard state when popping up keyboard; right now if you NumLock, hide and re-show it
 you're still numlocked.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a

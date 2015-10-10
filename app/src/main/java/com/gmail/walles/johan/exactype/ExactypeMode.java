@@ -24,14 +24,28 @@ import java.util.List;
  * Keeps track of which mode the keyboard should be in.
  */
 public class ExactypeMode {
-    public static interface ModeChangeListener {
+    /**
+     * What kind of mode switch key should be showing.
+     */
+    public enum SwitchKey {
+        TO_UPPER('⇧'),
+        TO_LOWER('⇧'),
+        NUMLOCK('⓵');
+
+        public final char symbol;
+
+        SwitchKey(char symbol) {
+            this.symbol = symbol;
+        }
+    }
+
+    public interface ModeChangeListener {
         void onModeChange(String[] rows);
     }
 
     private final String[] lowercase;
     private final String[] caps;
     private final String[] numeric;
-    private final String[] numlocked;
     private String[] currentKeyboard;
     private final List<ModeChangeListener> listeners;
 
@@ -42,21 +56,14 @@ public class ExactypeMode {
 
     public enum Event {
         INSERT_CHAR,
-        SHIFT,
+        NEXT_MODE,
         LONG_PRESS,
-        NUM_LOCK,
-
-        /**
-         * Somebody pressed the let's-do-characters-again button on the numlocked keyboard.
-         */
-        ALPHABETIC
     }
 
-    public ExactypeMode(String[] lowercase, String[] caps, String[] numeric, String[] numlocked) {
+    public ExactypeMode(String[] lowercase, String[] caps, String[] numeric) {
         this.lowercase = lowercase;
         this.caps = caps;
         this.numeric = numeric;
-        this.numlocked = numlocked;
 
         // This is how we start out
         currentKeyboard = this.caps;
@@ -66,26 +73,6 @@ public class ExactypeMode {
 
     private void registerCaps(Event event) {
         switch (event) {
-            case INSERT_CHAR:
-                currentKeyboard = lowercase;
-                break;
-
-            case SHIFT:
-                currentKeyboard = lowercase;
-                break;
-
-            case LONG_PRESS:
-                currentKeyboard = numeric;
-                break;
-
-            case NUM_LOCK:
-                currentKeyboard = numlocked;
-                break;
-
-            case ALPHABETIC:
-                // This branch intentionally left blank
-                break;
-
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
@@ -93,26 +80,6 @@ public class ExactypeMode {
 
     private void registerLowercase(Event event) {
         switch (event) {
-            case INSERT_CHAR:
-                currentKeyboard = lowercase;
-                break;
-
-            case SHIFT:
-                currentKeyboard = caps;
-                break;
-
-            case LONG_PRESS:
-                currentKeyboard = numeric;
-                break;
-
-            case NUM_LOCK:
-                currentKeyboard = numlocked;
-                break;
-
-            case ALPHABETIC:
-                // This branch intentionally left blank
-                break;
-
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
@@ -120,53 +87,6 @@ public class ExactypeMode {
 
     private void registerNumeric(Event event) {
         switch (event) {
-            case INSERT_CHAR:
-                currentKeyboard = lowercase;
-                break;
-
-            case SHIFT:
-                currentKeyboard = caps;
-                break;
-
-            case LONG_PRESS:
-                // This branch intentionally left blank
-                break;
-
-            case NUM_LOCK:
-                currentKeyboard = numlocked;
-                break;
-
-            case ALPHABETIC:
-                currentKeyboard = lowercase;
-                break;
-
-            default:
-                throw new UnsupportedOperationException(event.toString());
-        }
-    }
-
-    private void registerNumLocked(Event event) {
-        switch (event) {
-            case INSERT_CHAR:
-                // This branch intentionally left blank
-                break;
-
-            case SHIFT:
-                // This branch intentionally left blank
-                break;
-
-            case LONG_PRESS:
-                // This branch intentionally left blank
-                break;
-
-            case NUM_LOCK:
-                currentKeyboard = lowercase;
-                break;
-
-            case ALPHABETIC:
-                currentKeyboard = lowercase;
-                break;
-
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
@@ -179,8 +99,6 @@ public class ExactypeMode {
             registerLowercase(event);
         } else if (currentKeyboard == numeric) {
             registerNumeric(event);
-        } else if (currentKeyboard == numlocked) {
-            registerNumLocked(event);
         } else {
             throw new UnsupportedOperationException(
                 "No event handler for keyboard: " + Arrays.toString(currentKeyboard));
@@ -197,5 +115,9 @@ public class ExactypeMode {
 
     public void setShifted(boolean shifted) {
         currentKeyboard = shifted ? caps : lowercase;
+    }
+
+    public SwitchKey getModeSwitchKey() {
+        return null;
     }
 }

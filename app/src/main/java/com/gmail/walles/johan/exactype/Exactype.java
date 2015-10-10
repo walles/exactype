@@ -34,25 +34,19 @@ public class Exactype extends InputMethodService {
     private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
-        "⇧zxcvbnm⌫" // ⇧ = SHIFT, ⌫ = Backspace
+        "zxcvbnm" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
     private static final String[] SHIFTED = new String[] {
         "QWERTYUIOPÅ",
         "ASDFGHJKLÖÄ",
-        "⇧ZXCVBNM⌫" // ⇧ = SHIFT, ⌫ = Backspace
+        "ZXCVBNM" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
     private static final String[] NUMERIC = new String[] {
         "1234567890",
         "&/:;()-+$",
-        "⓵@'\"*#?!,.⌫"
-    };
-
-    private static final String[] NUMLOCK = new String[] {
-        "1234567890",
-        "&/:;()-+$",
-        "ⓐ@'\"*#?!,.⌫"
+        "@'\"*#?!,."
     };
 
     private final Map<Character, String> popupKeysForKey;
@@ -80,7 +74,7 @@ public class Exactype extends InputMethodService {
         popupKeysForKey.put('e', "éèëe");
         popupKeysForKey.put('E', "ÉÈË€E");
 
-        mode = new ExactypeMode(UNSHIFTED, SHIFTED, NUMERIC, NUMLOCK);
+        mode = new ExactypeMode(UNSHIFTED, SHIFTED, NUMERIC);
     }
 
     @Override
@@ -126,16 +120,8 @@ public class Exactype extends InputMethodService {
         }
     }
 
-    public void onShiftTapped() {
-        mode.register(ExactypeMode.Event.SHIFT);
-    }
-
-    public void onNumLockTapped() {
-        mode.register(ExactypeMode.Event.NUM_LOCK);
-    }
-
-    public void onAlphaTapped() {
-        mode.register(ExactypeMode.Event.ALPHABETIC);
+    public void onKeyboardModeSwitchRequested() {
+        mode.register(ExactypeMode.Event.NEXT_MODE);
     }
 
     public void onActionTapped() {

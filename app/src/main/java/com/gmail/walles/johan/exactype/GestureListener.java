@@ -71,11 +71,11 @@ public class GestureListener {
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
         } else if (tappedKey == '⇧') {
-            exactype.onShiftTapped();
+            exactype.onKeyboardModeSwitchRequested();
         } else if (tappedKey == '⓵') {
-            exactype.onNumLockTapped();
+            exactype.onKeyboardModeSwitchRequested();
         } else if (tappedKey == 'ⓐ') {
-            exactype.onAlphaTapped();
+            exactype.onKeyboardModeSwitchRequested();
         } else {
             exactype.onKeyTapped(tappedKey);
         }
