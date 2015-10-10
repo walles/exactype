@@ -46,6 +46,7 @@ public class ExactypeMode {
     private final String[] lowercase;
     private final String[] caps;
     private final String[] numeric;
+    private final String[] numlocked;
     private String[] currentKeyboard;
     private SwitchKey switchKey;
     private final List<ModeChangeListener> listeners;
@@ -61,10 +62,21 @@ public class ExactypeMode {
         LONG_PRESS,
     }
 
+    private String[] decorate(String[] base, SwitchKey switchKey) {
+        String[] decorated = Arrays.copyOf(base, base.length);
+
+        String lastLine = decorated[decorated.length - 1];
+        lastLine = switchKey.symbol + lastLine + '⌫';
+        decorated[decorated.length - 1] = lastLine;
+
+        return decorated;
+    }
+
     public ExactypeMode(String[] lowercase, String[] caps, String[] numeric) {
-        this.lowercase = lowercase;
-        this.caps = caps;
-        this.numeric = numeric;
+        this.lowercase = decorate(lowercase, SwitchKey.TO_UPPER);
+        this.caps = decorate(caps, SwitchKey.TO_LOWER);
+        this.numeric = decorate(numeric, SwitchKey.NUMLOCK);
+        this.numlocked = decorate(numeric, SwitchKey.TO_LOWER);
 
         // This is how we start out
         currentKeyboard = this.caps;
@@ -75,6 +87,11 @@ public class ExactypeMode {
 
     private void registerCaps(Event event) {
         switch (event) {
+            case INSERT_CHAR:
+                currentKeyboard = lowercase;
+                switchKey = SwitchKey.TO_UPPER;
+                break;
+
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
