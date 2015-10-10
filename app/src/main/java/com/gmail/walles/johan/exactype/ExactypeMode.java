@@ -86,6 +86,16 @@ public class ExactypeMode {
                 switchKey = SwitchKey.TO_UPPER;
                 break;
 
+            case NEXT_MODE:
+                currentKeyboard = lowercase;
+                switchKey = SwitchKey.TO_UPPER;
+                break;
+
+            case LONG_PRESS:
+                currentKeyboard = numeric;
+                switchKey = SwitchKey.NUMLOCK;
+                break;
+
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
