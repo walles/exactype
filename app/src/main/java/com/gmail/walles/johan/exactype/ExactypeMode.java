@@ -145,8 +145,13 @@ public class ExactypeMode {
     private void registerNumeric(Event event) {
         switch (event) {
             case INSERT_CHAR:
-                currentKeyboard = lowercase;
-                switchKey = SwitchKey.TO_UPPER;
+                if (switchKey == SwitchKey.NUMLOCK) {
+                    // Numlock not in effect because we have a key for switching it on
+                    currentKeyboard = lowercase;
+                    switchKey = SwitchKey.TO_UPPER;
+                } else {
+                    // We're numlocked, do nothing!
+                }
                 break;
 
             case NEXT_MODE:
