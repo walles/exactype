@@ -87,8 +87,7 @@ public class ExactypeMode {
                 break;
 
             case NEXT_MODE:
-                currentKeyboard = lowercase;
-                switchKey = SwitchKey.TO_UPPER;
+                switchMode();
                 break;
 
             case LONG_PRESS:
@@ -101,6 +100,28 @@ public class ExactypeMode {
         }
     }
 
+    private void switchMode() {
+        switch (switchKey) {
+            case TO_UPPER:
+                currentKeyboard = caps;
+                switchKey = SwitchKey.TO_LOWER;
+                break;
+
+            case TO_LOWER:
+                currentKeyboard = lowercase;
+                switchKey = SwitchKey.TO_UPPER;
+                break;
+
+            case NUMLOCK:
+                currentKeyboard = numeric;
+                switchKey = SwitchKey.TO_LOWER;
+                break;
+
+            default:
+                throw new UnsupportedOperationException(switchKey.toString());
+        }
+    }
+
     private void registerLowercase(Event event) {
         switch (event) {
             case INSERT_CHAR:
@@ -108,8 +129,7 @@ public class ExactypeMode {
                 break;
 
             case NEXT_MODE:
-                currentKeyboard = caps;
-                switchKey = SwitchKey.TO_LOWER;
+                switchMode();
                 break;
 
             case LONG_PRESS:
@@ -124,6 +144,19 @@ public class ExactypeMode {
 
     private void registerNumeric(Event event) {
         switch (event) {
+            case INSERT_CHAR:
+                currentKeyboard = lowercase;
+                switchKey = SwitchKey.TO_UPPER;
+                break;
+
+            case NEXT_MODE:
+                switchMode();
+                break;
+
+            case LONG_PRESS:
+                // This block intentionally left blank
+                break;
+
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
