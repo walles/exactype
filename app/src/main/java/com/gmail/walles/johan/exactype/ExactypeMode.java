@@ -139,6 +139,7 @@ public class ExactypeMode {
 
     public void setShifted(boolean shifted) {
         currentKeyboard = shifted ? caps : lowercase;
+        switchKey = shifted ? SwitchKey.TO_LOWER : SwitchKey.TO_UPPER;
     }
 
     public SwitchKey getModeSwitchKey() {
