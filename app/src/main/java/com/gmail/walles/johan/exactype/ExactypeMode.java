@@ -103,6 +103,20 @@ public class ExactypeMode {
 
     private void registerLowercase(Event event) {
         switch (event) {
+            case INSERT_CHAR:
+                // This block intentionally left blank
+                break;
+
+            case NEXT_MODE:
+                currentKeyboard = caps;
+                switchKey = SwitchKey.TO_LOWER;
+                break;
+
+            case LONG_PRESS:
+                currentKeyboard = numeric;
+                switchKey = SwitchKey.NUMLOCK;
+                break;
+
             default:
                 throw new UnsupportedOperationException(event.toString());
         }
