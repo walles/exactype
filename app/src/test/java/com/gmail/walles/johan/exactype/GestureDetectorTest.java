@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( { ViewConfiguration.class })
+@PrepareForTest({ ViewConfiguration.class })
 public class GestureDetectorTest {
     private static final int LONG_PRESS_TIMEOUT = 29;
     private static final int TOUCH_SLOP = 7;

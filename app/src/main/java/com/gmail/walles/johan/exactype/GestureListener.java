@@ -70,12 +70,8 @@ public class GestureListener {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
-        } else if (tappedKey == '⇧') {
-            exactype.onShiftTapped();
-        } else if (tappedKey == '⓵') {
-            exactype.onNumLockTapped();
-        } else if (tappedKey == 'ⓐ') {
-            exactype.onAlphaTapped();
+        } else if (tappedKey == ExactypeMode.SwitchKey.MARKER) {
+            exactype.onKeyboardModeSwitchRequested();
         } else {
             exactype.onKeyTapped(tappedKey);
         }
