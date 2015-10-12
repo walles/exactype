@@ -221,7 +221,9 @@ public class ExactypeModeTest {
         }
 
         public ExactypeMode.SwitchKey getSwitchKey() {
-            return switchKey;
+            ExactypeMode.SwitchKey returnMe = switchKey;
+            switchKey = null;
+            return returnMe;
         }
     }
 

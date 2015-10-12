@@ -156,6 +156,9 @@ public class ExactypeMode {
     }
 
     public void register(Event event) {
+        String[] preKeyboard = currentKeyboard;
+        SwitchKey preSwitchKey = switchKey;
+
         if (event == Event.NEXT_MODE) {
             switchMode();
         } else if (currentKeyboard == caps) {
@@ -169,9 +172,10 @@ public class ExactypeMode {
                 "No event handler for keyboard: " + Arrays.toString(currentKeyboard));
         }
 
-        for (ModeChangeListener listener : listeners) {
-            // FIXME: Only do this if something actually changed
-            listener.onModeChange(currentKeyboard, switchKey);
+        if (currentKeyboard != preKeyboard || switchKey != preSwitchKey) {
+            for (ModeChangeListener listener : listeners) {
+                listener.onModeChange(currentKeyboard, switchKey);
+            }
         }
     }
 
