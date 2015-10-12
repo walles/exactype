@@ -70,11 +70,7 @@ public class GestureListener {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
             exactype.onDeleteTapped();
-        } else if (tappedKey == '⇧') {
-            exactype.onKeyboardModeSwitchRequested();
-        } else if (tappedKey == '⓵') {
-            exactype.onKeyboardModeSwitchRequested();
-        } else if (tappedKey == 'ⓐ') {
+        } else if (tappedKey == ExactypeMode.SwitchKey.MARKER) {
             exactype.onKeyboardModeSwitchRequested();
         } else {
             exactype.onKeyTapped(tappedKey);

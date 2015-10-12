@@ -10,7 +10,6 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* In all keyboard modes, put mode switch (shift, Shift, NumLock) bottom left
 * Implicit numlock on typing first digit
 * Log the time taken by each text-modifying operation, make sure not to log parts of passwords
 * On both uppercase and lowercase keyboards, clicking mode switch once should switch case, clicking
@@ -124,3 +123,4 @@ numeric keyboard for a while
 a reasonable position.
 * Make long pressing SHIFT lock the numeric keyboard in place
 * In all keyboard modes, put Backspace bottom right
+* In all keyboard modes, put mode switch (shift, Shift, NumLock) bottom left
