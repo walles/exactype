@@ -28,11 +28,16 @@ public class ExactypeMode {
      * What kind of mode switch key should be showing.
      */
     public enum SwitchKey {
-        TO_UPPER,
-        TO_LOWER,
-        NUMLOCK;
+        TO_UPPER("Ab"),
+        TO_LOWER("ab"),
+        NUMLOCK("12");
 
         public static final char MARKER = '♻';
+        final String decoration;
+
+        SwitchKey(String decoration) {
+            this.decoration = decoration;
+        }
     }
 
     public interface ModeChangeListener {

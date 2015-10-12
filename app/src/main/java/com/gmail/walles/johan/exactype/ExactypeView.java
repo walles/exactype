@@ -36,7 +36,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
         super(context);
         Exactype exactype = (Exactype)context;
 
-        theme = new KeyboardTheme(getResources().getDisplayMetrics());
+        theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
 
         gestureListener = new GestureListener(exactype);
         gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
@@ -70,23 +70,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
             if (keyInfo.character == '⌫') {
                 drawMe = "Bs";
             } else if (keyInfo.character == ExactypeMode.SwitchKey.MARKER) {
-                switch (switchKey) {
-                    case TO_UPPER:
-                        drawMe = "AB";
-                        break;
-
-                    case TO_LOWER:
-                        drawMe = "ab";
-                        break;
-
-                    case NUMLOCK:
-                        drawMe = "12";
-                        break;
-
-                    default:
-                        throw new UnsupportedOperationException(
-                            "Unsupported switch key mode: " + switchKey);
-                }
+                drawMe = switchKey.decoration;
             } else {
                 drawMe = Character.toString(keyInfo.character);
             }
