@@ -86,10 +86,6 @@ public class ExactypeMode {
                 switchKey = SwitchKey.TO_UPPER;
                 break;
 
-            case NEXT_MODE:
-                switchMode();
-                break;
-
             case LONG_PRESS:
                 currentKeyboard = numeric;
                 switchKey = SwitchKey.NUMLOCK;
@@ -128,10 +124,6 @@ public class ExactypeMode {
                 // This block intentionally left blank
                 break;
 
-            case NEXT_MODE:
-                switchMode();
-                break;
-
             case LONG_PRESS:
                 currentKeyboard = numeric;
                 switchKey = SwitchKey.NUMLOCK;
@@ -154,10 +146,6 @@ public class ExactypeMode {
                 }
                 break;
 
-            case NEXT_MODE:
-                switchMode();
-                break;
-
             case LONG_PRESS:
                 // This block intentionally left blank
                 break;
@@ -168,7 +156,9 @@ public class ExactypeMode {
     }
 
     public void register(Event event) {
-        if (currentKeyboard == caps) {
+        if (event == Event.NEXT_MODE) {
+            switchMode();
+        } else if (currentKeyboard == caps) {
             registerCaps(event);
         } else if (currentKeyboard == lowercase) {
             registerLowercase(event);
