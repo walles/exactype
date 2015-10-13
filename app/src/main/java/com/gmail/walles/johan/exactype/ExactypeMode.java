@@ -48,6 +48,12 @@ public class ExactypeMode {
     private final String[] caps;
     private final String[] numeric;
     private String[] currentKeyboard;
+
+    /**
+     * This is the keyboard most recently set by the system.
+     */
+    private String[] implicitKeyboard;
+
     private SwitchKey switchKey;
     private final List<ModeChangeListener> listeners;
 
@@ -81,6 +87,8 @@ public class ExactypeMode {
         currentKeyboard = this.caps;
         switchKey = SwitchKey.TO_LOWER;
 
+        implicitKeyboard = currentKeyboard;
+
         listeners = new ArrayList<>();
     }
 
@@ -105,17 +113,38 @@ public class ExactypeMode {
         switch (switchKey) {
             case TO_UPPER:
                 currentKeyboard = caps;
-                switchKey = SwitchKey.TO_LOWER;
+
+                if (implicitKeyboard == lowercase) {
+                    // lowercase -> uppercase -> numlock
+                    switchKey = SwitchKey.NUMLOCK;
+                } else {
+                    // numlock -> uppercase -> lowercase
+                    switchKey = SwitchKey.TO_LOWER;
+                }
                 break;
 
             case TO_LOWER:
                 currentKeyboard = lowercase;
-                switchKey = SwitchKey.TO_UPPER;
+
+                if (implicitKeyboard == lowercase) {
+                    // lowercase -> uppercase -> numlock
+                    switchKey = SwitchKey.TO_UPPER;
+                } else {
+                    // numlock -> uppercase -> lowercase
+                    switchKey = SwitchKey.NUMLOCK;
+                }
                 break;
 
             case NUMLOCK:
                 currentKeyboard = numeric;
-                switchKey = SwitchKey.TO_LOWER;
+
+                if (implicitKeyboard == lowercase) {
+                    // lowercase -> uppercase -> numlock
+                    switchKey = SwitchKey.TO_LOWER;
+                } else {
+                    // numlock -> uppercase -> lowercase
+                    switchKey = SwitchKey.TO_UPPER;
+                }
                 break;
 
             default:
@@ -177,6 +206,10 @@ public class ExactypeMode {
                 "No event handler for keyboard: " + Arrays.toString(currentKeyboard));
         }
 
+        if (event == Event.INSERT_CHAR) {
+            implicitKeyboard = currentKeyboard;
+        }
+
         if (currentKeyboard != preKeyboard || switchKey != preSwitchKey) {
             for (ModeChangeListener listener : listeners) {
                 listener.onModeChange(currentKeyboard, switchKey);
@@ -190,6 +223,7 @@ public class ExactypeMode {
 
     public void setShifted(boolean shifted) {
         currentKeyboard = shifted ? caps : lowercase;
+        implicitKeyboard = currentKeyboard;
         switchKey = shifted ? SwitchKey.TO_LOWER : SwitchKey.TO_UPPER;
     }
 

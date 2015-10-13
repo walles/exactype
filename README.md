@@ -10,12 +10,9 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Implicit numlock on typing first digit
 * Log the time taken by each text-modifying operation, make sure not to log parts of passwords
-* On both uppercase and lowercase keyboards, clicking mode switch once should switch case, clicking
-twice should numlock
-* Reset keyboard state when popping up keyboard; right now if you NumLock, hide and re-show it
-you're still numlocked.
+* Reset keyboard state when popping up keyboard; right now if you NumLock, hide and re-show the
+keyboard you're still numlocked.
 * Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
 `PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
 find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
@@ -49,6 +46,7 @@ being automatically shifted.
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard
 * Make sure swipe is canceled if finger is released outside of keyboard
+* Implicit numlock on typing first digit
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -124,3 +122,5 @@ a reasonable position.
 * Make long pressing SHIFT lock the numeric keyboard in place
 * In all keyboard modes, put Backspace bottom right
 * In all keyboard modes, put mode switch (shift, Shift, NumLock) bottom left
+* On both uppercase and lowercase keyboards, clicking mode switch once should switch case, clicking
+twice should numlock

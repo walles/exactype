@@ -71,6 +71,13 @@ public class ExactypeModeTest {
         }
     }
 
+    private void assertMode(
+        String[] keyboard, ExactypeMode.SwitchKey switchKey, ExactypeMode mode)
+    {
+        Assert.assertArrayEquals(keyboard, mode.getKeyboard());
+        Assert.assertEquals(switchKey, mode.getModeSwitchKey());
+    }
+
     /**
      * @param generator Generates a before-state
      * @param event The event type to test
@@ -91,8 +98,7 @@ public class ExactypeModeTest {
 
         ExactypeMode mode = generator.getMode();
         mode.register(event);
-        Assert.assertArrayEquals(expected_outcome, mode.getKeyboard());
-        Assert.assertEquals(mode_switch_key_after, mode.getModeSwitchKey());
+        assertMode(expected_outcome, mode_switch_key_after, mode);
     }
 
     @Test
@@ -100,15 +106,14 @@ public class ExactypeModeTest {
         Generator generator = new Generator() {
             @Override
             public void setUp(ExactypeMode mode) {
-                Assert.assertArrayEquals(CAPS, mode.getKeyboard());
-                Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, mode.getModeSwitchKey());
+                assertMode(CAPS, ExactypeMode.SwitchKey.TO_LOWER, mode);
             }
         };
 
         assertModeTransition(generator,
             ExactypeMode.Event.INSERT_CHAR, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
+            ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.NUMLOCK);
         assertModeTransition(generator,
             ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.NUMLOCK);
     }
@@ -118,15 +123,14 @@ public class ExactypeModeTest {
         Generator generator = new Generator() {
             @Override
             public void setUp(ExactypeMode mode) {
-                Assert.assertArrayEquals(CAPS, mode.getKeyboard());
-                Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, mode.getModeSwitchKey());
+                assertMode(CAPS, ExactypeMode.SwitchKey.TO_LOWER, mode);
             }
         };
 
         assertModeTransition(generator,
             ExactypeMode.Event.INSERT_CHAR, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
+            ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.NUMLOCK);
         assertModeTransition(generator,
             ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.NUMLOCK);
     }
@@ -136,16 +140,15 @@ public class ExactypeModeTest {
         Generator generator = new Generator() {
             @Override
             public void setUp(ExactypeMode mode) {
-                mode.register(ExactypeMode.Event.NEXT_MODE);
-                Assert.assertArrayEquals(LOWERCASE, mode.getKeyboard());
-                Assert.assertEquals(ExactypeMode.SwitchKey.TO_UPPER, mode.getModeSwitchKey());
+                mode.register(ExactypeMode.Event.INSERT_CHAR);
+                assertMode(LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER, mode);
             }
         };
 
         assertModeTransition(generator,
             ExactypeMode.Event.INSERT_CHAR, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.NEXT_MODE, CAPS, ExactypeMode.SwitchKey.TO_LOWER);
+            ExactypeMode.Event.NEXT_MODE, CAPS, ExactypeMode.SwitchKey.NUMLOCK);
         assertModeTransition(generator,
             ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.NUMLOCK);
     }
@@ -156,15 +159,14 @@ public class ExactypeModeTest {
             @Override
             public void setUp(ExactypeMode mode) {
                 mode.register(ExactypeMode.Event.LONG_PRESS);
-                Assert.assertArrayEquals(NUMERIC, mode.getKeyboard());
-                Assert.assertEquals(ExactypeMode.SwitchKey.NUMLOCK, mode.getModeSwitchKey());
+                assertMode(NUMERIC, ExactypeMode.SwitchKey.NUMLOCK, mode);
             }
         };
 
         assertModeTransition(generator,
             ExactypeMode.Event.INSERT_CHAR, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.NEXT_MODE, NUMERIC, ExactypeMode.SwitchKey.TO_LOWER);
+            ExactypeMode.Event.NEXT_MODE, NUMERIC, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
             ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.NUMLOCK);
     }
@@ -176,17 +178,16 @@ public class ExactypeModeTest {
             public void setUp(ExactypeMode mode) {
                 mode.register(ExactypeMode.Event.LONG_PRESS);
                 mode.register(ExactypeMode.Event.NEXT_MODE);
-                Assert.assertArrayEquals(NUMERIC, mode.getKeyboard());
-                Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, mode.getModeSwitchKey());
+                assertMode(NUMERIC, ExactypeMode.SwitchKey.TO_UPPER, mode);
             }
         };
 
         assertModeTransition(generator,
-            ExactypeMode.Event.INSERT_CHAR, NUMERIC, ExactypeMode.SwitchKey.TO_LOWER);
+            ExactypeMode.Event.INSERT_CHAR, NUMERIC, ExactypeMode.SwitchKey.TO_UPPER);
         assertModeTransition(generator,
-            ExactypeMode.Event.NEXT_MODE, LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER);
+            ExactypeMode.Event.NEXT_MODE, CAPS, ExactypeMode.SwitchKey.TO_LOWER);
         assertModeTransition(generator,
-            ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.TO_LOWER);
+            ExactypeMode.Event.LONG_PRESS, NUMERIC, ExactypeMode.SwitchKey.TO_UPPER);
     }
 
     @Test
@@ -194,12 +195,10 @@ public class ExactypeModeTest {
         ExactypeMode testMe = createMode();
 
         testMe.setShifted(true);
-        Assert.assertArrayEquals(CAPS, testMe.getKeyboard());
-        Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, testMe.getModeSwitchKey());
+        assertMode(CAPS, ExactypeMode.SwitchKey.TO_LOWER, testMe);
 
         testMe.setShifted(false);
-        Assert.assertArrayEquals(LOWERCASE, testMe.getKeyboard());
-        Assert.assertEquals(ExactypeMode.SwitchKey.TO_UPPER, testMe.getModeSwitchKey());
+        assertMode(LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER, testMe);
     }
 
     private static class LoggingListener implements ExactypeMode.ModeChangeListener {
@@ -250,5 +249,30 @@ public class ExactypeModeTest {
         // keyboard
         Assert.assertNull(listener.getRows());
         Assert.assertNull(listener.getSwitchKey());
+    }
+
+    @Test
+    public void testSwitchModeFromCaps() {
+        ExactypeMode testMe = createMode();
+        assertMode(CAPS, ExactypeMode.SwitchKey.TO_LOWER, testMe);
+
+        testMe.register(ExactypeMode.Event.NEXT_MODE);
+        assertMode(LOWERCASE, ExactypeMode.SwitchKey.NUMLOCK, testMe);
+
+        testMe.register(ExactypeMode.Event.NEXT_MODE);
+        assertMode(NUMERIC, ExactypeMode.SwitchKey.TO_UPPER, testMe);
+    }
+
+    @Test
+    public void testSwitchModeFromLowercase() {
+        ExactypeMode testMe = createMode();
+        testMe.register(ExactypeMode.Event.INSERT_CHAR);
+        assertMode(LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER, testMe);
+
+        testMe.register(ExactypeMode.Event.NEXT_MODE);
+        assertMode(CAPS, ExactypeMode.SwitchKey.NUMLOCK, testMe);
+
+        testMe.register(ExactypeMode.Event.NEXT_MODE);
+        assertMode(NUMERIC, ExactypeMode.SwitchKey.TO_LOWER, testMe);
     }
 }
