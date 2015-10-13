@@ -222,9 +222,18 @@ public class ExactypeMode {
     }
 
     public void setShifted(boolean shifted) {
+        String[] preKeyboard = currentKeyboard;
+        SwitchKey preSwitchKey = switchKey;
+
         currentKeyboard = shifted ? caps : lowercase;
         implicitKeyboard = currentKeyboard;
         switchKey = shifted ? SwitchKey.TO_LOWER : SwitchKey.TO_UPPER;
+
+        if (currentKeyboard != preKeyboard || switchKey != preSwitchKey) {
+            for (ModeChangeListener listener : listeners) {
+                listener.onModeChange(currentKeyboard, switchKey);
+            }
+        }
     }
 
     public SwitchKey getModeSwitchKey() {

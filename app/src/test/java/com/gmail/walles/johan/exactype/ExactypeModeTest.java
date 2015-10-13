@@ -227,7 +227,7 @@ public class ExactypeModeTest {
     }
 
     @Test
-    public void testCallback() {
+    public void testRegisterCallback() {
         ExactypeMode testMe = createMode();
 
         LoggingListener listener = new LoggingListener();
@@ -247,6 +247,30 @@ public class ExactypeModeTest {
 
         // Assert that the listener was not called, since we should still be at the lowercase
         // keyboard
+        Assert.assertNull(listener.getRows());
+        Assert.assertNull(listener.getSwitchKey());
+    }
+
+    @Test
+    public void testSetShiftedCallback() {
+        ExactypeMode testMe = createMode();
+
+        LoggingListener listener = new LoggingListener();
+        testMe.addModeChangeListener(listener);
+
+        // Assert that the listener was called with the expected initial keyboard (caps)
+        Assert.assertArrayEquals(CAPS, listener.getRows());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, listener.getSwitchKey());
+
+        testMe.setShifted(false);
+
+        // Assert that the listener was called with the lowercase keyboard
+        Assert.assertArrayEquals(LOWERCASE, listener.getRows());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_UPPER, listener.getSwitchKey());
+
+        testMe.setShifted(false);
+
+        // Assert that the listener was not called, since we're still at the lowercase keyboard
         Assert.assertNull(listener.getRows());
         Assert.assertNull(listener.getSwitchKey());
     }
