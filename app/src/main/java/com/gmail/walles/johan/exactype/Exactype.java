@@ -23,6 +23,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import com.gmail.walles.johan.exactype.util.Timer;
@@ -56,6 +57,9 @@ public class Exactype extends InputMethodService {
     private PopupKeyboardView popupKeyboardView;
     private PopupWindow popupKeyboardWindow;
 
+    private ImageView feedbackView;
+    private PopupWindow feedbackWindow;
+
     private final ExactypeMode mode;
 
     private ExactypeView view;
@@ -83,6 +87,10 @@ public class Exactype extends InputMethodService {
     public View onCreateInputView() {
         popupKeyboardView = new PopupKeyboardView(this);
         popupKeyboardWindow = new PopupWindow(popupKeyboardView);
+
+        feedbackView = new ImageView(this);
+        // FIXME: Calculate the size of this window
+        feedbackWindow = new PopupWindow(view, 200, 200);
 
         view = new ExactypeView(this);
         mode.addModeChangeListener(view);
@@ -194,5 +202,17 @@ public class Exactype extends InputMethodService {
         float popupY = y - popupY0;
 
         onKeyTapped(popupKeyboardView.getClosestKey(popupX, popupY));
+    }
+
+    public void onTouchStart(float x, float y) {
+        FIXME: Pop up the feedback window
+    }
+
+    public void onTouchMove(float x, float y) {
+        // FIXME: Update the feedback view
+    }
+
+    public void onTouchEnd() {
+        // FIXME: Remove the feedback window
     }
 }

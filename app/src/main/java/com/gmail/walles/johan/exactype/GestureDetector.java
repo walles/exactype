@@ -167,11 +167,13 @@ public class GestureDetector {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            listener.onDown(event.getX(), event.getY());
             setStart(event);
             return true;
         }
 
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            listener.onMove(event.getX(), event.getY());
             mostRecentX = event.getX();
             mostRecentY = event.getY();
             return true;
@@ -181,6 +183,8 @@ public class GestureDetector {
             // We ignore non-up events
             return false;
         }
+
+        listener.onUp();
 
         if (handleTapEnd(event)) {
             return true;
