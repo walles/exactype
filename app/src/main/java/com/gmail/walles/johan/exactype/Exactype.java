@@ -25,6 +25,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
+import com.gmail.walles.johan.exactype.util.Timer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,21 +105,28 @@ public class Exactype extends InputMethodService {
 
     public void onKeyTapped(char tappedKey) {
         popupKeyboardWindow.dismiss();
+        Timer timer = new Timer();
         getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
+        Log.d(TAG, "PERF: Committing a char took " + timer);
 
         mode.register(ExactypeMode.Event.INSERT_CHAR);
     }
 
     public void onDeleteTapped() {
         InputConnection inputConnection = getCurrentInputConnection();
+        Timer timer = new Timer();
+        timer.addLeg("get selection");
         CharSequence selection = inputConnection.getSelectedText(0);
         if (TextUtils.isEmpty(selection)) {
             // Nothing selected, just backspace
+            timer.addLeg("backspace");
             inputConnection.deleteSurroundingText(1, 0);
         } else {
             // Delete selection
+            timer.addLeg("delete selection");
             inputConnection.commitText("", 1);
         }
+        Log.d(TAG, "PERF: Delete took " + timer);
     }
 
     public void onKeyboardModeSwitchRequested() {
@@ -125,8 +134,10 @@ public class Exactype extends InputMethodService {
     }
 
     public void onActionTapped() {
+        Timer timer = new Timer();
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             getCurrentInputConnection().commitText("\n", 1);
+            Log.d(TAG, "PERF: Committing a newline took " + timer);
 
             mode.register(ExactypeMode.Event.INSERT_CHAR);
 
@@ -135,6 +146,7 @@ public class Exactype extends InputMethodService {
 
         getCurrentInputConnection()
             .performEditorAction(editorInfo.imeOptions | EditorInfo.IME_MASK_ACTION);
+        Log.d(TAG, "PERF: Performing editor action took " + timer);
     }
 
     public void onRequestPopupKeyboard(char baseKey, float x, float y) {
