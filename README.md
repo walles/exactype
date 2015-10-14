@@ -87,6 +87,7 @@ pauses during drawing operations.
 available in Android's standard font.
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
+* Move popup keyboard code from Exactype into its own class.
 
 ## DONE
 * Create an IME that when selected shows an empty view
