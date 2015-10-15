@@ -89,7 +89,7 @@ public class Exactype extends InputMethodService {
         view = new ExactypeView(this);
         mode.addModeChangeListener(view);
 
-        feedbackWindow = new FeedbackWindow(view);
+        feedbackWindow = new FeedbackWindow(this, view);
 
         return view;
     }

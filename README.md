@@ -14,6 +14,7 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 `PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
 find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
 `getLocationOnScreen()` on the `ExactypeView` first.
+* Show a marker on the keyboard where the user last hit?
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around

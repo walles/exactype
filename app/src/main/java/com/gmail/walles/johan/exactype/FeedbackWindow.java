@@ -16,12 +16,72 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+
 /**
  * A box somewhere above the keyboard showing where the keyboard is being touched.
+ *
+ * TODO:
+ * * Test with base keyboard, both lowercase and caps
+ * * Test with longpressing, should show first letters then numbers and things
+ * * Test with popup keyboard
+ * * Think about what we should show outside of our views, transparent perhaps?
+ * * Test with rotating the phone 90 degrees
+ * * Fade out on release rather than just disappearing?
  */
 public class FeedbackWindow {
-    public FeedbackWindow(ExactypeView exactypeView) {
+    private final PopupWindow window;
+    private final ImageView imageView;
+    private final Canvas canvas;
 
+    private final ExactypeView exactypeView;
+
+    private int size;
+
+    private float lastX;
+    private float lastY;
+
+    public FeedbackWindow(Context context, ExactypeView exactypeView) {
+        this.exactypeView = exactypeView;
+        exactypeView.addUpdatedListener(this);
+
+        imageView = new ImageView(context);
+
+        int size = exactypeView.getHeight() / 2;
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        imageView.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+        canvas = new Canvas(bitmap);
+
+        window = new PopupWindow(imageView, size, size);
+        window.setClippingEnabled(false);
+    }
+
+    /**
+     * Copy pixels from our ExactypeView into our ImageView
+     */
+    private void update() {
+        // Copy keyboard pixels into our .canvas
+        Rect source = new Rect(
+            (int)(lastX - size / 2),
+            (int)(lastY - size / 2),
+            (int)(lastX + size / 2),
+            (int)(lastY + size / 2));
+        Rect dest = new Rect(0, 0, size - 1, size -1);
+        canvas.drawBitmap(exactypeView.getBitmap(), source, dest, null);
+
+        // FIXME: Do we need to trigger a refresh of the ImageView after the Canvas operation?
+    }
+
+    public void onKeyboardChanged() {
+        update();
     }
 
     /**
@@ -30,7 +90,16 @@ public class FeedbackWindow {
      * @param y The Y coordinate where the user is touching the view
      */
     public void show(float x, float y) {
+        lastX = x;
+        lastY = y;
+        update();
 
+        float xCenter = exactypeView.getWidth() / 2;
+        float x0 = xCenter - (window.getWidth() / 2);
+
+        float y0 = -window.getHeight();
+
+        window.showAtLocation(exactypeView, Gravity.NO_GRAVITY, (int)x0, (int)y0);
     }
 
     /**
@@ -39,13 +108,15 @@ public class FeedbackWindow {
      * @param y The Y coordinate where the user is touching the view
      */
     public void update(float x, float y) {
-
+        lastX = x;
+        lastY = y;
+        update();
     }
 
     /**
      * Close the feedback window
      */
     public void close() {
-
+        window.dismiss();
     }
 }
