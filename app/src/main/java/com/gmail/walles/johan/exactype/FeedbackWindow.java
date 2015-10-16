@@ -22,7 +22,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
@@ -37,7 +36,7 @@ import android.widget.PopupWindow;
  * * Test with rotating the phone 90 degrees
  * * Fade out on release rather than just disappearing?
  */
-public class FeedbackWindow {
+public class FeedbackWindow implements ExactypeView.UpdatedListener {
     private final PopupWindow window;
     private final ImageView imageView;
     private final Canvas canvas;
@@ -51,11 +50,11 @@ public class FeedbackWindow {
 
     public FeedbackWindow(Context context, ExactypeView exactypeView) {
         this.exactypeView = exactypeView;
-        exactypeView.addUpdatedListener(this);
+        exactypeView.setUpdatedListener(this);
 
         imageView = new ImageView(context);
 
-        int size = exactypeView.getHeight() / 2;
+        size = exactypeView.getHeight() / 2;
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         imageView.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         canvas = new Canvas(bitmap);

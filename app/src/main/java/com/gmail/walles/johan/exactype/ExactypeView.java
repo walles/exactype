@@ -31,6 +31,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     private ExactypeMode.SwitchKey switchKey;
 
     private final KeyboardTheme theme;
+    private UpdatedListener updatedListener;
 
     public ExactypeView(Context context) {
         super(context);
@@ -81,6 +82,8 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
                 keyInfo.getY() + theme.getVerticalCenterOffset(),
                 theme.getTextPaint());
         }
+
+        updatedListener.onKeyboardChanged();
     }
 
     @Override
@@ -94,5 +97,13 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
+    }
+
+    public void setUpdatedListener(UpdatedListener updatedListener) {
+        this.updatedListener = updatedListener;
+    }
+
+    public interface UpdatedListener {
+        void onKeyboardChanged();
     }
 }
