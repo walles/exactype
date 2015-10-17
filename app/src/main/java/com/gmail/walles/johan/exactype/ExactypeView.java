@@ -17,6 +17,7 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -41,6 +42,9 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
         gestureListener = new GestureListener(exactype);
         gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
+
+        setDrawingCacheEnabled(true);
+        setDrawingCacheBackgroundColor(KeyboardTheme.BACKGROUND_COLOR);
     }
 
     public float getTextSize() {
@@ -101,6 +105,10 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
     public void setUpdatedListener(UpdatedListener updatedListener) {
         this.updatedListener = updatedListener;
+    }
+
+    public Bitmap getBitmap() {
+        return getDrawingCache(false);
     }
 
     public interface UpdatedListener {
