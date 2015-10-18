@@ -60,7 +60,7 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
     }
 
     private void setUpCanvas() {
-        size = exactypeView.getHeight() / 2;
+        size = exactypeView.getHeight() / 3;
 
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         imageView = new ImageView(context);
