@@ -137,7 +137,7 @@ public class GestureDetectorTest {
 
         PowerMockito.mockStatic(ViewConfiguration.class);
         Mockito.when(ViewConfiguration.getLongPressTimeout()).thenReturn(LONG_PRESS_TIMEOUT);
-        Mockito.when(ViewConfiguration.get((Context) Mockito.any())).thenReturn(viewConfiguration);
+        Mockito.when(ViewConfiguration.get((Context)Mockito.any())).thenReturn(viewConfiguration);
 
         Mockito.when(viewConfiguration.getScaledTouchSlop()).thenReturn(TOUCH_SLOP);
     }
@@ -183,7 +183,6 @@ public class GestureDetectorTest {
         doSingleTap(0, 0);
 
         Mockito.verify(listener).onSingleTap(X0, Y0);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
@@ -191,7 +190,6 @@ public class GestureDetectorTest {
         doSingleTap(TOUCH_SLOP - 1, LONG_PRESS_TIMEOUT - 1);
 
         Mockito.verify(listener).onSingleTap(X0, Y0);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
@@ -209,8 +207,6 @@ public class GestureDetectorTest {
 
         // Tapping too far == swipe
         Mockito.verify(listener).onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
-
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     private void doSwipe(int dx, int dy, int dt) {
@@ -233,14 +229,12 @@ public class GestureDetectorTest {
     public void testFastSwipe() {
         doSwipe(97, 23, LONG_PRESS_TIMEOUT / 2);
         Mockito.verify(listener).onSwipe(97f, 23f);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
     public void testSlowSwipe() {
         doSwipe(97, 23, LONG_PRESS_TIMEOUT * 2);
         Mockito.verify(listener).onSwipe(97f, 23f);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
@@ -260,14 +254,12 @@ public class GestureDetectorTest {
         doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
 
         Mockito.verify(listener).onLongPress(X0, Y0);
-        Mockito.verifyNoMoreInteractions(listener);
 
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
         doMotion(T0 + LONG_PRESS_TIMEOUT * 2, MotionEvent.ACTION_UP, x1, y1);
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
@@ -284,8 +276,9 @@ public class GestureDetectorTest {
             MotionEvent.ACTION_MOVE,
             X0 + TOUCH_SLOP + 1, Y0 + TOUCH_SLOP + 1);
 
-        // In particular, we should *not* have received any long press notification
-        Mockito.verifyNoMoreInteractions(listener);
+        // We should *not* have received any long press notification
+        Mockito.verify(listener, Mockito.never()).
+            onLongPress(Mockito.anyFloat(), Mockito.anyFloat());
 
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
@@ -304,7 +297,6 @@ public class GestureDetectorTest {
 
         // X0 here because we didn't move to X0 + 1 until after the long press timeout
         Mockito.verify(listener).onLongPress(X0, Y0);
-        Mockito.verifyNoMoreInteractions(listener);
 
         // Simulate waiting another LONG_PRESS_TIMEOUT
         doMotion(T0 + 2 * LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 2, Y0);
@@ -312,14 +304,12 @@ public class GestureDetectorTest {
         // X0 + 1 here is because we didn't move to X0 + 2 until after the second long press timeout
         // had expired
         Mockito.verify(listener).onLongLongPress(X0 + 1, Y0);
-        Mockito.verifyNoMoreInteractions(listener);
 
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
         doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     @Test
@@ -330,7 +320,6 @@ public class GestureDetectorTest {
         doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0);
 
         Mockito.verify(listener).onLongPress(X0, Y0);
-        Mockito.verifyNoMoreInteractions(listener);
 
         // Simulate moving after the long press but before the long long press
         int x1 = X0 + 29;
@@ -342,6 +331,17 @@ public class GestureDetectorTest {
         doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
-        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testDownMoveUpEvents() {
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+        Mockito.verify(listener).onDown(X0, Y0);
+
+        doMotion(T0 + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0 + 2);
+        Mockito.verify(listener).onMove(X0 + 1, Y0 + 2);
+
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
+        Mockito.verify(listener).onUp();
     }
 }
