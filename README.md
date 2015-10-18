@@ -40,6 +40,8 @@ modify the casing of the current word, but if you keep typing it only affects th
 being automatically shifted.
 * Make holding down backspace work as expected
 * Test on different resolutions / screen sizes / screen rotations.
+* Try rotating the phone 90 degrees while long pressing and verify feedback window shows the right
+thing
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard

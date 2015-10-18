@@ -34,6 +34,19 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     private final KeyboardTheme theme;
     private UpdatedListener updatedListener;
 
+    /**
+     * We do all drawing operations via this bitmap.
+     *
+     * Except for in the ExactypeView, the contents of this bitmap is also displayed by the
+     * FeedbackView.
+     */
+    private Bitmap bitmap;
+
+    /**
+     * This Canvas will always draw onto {@link #bitmap}.
+     */
+    private Canvas bitmapCanvas;
+
     public ExactypeView(Context context) {
         super(context);
         Exactype exactype = (Exactype)context;
@@ -42,9 +55,6 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
         gestureListener = new GestureListener(exactype);
         gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
-
-        setDrawingCacheEnabled(true);
-        setDrawingCacheBackgroundColor(KeyboardTheme.BACKGROUND_COLOR);
     }
 
     public float getTextSize() {
@@ -66,8 +76,21 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
     @Override
     protected void onDraw(Canvas canvas) {
+        updateBitmap(canvas.getWidth(), canvas.getHeight());
+
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        updatedListener.onKeyboardChanged();
+    }
+
+    /**
+     * This is the drawing logic for {@link #onDraw(Canvas)}.
+     */
+    private void updateBitmap(int width, int height) {
+        prepareBitmap(width, height);
+
         // Clear the background
-        canvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
+        bitmapCanvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
 
         // Draw the keys
         for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
@@ -80,14 +103,27 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
                 drawMe = Character.toString(keyInfo.character);
             }
 
-            canvas.drawText(
+            bitmapCanvas.drawText(
                 drawMe,
                 keyInfo.getX(),
                 keyInfo.getY() + theme.getVerticalCenterOffset(),
                 theme.getTextPaint());
         }
+    }
 
-        updatedListener.onKeyboardChanged();
+    /**
+     * Make sure {@link #bitmapCanvas} is ready to take drawing operations
+     */
+    private void prepareBitmap(int width, int height) {
+        if (bitmap == null || bitmap.getWidth() != width || bitmap.getHeight() != height) {
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+            if (bitmapCanvas == null) {
+                bitmapCanvas = new Canvas(bitmap);
+            } else {
+                bitmapCanvas.setBitmap(bitmap);
+            }
+        }
     }
 
     @Override
@@ -108,7 +144,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     }
 
     public Bitmap getBitmap() {
-        return getDrawingCache(false);
+        return bitmap;
     }
 
     public interface UpdatedListener {

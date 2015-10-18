@@ -30,13 +30,12 @@ import android.widget.PopupWindow;
  * A box somewhere above the keyboard showing where the keyboard is being touched.
  *
  * TODO:
- * * BUG: Feedback always shows the base keyboard, never switches layout
- * * Test with base keyboard, both lowercase and caps
- * * Test with longpressing, should show first letters then numbers and things
  * * Test with popup keyboard
- * * Think about what we should show outside of our views, transparent perhaps?
- * * Test with rotating the phone 90 degrees
  * * Fade out on release rather than just disappearing?
+ * * BUG: Very short taps don't give us any feedback window
+ * * FIXED: Feedback always shows the base keyboard, never switches layout
+ * * OK: Test with base keyboard, both lowercase and caps
+ * * OK: Test with longpressing, should show first letters then numbers and things
  */
 public class FeedbackWindow implements ExactypeView.UpdatedListener {
     private PopupWindow window;
