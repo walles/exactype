@@ -19,6 +19,7 @@ package com.gmail.walles.johan.exactype;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
@@ -29,6 +30,7 @@ import android.widget.PopupWindow;
  * A box somewhere above the keyboard showing where the keyboard is being touched.
  *
  * TODO:
+ * * BUG: Feedback always shows the base keyboard, never switches layout
  * * Test with base keyboard, both lowercase and caps
  * * Test with longpressing, should show first letters then numbers and things
  * * Test with popup keyboard
@@ -37,9 +39,11 @@ import android.widget.PopupWindow;
  * * Fade out on release rather than just disappearing?
  */
 public class FeedbackWindow implements ExactypeView.UpdatedListener {
-    private final PopupWindow window;
-    private final ImageView imageView;
-    private final Canvas canvas;
+    private PopupWindow window;
+    private ImageView imageView;
+    private Canvas canvas;
+
+    private final Context context;
 
     private final ExactypeView exactypeView;
 
@@ -52,11 +56,16 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
         this.exactypeView = exactypeView;
         exactypeView.setUpdatedListener(this);
 
-        imageView = new ImageView(context);
+        this.context = context;
+    }
 
+    private void setUpCanvas() {
         size = exactypeView.getHeight() / 2;
+
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        imageView = new ImageView(context);
         imageView.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+
         canvas = new Canvas(bitmap);
 
         window = new PopupWindow(imageView, size, size);
@@ -67,6 +76,15 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
      * Copy pixels from our ExactypeView into our ImageView
      */
     private void update() {
+        if (canvas == null) {
+            setUpCanvas();
+        }
+
+        // Use half transparent background color for pixels outside of the keyboard
+        canvas.drawColor(
+            KeyboardTheme.BACKGROUND_COLOR & 0xffffff | (0x80 << 24),
+            PorterDuff.Mode.SRC);
+
         // Copy keyboard pixels into our .canvas
         Rect source = new Rect(
             (int)(lastX - size / 2),
@@ -76,7 +94,8 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
         Rect dest = new Rect(0, 0, size - 1, size -1);
         canvas.drawBitmap(exactypeView.getBitmap(), source, dest, null);
 
-        // FIXME: Do we need to trigger a refresh of the ImageView after the Canvas operation?
+        // Need to invalidate for move-around tracking to work
+        imageView.invalidate();
     }
 
     public void onKeyboardChanged() {
