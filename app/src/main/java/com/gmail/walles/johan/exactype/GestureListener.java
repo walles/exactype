@@ -95,4 +95,16 @@ public class GestureListener {
             onSingleTap(x, y);
         }
     }
+
+    public void onDown(float x, float y) {
+        exactype.onTouchStart(x, y);
+    }
+
+    public void onMove(float x, float y) {
+        exactype.onTouchMove(x, y);
+    }
+
+    public void onUp() {
+        exactype.onTouchEnd();
+    }
 }

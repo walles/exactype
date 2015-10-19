@@ -17,6 +17,7 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -31,6 +32,20 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     private ExactypeMode.SwitchKey switchKey;
 
     private final KeyboardTheme theme;
+    private UpdatedListener updatedListener;
+
+    /**
+     * We do all drawing operations via this bitmap.
+     *
+     * Except for in the ExactypeView, the contents of this bitmap is also displayed by the
+     * FeedbackView.
+     */
+    private Bitmap bitmap;
+
+    /**
+     * This Canvas will always draw onto {@link #bitmap}.
+     */
+    private Canvas bitmapCanvas;
 
     public ExactypeView(Context context) {
         super(context);
@@ -61,8 +76,21 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
     @Override
     protected void onDraw(Canvas canvas) {
+        updateBitmap(canvas.getWidth(), canvas.getHeight());
+
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        updatedListener.onKeyboardChanged();
+    }
+
+    /**
+     * This is the drawing logic for {@link #onDraw(Canvas)}.
+     */
+    private void updateBitmap(int width, int height) {
+        prepareBitmap(width, height);
+
         // Clear the background
-        canvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
+        bitmapCanvas.drawColor(KeyboardTheme.BACKGROUND_COLOR);
 
         // Draw the keys
         for (KeyCoordinator.KeyInfo keyInfo : keyCoordinator.getKeys()) {
@@ -75,11 +103,26 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
                 drawMe = Character.toString(keyInfo.character);
             }
 
-            canvas.drawText(
+            bitmapCanvas.drawText(
                 drawMe,
                 keyInfo.getX(),
                 keyInfo.getY() + theme.getVerticalCenterOffset(),
                 theme.getTextPaint());
+        }
+    }
+
+    /**
+     * Make sure {@link #bitmapCanvas} is ready to take drawing operations
+     */
+    private void prepareBitmap(int width, int height) {
+        if (bitmap == null || bitmap.getWidth() != width || bitmap.getHeight() != height) {
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+            if (bitmapCanvas == null) {
+                bitmapCanvas = new Canvas(bitmap);
+            } else {
+                bitmapCanvas.setBitmap(bitmap);
+            }
         }
     }
 
@@ -94,5 +137,17 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
+    }
+
+    public void setUpdatedListener(UpdatedListener updatedListener) {
+        this.updatedListener = updatedListener;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public interface UpdatedListener {
+        void onKeyboardChanged();
     }
 }

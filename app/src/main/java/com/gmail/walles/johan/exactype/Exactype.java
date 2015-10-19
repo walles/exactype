@@ -56,6 +56,8 @@ public class Exactype extends InputMethodService {
     private PopupKeyboardView popupKeyboardView;
     private PopupWindow popupKeyboardWindow;
 
+    private FeedbackWindow feedbackWindow;
+
     private final ExactypeMode mode;
 
     private ExactypeView view;
@@ -86,6 +88,9 @@ public class Exactype extends InputMethodService {
 
         view = new ExactypeView(this);
         mode.addModeChangeListener(view);
+
+        feedbackWindow = new FeedbackWindow(this, view);
+
         return view;
     }
 
@@ -194,5 +199,17 @@ public class Exactype extends InputMethodService {
         float popupY = y - popupY0;
 
         onKeyTapped(popupKeyboardView.getClosestKey(popupX, popupY));
+    }
+
+    public void onTouchStart(float x, float y) {
+        feedbackWindow.show(x, y);
+    }
+
+    public void onTouchMove(float x, float y) {
+        feedbackWindow.update(x, y);
+    }
+
+    public void onTouchEnd() {
+        feedbackWindow.close();
     }
 }

@@ -10,10 +10,10 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
-`PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
-find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
-`getLocationOnScreen()` on the `ExactypeView` first.
+* Get FeedbackWindow working with popup keyboard
+* Fade FeedbackWindow out on release rather than just disappearing?
+* FeedbackWindow doesn't show on short taps, fix this!
+* Show a marker on the keyboard where the user last hit?
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
@@ -39,6 +39,8 @@ modify the casing of the current word, but if you keep typing it only affects th
 being automatically shifted.
 * Make holding down backspace work as expected
 * Test on different resolutions / screen sizes / screen rotations.
+* Try rotating the phone 90 degrees while long pressing and verify feedback window shows the right
+thing
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard
@@ -87,6 +89,7 @@ pauses during drawing operations.
 available in Android's standard font.
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
+* Move popup keyboard code from Exactype into its own class.
 
 ## DONE
 * Create an IME that when selected shows an empty view
@@ -122,3 +125,7 @@ a reasonable position.
 * On both uppercase and lowercase keyboards, clicking mode switch once should switch case, clicking
 twice should numlock
 * Log the time taken by each text-modifying operation, make sure not to log parts of passwords
+* Flash an image of where on the keyboard the user hit above the keyboard on every tap. Create a
+`PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
+find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
+`getLocationOnScreen()` on the `ExactypeView` first.
