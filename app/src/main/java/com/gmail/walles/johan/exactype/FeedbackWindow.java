@@ -16,6 +16,8 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -23,6 +25,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
@@ -38,6 +41,9 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
 
     private final ExactypeView exactypeView;
 
+    private final int fadeoutDurationMs;
+    private ViewPropertyAnimator fadeout;
+
     private int size;
 
     private float lastX;
@@ -48,6 +54,9 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
         exactypeView.setUpdatedListener(this);
 
         this.context = context;
+
+        fadeoutDurationMs =
+            context.getResources().getInteger(android.R.integer.config_longAnimTime);
     }
 
     private void setUpCanvas() {
@@ -90,7 +99,12 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
     }
 
     public void onKeyboardChanged() {
-        update();
+        if (fadeout == null) {
+            update();
+        } else {
+            // We're fading, we should keep displaying whatever the user pressed to initiate the
+            // keyboard change.
+        }
     }
 
     /**
@@ -99,6 +113,11 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
      * @param y The Y coordinate where the user is touching the view
      */
     public void show(float x, float y) {
+        if (fadeout != null) {
+            fadeout.cancel();
+            fadeout = null;
+        }
+
         lastX = x;
         lastY = y;
         update();
@@ -108,6 +127,7 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
 
         float y0 = -window.getHeight();
 
+        imageView.setAlpha(1.0f);
         window.showAtLocation(exactypeView, Gravity.NO_GRAVITY, (int)x0, (int)y0);
     }
 
@@ -126,6 +146,15 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
      * Close the feedback window
      */
     public void close() {
-        window.dismiss();
+        fadeout = imageView.animate();
+        fadeout.alpha(0f).setDuration(fadeoutDurationMs).setListener(
+            new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    window.dismiss();
+                    fadeout = null;
+                }
+            }
+        );
     }
 }

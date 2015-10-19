@@ -10,10 +10,6 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Get FeedbackWindow working with popup keyboard
-* Fade FeedbackWindow out on release rather than just disappearing?
-* FeedbackWindow doesn't show on short taps, fix this!
-* Show a marker on the keyboard where the user last hit?
 * Add vibrations on key presses
 * Add audio clicks on key presses
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
@@ -27,8 +23,10 @@ pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
 * Think about which versions of Android we should build for / support
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
+* Get FeedbackWindow working with popup keyboard
 * Auto space after punctuation?
 * No auto space after punctuation inside numbers.
+* Show a marker on the keyboard where the user last hit?
 * Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
 people making spaces by mistake when hitting buttons sloppily.
 * When sliding around the numeric or a popup keyboard, show what's under your finger in a small
@@ -129,3 +127,4 @@ twice should numlock
 `PopupWindow` for this, call `setClippingEnabled(false)` on it and put it wherever you want. To
 find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
 `getLocationOnScreen()` on the `ExactypeView` first.
+* Fade FeedbackWindow out on release rather than just disappearing?
