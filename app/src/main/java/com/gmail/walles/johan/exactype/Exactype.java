@@ -45,10 +45,11 @@ public class Exactype extends InputMethodService {
         "ZXCVBNM" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
-    private static final String[] NUMERIC = new String[] {
+    // Default protection for testing purposes
+    static final String[] NUMERIC = new String[] {
         "1234567890",
-        "&/:;()-+$",
-        "@'\"*#?!,."
+        "@&/:;()-+$",
+        "'\"*#?!,."
     };
 
     private final Map<Character, String> popupKeysForKey;
