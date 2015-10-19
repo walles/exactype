@@ -16,7 +16,10 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.content.pm.PackageManager;
 import android.inputmethodservice.InputMethodService;
+import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,6 +35,8 @@ import java.util.Map;
 
 public class Exactype extends InputMethodService {
     private static final String TAG = "Exactype";
+
+    private static final int VIBRATE_DURATION_MS = 20;
 
     private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
@@ -67,6 +72,9 @@ public class Exactype extends InputMethodService {
     private float popupX0;
     private float popupY0;
 
+    @Nullable
+    private Vibrator vibrator;
+
     public Exactype() {
         popupKeysForKey = new HashMap<>();
 
@@ -91,6 +99,8 @@ public class Exactype extends InputMethodService {
         mode.addModeChangeListener(view);
 
         feedbackWindow = new FeedbackWindow(this, view);
+
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
 
         return view;
     }
@@ -202,7 +212,28 @@ public class Exactype extends InputMethodService {
         onKeyTapped(popupKeyboardView.getClosestKey(popupX, popupY));
     }
 
+    /**
+     * Vibrate if we can / are allowed to.
+     */
+    private void vibrate() {
+        if (vibrator == null) {
+            // No vibrator / vibrator not set up
+            return;
+        }
+
+        String permission = "android.permission.VIBRATE";
+        int res = checkCallingOrSelfPermission(permission);
+        if (res != PackageManager.PERMISSION_GRANTED) {
+            // No permission to vibrate
+            return;
+        }
+
+        vibrator.vibrate(VIBRATE_DURATION_MS);
+    }
+
     public void onTouchStart(float x, float y) {
+        vibrate();
+
         feedbackWindow.show(x, y);
     }
 

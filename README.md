@@ -10,8 +10,7 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Add vibrations on key presses
-* Add audio clicks on key presses
+* Add audio clicks on key releases
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
 * Maybe commit things to the view in the background when just adding chars? Keyboard sometimes feels
@@ -128,3 +127,4 @@ twice should numlock
 find out where to position it, you may (or may not) have to call `getLocationInWindow()` /
 `getLocationOnScreen()` on the `ExactypeView` first.
 * Fade FeedbackWindow out on release rather than just disappearing?
+* Add vibrations on key presses
