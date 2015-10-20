@@ -10,46 +10,45 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Add audio clicks on key releases
+* In landscape mode, show actual screen contents rather than just a text box to type in
+* Make holding down backspace work as expected
+* Get the FeedbackWindow working in landscape mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
-* Maybe commit things to the view in the background when just adding chars? Keyboard sometimes feels
-laggy right now. If the reason for that is that the receiving view is slow, doing feeding that view
-in the background could help. Maybe we need a repro case to work with this.
 * Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
+* Think about which versions of Android we should build for / support
+* Get FeedbackWindow working with popup keyboard
+* Test on a tablet, at least a simulated one, in both landscape and portrait mode.
+* Try rotating the phone 90 degrees while long pressing and verify feedback window shows the right
+thing
+* Add a .travis.yml build config running the unit tests
+
+
+## TODO Before Getting the First Remote Beta Tester
+A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
+/ himself.
+* Add audio clicks on key releases
+* Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
+* Commit things to the view in the background. The receiving view is sometimes slow, and feeding the
+InputConnection in the background should make our keyboard feel snappy even when this happens.
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
 pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
-* Think about which versions of Android we should build for / support
 * Swipe right after a space => ". "
 * Swipe right after ". " => "... "
-* Get FeedbackWindow working with popup keyboard
 * Auto space after punctuation?
 * No auto space after punctuation inside numbers.
 * Show a marker on the keyboard where the user last hit?
 * Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
 people making spaces by mistake when hitting buttons sloppily.
-* When sliding around the numeric or a popup keyboard, show what's under your finger in a small
-(fixed in place) frame above the keyboard containing an enlarged image.
 * Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
 modify the casing of the current word, but if you keep typing it only affects the upcoming letters.
 * Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
 being automatically shifted.
-* Make holding down backspace work as expected
-* Test on different resolutions / screen sizes / screen rotations.
-* Try rotating the phone 90 degrees while long pressing and verify feedback window shows the right
-thing
-* Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard
 * Make sure swipe is canceled if finger is released outside of keyboard
-* Implicit numlock on typing first digit
-
-## TODO Before Getting the First Remote Beta Tester
-A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
-/ himself.
-* Make the SHIFT key look like a SHIFT key
+* Make the SHIFT key font smaller than the rest of the keyboard
 * Make the Backspace key look like a Backspace key
-* Add a .travis.yml build config running the unit tests
 * When the keyboard pops up, hint user what the Action swipe down will do?
 * Hint user to swipe right for space unless (s)he has already done that
 * Hint user to swipe right twice for . unless (s)he has already done that
@@ -87,6 +86,7 @@ available in Android's standard font.
 * Think about the vertical spacing of the keys; there seems to be more distance between adjacent
 lines than between the lines and the edges. Should this be adjusted?
 * Move popup keyboard code from Exactype into its own class.
+* Implicit numlock on typing first digit?
 
 ## DONE
 * Create an IME that when selected shows an empty view
@@ -128,3 +128,5 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 `getLocationOnScreen()` on the `ExactypeView` first.
 * Fade FeedbackWindow out on release rather than just disappearing?
 * Add vibrations on key presses
+* When sliding around the numeric or a popup keyboard, show what's under your finger in a small
+(fixed in place) frame above the keyboard.
