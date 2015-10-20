@@ -1,5 +1,7 @@
 # Exactype
 
+![Travis Build Status](https://api.travis-ci.org/walles/exactype.svg)
+
 Exactype is an Android keyboard focused on helping the user to type the right thing from the start
 rather than correcting the user's mistakes.
 
