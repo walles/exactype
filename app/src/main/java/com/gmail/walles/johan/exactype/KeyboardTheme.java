@@ -45,6 +45,7 @@ public class KeyboardTheme {
      */
     private static final float KEYBOARD_HEIGHT_MULTIPLIER = 1.3f;
 
+    private final int screenHeight;
     private final Paint textPaint;
     private final Paint strokePaint;
     private final int fontSize100HeightPx;
@@ -90,6 +91,8 @@ public class KeyboardTheme {
         // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
         textPaint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
         fontSize100VerticalCenterOffset = -bounds.top - bounds.height() / 2;
+
+        screenHeight = displayMetrics.heightPixels;
     }
 
     public Paint getTextPaint() {
@@ -154,19 +157,18 @@ public class KeyboardTheme {
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
         height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-        Log.i(TAG, "Bounds set to " + width + "x" + height);
+        Log.i(TAG, "Size set to " + width + "x" + height);
 
         if (height > maxHeight) {
             // Don't use more than half the height, required in landscape mode
             factor = factor * maxHeight / height;
             height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-            Log.d(TAG, "Bounds reset to " + width + "x" + height);
+            Log.d(TAG, "Size reset to " + width + "x" + height);
         }
 
         float textSize = 100 * factor / LETTER_ZOOM_OUT_FACTOR;
         textPaint.setTextSize(textSize);
         verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
-
     }
 
     /**
@@ -176,9 +178,13 @@ public class KeyboardTheme {
      * @param heightMeasureSpec From {@link View#onMeasure(int, int)}
      */
     public void setBounds(int widthMeasureSpec, int heightMeasureSpec) {
-        final int maxWidth = View.MeasureSpec.getSize(widthMeasureSpec);
-        final int maxHeight = View.MeasureSpec.getSize(heightMeasureSpec) / 2;
+        int maxWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        int maxHeight = View.MeasureSpec.getSize(heightMeasureSpec);
+        if (maxHeight > screenHeight / 2) {
+            maxHeight = screenHeight / 2;
+        }
         Log.d(TAG, "Max bounds are " + maxWidth + "x" + maxHeight);
+
         if (shouldScaleToScreenWidth) {
             scaleToScreenWidth(maxWidth, maxHeight);
 
