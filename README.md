@@ -1,5 +1,7 @@
 # Exactype
 
+![Travis Build Status](https://api.travis-ci.org/walles/exactype.svg)
+
 Exactype is an Android keyboard focused on helping the user to type the right thing from the start
 rather than correcting the user's mistakes.
 
@@ -20,8 +22,6 @@ that finger. Adjust position so that no part of the popup window is off screen.
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
 * Try rotating the phone 90 degrees while long pressing and verify feedback window shows the right
 thing
-* Add a .travis.yml build config running the unit tests
-
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -130,3 +130,4 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 * When sliding around the numeric or a popup keyboard, show what's under your finger in a small
 (fixed in place) frame above the keyboard.
 * In landscape mode, show actual screen contents rather than just a text box to type in
+* Add a .travis.yml build config running the unit tests
