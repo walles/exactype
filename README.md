@@ -10,7 +10,6 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* In landscape mode, show actual screen contents rather than just a text box to type in
 * Make holding down backspace work as expected
 * Get the FeedbackWindow working in landscape mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
@@ -130,3 +129,4 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 * Add vibrations on key presses
 * When sliding around the numeric or a popup keyboard, show what's under your finger in a small
 (fixed in place) frame above the keyboard.
+* In landscape mode, show actual screen contents rather than just a text box to type in

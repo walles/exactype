@@ -203,6 +203,12 @@ public class Exactype extends InputMethodService {
         return popupKeyboardWindow.isShowing();
     }
 
+    @Override
+    public boolean onEvaluateFullscreenMode() {
+        // Johan finds the full screen mode ugly and confusing
+        return false;
+    }
+
     public void onPopupKeyboardTapped(float x, float y) {
         // FIXME: Are we even on the popup keyboard? Abort otherwise.
 
