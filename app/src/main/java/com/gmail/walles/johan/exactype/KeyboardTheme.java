@@ -180,8 +180,8 @@ public class KeyboardTheme {
     public void setBounds(int widthMeasureSpec, int heightMeasureSpec) {
         int maxWidth = View.MeasureSpec.getSize(widthMeasureSpec);
         int maxHeight = View.MeasureSpec.getSize(heightMeasureSpec);
-        if (maxHeight > screenHeight / 2) {
-            maxHeight = screenHeight / 2;
+        if (maxHeight > screenHeight * 0.4) {
+            maxHeight = (int)(screenHeight * 0.4);
         }
         Log.d(TAG, "Max bounds are " + maxWidth + "x" + maxHeight);
 
