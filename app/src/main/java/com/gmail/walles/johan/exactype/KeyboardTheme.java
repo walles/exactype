@@ -20,10 +20,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
 public class KeyboardTheme {
+    private static final String TAG = "Exactype";
+
     public static final int BACKGROUND_COLOR = Color.BLUE;
     private static final int COLOR = Color.WHITE;
 
@@ -53,7 +56,11 @@ public class KeyboardTheme {
     private int height;
     private float verticalCenterOffset;
 
-    private boolean shouldComputeTextSize;
+    /**
+     * The full keyboard should be scaled to screen width; the popup keyboards should be scaled
+     * down if they don't fit.
+     */
+    private boolean shouldScaleToScreenWidth;
 
     public KeyboardTheme(DisplayMetrics displayMetrics) {
         strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
@@ -100,7 +107,7 @@ public class KeyboardTheme {
      * @param textSize The wanted font size to use
      */
     public void setContents(String keys, float textSize) {
-        shouldComputeTextSize = false;
+        shouldScaleToScreenWidth = false;
 
         verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
 
@@ -114,7 +121,7 @@ public class KeyboardTheme {
     }
 
     public void setShouldComputeTextSize() {
-        shouldComputeTextSize = true;
+        shouldScaleToScreenWidth = true;
     }
 
     public int getWidth() {
@@ -133,18 +140,33 @@ public class KeyboardTheme {
         return textPaint.getTextSize();
     }
 
-    private void computeTextSize(int widthMeasureSpec) {
-        width = View.MeasureSpec.getSize(widthMeasureSpec);
+    /**
+     * Compute a text size suitable for having the keyboard filling the width of the display
+     *
+     * @param maxWidth Maximum keyboard width (= screen width)
+     * @param maxHeight Maximum keyboard height (= half of the screen height)
+     */
+    private void scaleToScreenWidth(int maxWidth, int maxHeight) {
+        width = maxWidth;
 
         // Scale the font size so that the longest line matches the display width
         float factor = width / fontSize100LongestRowLength;
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
         height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
+        Log.i(TAG, "Bounds set to " + width + "x" + height);
+
+        if (height > maxHeight) {
+            // Don't use more than half the height, required in landscape mode
+            factor = factor * maxHeight / height;
+            height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
+            Log.d(TAG, "Bounds reset to " + width + "x" + height);
+        }
 
         float textSize = 100 * factor / LETTER_ZOOM_OUT_FACTOR;
         textPaint.setTextSize(textSize);
         verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
+
     }
 
     /**
@@ -154,20 +176,24 @@ public class KeyboardTheme {
      * @param heightMeasureSpec From {@link View#onMeasure(int, int)}
      */
     public void setBounds(int widthMeasureSpec, int heightMeasureSpec) {
-        if (shouldComputeTextSize) {
-            computeTextSize(widthMeasureSpec);
+        final int maxWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        final int maxHeight = View.MeasureSpec.getSize(heightMeasureSpec) / 2;
+        Log.d(TAG, "Max bounds are " + maxWidth + "x" + maxHeight);
+        if (shouldScaleToScreenWidth) {
+            scaleToScreenWidth(maxWidth, maxHeight);
+
             return;
         }
 
-        if (width > View.MeasureSpec.getSize(widthMeasureSpec)) {
-            height = (height * View.MeasureSpec.getSize(widthMeasureSpec)) / width;
-            width = View.MeasureSpec.getSize(widthMeasureSpec);
+        if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
         }
 
-        if (height > View.MeasureSpec.getSize(heightMeasureSpec)) {
+        if (height > maxHeight) {
             // This shouldn't happen; how can we become too high?
-            width = (width * View.MeasureSpec.getSize(heightMeasureSpec)) / height;
-            height = View.MeasureSpec.getSize(heightMeasureSpec);
+            width = (width * maxHeight) / height;
+            height = maxHeight;
         }
     }
 }
