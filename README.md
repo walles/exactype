@@ -12,15 +12,13 @@ Features (will) include:
 
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Make holding down backspace work as expected
-* Get the FeedbackWindow working in landscape mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
+* Make holding down backspace work as expected
 * Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
-* Think about which versions of Android we should build for / support
 * Get FeedbackWindow working with popup keyboard
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
-* Try rotating the phone 90 degrees while long pressing and verify feedback window shows the right
+* Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
 thing
 
 ## TODO Before Getting the First Remote Beta Tester
@@ -131,3 +129,5 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 (fixed in place) frame above the keyboard.
 * In landscape mode, show actual screen contents rather than just a text box to type in
 * Add a .travis.yml build config running the unit tests
+* Get the FeedbackWindow working in landscape mode.
+* Think about which versions of Android we should build for / support
