@@ -6,24 +6,45 @@ Exactype is an Android keyboard focused on helping the user to type the right th
 rather than correcting the user's mistakes.
 
 Features (will) include:
+
 * Large keys that are easy to hit
 * Instant feedback on each key press on whether or not it was precise
 * Gestures for common operations (including typing space)
 
+## Hacking
+* `git clone git@github.com:walles/exactype.git`
+* [Download and install Android Studio](https://developer.android.com/sdk/index.html)
+* Start Android Studio
+* "Open an existing Android Studio project" and point it to where you cloned the source code
+* Next to the green play button in the top toolbar, make sure the dropdown says "Exactype"
+* Click the green play button to build / launch, install any requested components
+
+Note that the shared Exactype run configuration will first run the unit tests, then launch the app.
+To run only the unit tests, start the Unit Tests launch configuration.
+
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-* Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
-that finger. Adjust position so that no part of the popup window is off screen.
-* Make holding down backspace work as expected
-* Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
-* Get FeedbackWindow working with popup keyboard
-* Test on a tablet, at least a simulated one, in both landscape and portrait mode.
+
+* Come up with a way of doing Android Studio code inspections in Travis:
+    * Download IntelliJ inspired by
+    https://github.com/pantsbuild/intellij-pants-plugin/blob/master/scripts/setup-ci-environment.sh
+    * Run inspections inspired by
+    https://www.jetbrains.com/idea/help/running-inspections-offline.html
+    * Make sure to fail the build on inspection errors (or warnings?)
+    * Make sure we also cover the following use cases for Johan:
+        * Commit directly to master. Do pre-commit inspections.
+        * Work in a branch. No pre-commit inspections.
+        * Merge a branch into master. Pre-merge inspections.
 * Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
 thing
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
+
+* Test on a tablet, at least a simulated one, in both landscape and portrait mode.
+* Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
+that finger. Adjust position so that no part of the popup window is off screen.
 * Add audio clicks on key releases
 * Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
 * Commit things to the view in the background. The receiving view is sometimes slow, and feeding the
@@ -56,6 +77,7 @@ being automatically shifted.
 * Add an Activity that helps users enabling / choosing the new keyboard.
 
 ## TODO Before Publishing on Google Play
+* Get FeedbackWindow working with popup keyboard
 * Take keyboard layouts from the AOSP keyboard and let users choose one or more in a Settings
 activity. Note that we most likely need to match their licensing terms for this.
 * Test an English layout and see how that looks; it has shorter rows than Swedish and could look
@@ -71,6 +93,8 @@ switching font or something
 * "I prefer a slanted layout, maybe we'd get that by having all keys the same size?"
 
 ## TODO Misc
+* Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
+* Make holding down backspace work as expected
 * Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
 pauses during drawing operations.
