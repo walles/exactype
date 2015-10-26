@@ -32,6 +32,11 @@ android {
 
     lintOptions {
         abortOnError true
+        warningsAsErrors true
+
+        textOutput "stdout"
+        textReport true
+
         htmlReport true
         htmlOutput file("$project.buildDir/reports/lint.html")
     }
