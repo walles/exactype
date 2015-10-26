@@ -23,16 +23,16 @@ To run only the unit tests, start the Unit Tests launch configuration.
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 
-* Come up with a way of doing Android Studio code inspections in Travis:
-    * Download IntelliJ inspired by
-    https://github.com/pantsbuild/intellij-pants-plugin/blob/master/scripts/setup-ci-environment.sh
-    * Run inspections inspired by
-    https://www.jetbrains.com/idea/help/running-inspections-offline.html
-    * Make sure to fail the build on inspection errors (or warnings?)
-    * Make sure we also cover the following use cases for Johan:
-        * Commit directly to master. Do pre-commit inspections.
-        * Work in a branch. No pre-commit inspections.
-        * Merge a branch into master. Pre-merge inspections.
+* Come up with a way of doing code inspections in Travis:
+    * Make `gradlew check` run PMD, and on error return non-zero exit code and diagnostics on stdout
+    * Make `gradlew check` run FindBugs, and on error return non-zero exit code and diagnostics on
+    stdout
+    * Make `gradlew check` run Android Lint, and on error return non-zero exit code and diagnostics
+    on stdout
+    * Make sure we cover the following use cases for Johan:
+        * Commit directly to master. Automatically do `gradlew check` first.
+        * Work in a branch. No `gradlew check` before commit.
+        * Merge a branch into master. Pre-merge `gradlew check`.
 * Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
 thing
 

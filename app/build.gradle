@@ -47,6 +47,7 @@ android {
 task pmd (type: Pmd, dependsOn: assembleDebug) {
     ruleSetFiles = files("${project.rootDir}/config/pmd-ruleset.xml")
     ignoreFailures = false
+    consoleOutput = true
     ruleSets = []
 
     source 'src'
