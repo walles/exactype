@@ -26,8 +26,8 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 * Come up with a way of doing code inspections in Travis:
     * OK: Make `gradlew check` run PMD, and on error return non-zero exit code and diagnostics on
     stdout
-    * Make `gradlew check` run FindBugs, and on error return non-zero exit code and diagnostics on
-    stdout
+    * Make `gradlew check` run FindBugs (OK), and on error return non-zero exit code (OK) and
+    diagnostics on stdout (FAIL)
     * Make `gradlew check` run Android Lint, and on error return non-zero exit code and diagnostics
     on stdout
     * Make sure we cover the following use cases for Johan:

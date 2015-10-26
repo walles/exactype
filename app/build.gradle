@@ -58,7 +58,7 @@ task pmd (type: Pmd, dependsOn: assembleDebug) {
 task findbugs(type: FindBugs) {
     ignoreFailures = false
     effort = "max"
-    reportLevel = "high"
+    reportLevel = "low"
     excludeFilter = new File("${project.rootDir}/config/findbugs-filter.xml")
     classes = files("${project.rootDir}/app/build/intermediates/classes")
 
