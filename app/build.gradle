@@ -66,6 +66,11 @@ task pmd (type: Pmd, dependsOn: assembleDebug) {
     exclude '**/gen/**'
 }
 
+// Getting text output from Findbugs is broken in the Gradle plugin
+// (https://issues.gradle.org/browse/GRADLE-2994), so if people want to diagnose a FindBugs
+// problem they'll just have to run "gradle check" locally.
+//
+// When that problem is fixed we should update this code to print a text report on stdout.
 task findbugs(type: FindBugs) {
     ignoreFailures = false
     effort = "max"

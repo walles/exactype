@@ -16,6 +16,9 @@ Features (will) include:
 * "Open an existing Android Studio project" and point it to where you cloned the source code
 * Next to the green play button in the top toolbar, make sure the dropdown says "Exactype"
 * Click the green play button to build / launch, install any requested components
+* Do `./gradlew check` to test and lint code before making a pull request. This is
+[what Travis does](https://github.com/walles/exactype/blob/master/.travis.yml) anyway, so this is
+also a good way of researching Travis problems locally.
 
 Note that the shared Exactype run configuration will first run the unit tests, then launch the app.
 To run only the unit tests, start the Unit Tests launch configuration.
@@ -26,7 +29,7 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 * Come up with a way of doing code inspections in Travis:
     * OK: Make `gradlew check` run PMD, and on error return non-zero exit code and diagnostics on
     stdout
-    * Make `gradlew check` run FindBugs (OK), and on error return non-zero exit code (OK) and
+    * FAIL: Make `gradlew check` run FindBugs (OK), and on error return non-zero exit code (OK) and
     diagnostics on stdout (FAIL)
     * OK: Make `gradlew check` run Android Lint, and on error return non-zero exit code and
     diagnostics on stdout
