@@ -31,6 +31,12 @@ android {
     }
 
     lintOptions {
+        // This test can be fine one day and not fine the next without us changing anything. Not
+        // reliable enough, disable.
+        //
+        // Docs at http://tools.android.com/tips/lint-checks
+        disable("GradleDependency")
+
         abortOnError true
         warningsAsErrors true
 
