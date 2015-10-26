@@ -31,7 +31,10 @@
     <rule ref="rulesets/java/imports.xml"/>
     <rule ref="rulesets/java/logging-java.xml"/>
     <rule ref="rulesets/java/braces.xml"/>
-    <rule ref="rulesets/java/strings.xml"/>
+    <rule ref="rulesets/java/strings.xml">
+        <exclude name="ConsecutiveAppendsShouldReuse"/>
+        <exclude name="InsufficientStringBufferDeclaration"/>
+    </rule>
     <rule ref="rulesets/java/basic.xml"/>
     <rule ref="rulesets/java/naming.xml">
         <exclude name="ShortVariable"/>
