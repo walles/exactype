@@ -16,6 +16,8 @@
 
 package com.gmail.walles.johan.exactype;
 
+import java.util.Locale;
+
 /**
  * Keeps track of coordinates for keys.
  */
@@ -42,7 +44,8 @@ public class KeyCoordinator {
 
         @Override
         public String toString() {
-            return String.format("KeyInfo{x=%d, y=%d, c='%c'}", x, y, character);
+            return String.format(Locale.getDefault(),
+                "KeyInfo{x=%d, y=%d, c='%c'}", x, y, character);
         }
 
         @Override
