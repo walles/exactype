@@ -15,6 +15,8 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
 
 android {
     compileSdkVersion 22
@@ -27,12 +29,80 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    lintOptions {
+        // This test can be fine one day and not fine the next without us changing anything. Not
+        // reliable enough, disable.
+        //
+        // Docs at http://tools.android.com/tips/lint-checks
+        disable("GradleDependency")
+
+        // This warning wants ExactypeView to implement / call View.performClick() to play a sound
+        // (but we want to do that ourselves if at all), report accessibility events (that the
+        // keyboard was clicked, but not which key, which won't help anyone), and call any
+        // registered OnClickListener (don't care, we can do that manually if deemed important in
+        // the future). Feel free to question this reasoning, but until then I'll keep this
+        // disabled.
+        disable("ClickableViewAccessibility")
+
+        abortOnError true
+        warningsAsErrors true
+
+        textOutput "stdout"
+        textReport true
+
+        htmlReport true
+        htmlOutput file("$project.buildDir/reports/lint.html")
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+task pmd (type: Pmd, dependsOn: assembleDebug) {
+    ruleSetFiles = files("${project.rootDir}/config/pmd-ruleset.xml")
+    ignoreFailures = false
+    consoleOutput = true
+    ruleSets = []
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+}
+
+// Getting text output from Findbugs is broken in the Gradle plugin
+// (https://issues.gradle.org/browse/GRADLE-2994), so if people want to diagnose a FindBugs
+// problem they'll just have to run "gradle check" locally.
+//
+// When that problem is fixed we should update this code to print a text report on stdout.
+task findbugs(type: FindBugs) {
+    reports {
+        // What we really want here is text on stdout but that doesn't work:
+        // https://issues.gradle.org/browse/GRADLE-2994
+        xml.enabled = false
+        html.enabled = true
+    }
+
+    ignoreFailures = false
+    effort = "max"
+    reportLevel = "low"
+    excludeFilter = new File("${project.rootDir}/config/findbugs-filter.xml")
+    classes = files("${project.rootDir}/app/build/intermediates/classes")
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    classpath = files()
+}
+
+check.doLast {
+    project.tasks.getByName("pmd").execute()
+    project.tasks.getByName("findbugs").execute()
 }
 
 dependencies {

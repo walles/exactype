@@ -87,10 +87,10 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
 
         // Copy keyboard pixels into our .canvas
         Rect source = new Rect(
-            (int)(lastX - size / 2),
-            (int)(lastY - size / 2),
-            (int)(lastX + size / 2),
-            (int)(lastY + size / 2));
+            (int)(lastX - size / 2f),
+            (int)(lastY - size / 2f),
+            (int)(lastX + size / 2f),
+            (int)(lastY + size / 2f));
         Rect dest = new Rect(0, 0, size - 1, size -1);
         canvas.drawBitmap(exactypeView.getBitmap(), source, dest, null);
 
@@ -122,8 +122,8 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
         lastY = y;
         update();
 
-        float xCenter = exactypeView.getWidth() / 2;
-        float x0 = xCenter - (window.getWidth() / 2);
+        float xCenter = exactypeView.getWidth() / 2f;
+        float x0 = xCenter - (window.getWidth() / 2f);
 
         float y0 = -window.getHeight();
 

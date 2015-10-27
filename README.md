@@ -16,6 +16,9 @@ Features (will) include:
 * "Open an existing Android Studio project" and point it to where you cloned the source code
 * Next to the green play button in the top toolbar, make sure the dropdown says "Exactype"
 * Click the green play button to build / launch, install any requested components
+* Do `./gradlew check` to test and lint code before making a pull request. This is
+[what Travis does](https://github.com/walles/exactype/blob/master/.travis.yml) anyway, so this is
+also a good way of researching Travis problems locally.
 
 Note that the shared Exactype run configuration will first run the unit tests, then launch the app.
 To run only the unit tests, start the Unit Tests launch configuration.
@@ -23,16 +26,6 @@ To run only the unit tests, start the Unit Tests launch configuration.
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 
-* Come up with a way of doing Android Studio code inspections in Travis:
-    * Download IntelliJ inspired by
-    https://github.com/pantsbuild/intellij-pants-plugin/blob/master/scripts/setup-ci-environment.sh
-    * Run inspections inspired by
-    https://www.jetbrains.com/idea/help/running-inspections-offline.html
-    * Make sure to fail the build on inspection errors (or warnings?)
-    * Make sure we also cover the following use cases for Johan:
-        * Commit directly to master. Do pre-commit inspections.
-        * Work in a branch. No pre-commit inspections.
-        * Merge a branch into master. Pre-merge inspections.
 * Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
 thing
 
@@ -40,6 +33,7 @@ thing
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 
+* Start out with numeric keyboard if the input field is tagged as being numeric.
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
@@ -153,3 +147,4 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 * Add a .travis.yml build config running the unit tests
 * Get the FeedbackWindow working in landscape mode.
 * Think about which versions of Android we should build for / support
+* Come up with a way of doing code inspections in Travis
