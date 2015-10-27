@@ -26,17 +26,6 @@ To run only the unit tests, start the Unit Tests launch configuration.
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 
-* Come up with a way of doing code inspections in Travis:
-    * OK: Make `gradlew check` run PMD, and on error return non-zero exit code and diagnostics on
-    stdout
-    * FAIL: Make `gradlew check` run FindBugs (OK), and on error return non-zero exit code (OK) and
-    diagnostics on stdout (FAIL)
-    * OK: Make `gradlew check` run Android Lint, and on error return non-zero exit code and
-    diagnostics on stdout
-    * Make sure we cover the following use cases for Johan:
-        * Commit directly to master. Automatically do `gradlew check` first.
-        * Work in a branch. No `gradlew check` before commit.
-        * Merge a branch into master. Pre-merge `gradlew check`.
 * Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
 thing
 
@@ -158,3 +147,4 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 * Add a .travis.yml build config running the unit tests
 * Get the FeedbackWindow working in landscape mode.
 * Think about which versions of Android we should build for / support
+* Come up with a way of doing code inspections in Travis
