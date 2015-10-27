@@ -44,6 +44,7 @@ thing
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 
+* Start out with numeric keyboard if the input field is tagged as being numeric.
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
