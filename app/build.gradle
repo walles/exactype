@@ -80,6 +80,13 @@ task pmd (type: Pmd, dependsOn: assembleDebug) {
 //
 // When that problem is fixed we should update this code to print a text report on stdout.
 task findbugs(type: FindBugs) {
+    reports {
+        // What we really want here is text on stdout but that doesn't work:
+        // https://issues.gradle.org/browse/GRADLE-2994
+        xml.enabled = false
+        html.enabled = true
+    }
+
     ignoreFailures = false
     effort = "max"
     reportLevel = "low"
