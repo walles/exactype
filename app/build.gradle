@@ -37,6 +37,14 @@ android {
         // Docs at http://tools.android.com/tips/lint-checks
         disable("GradleDependency")
 
+        // This warning wants ExactypeView to implement / call View.performClick() to play a sound
+        // (but we want to do that ourselves if at all), report accessibility events (that the
+        // keyboard was clicked, but not which key, which won't help anyone), and call any
+        // registered OnClickListener (don't care, we can do that manually if deemed important in
+        // the future). Feel free to question this reasoning, but until then I'll keep this
+        // disabled.
+        disable("ClickableViewAccessibility")
+
         abortOnError true
         warningsAsErrors true
 
