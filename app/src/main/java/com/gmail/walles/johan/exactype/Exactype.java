@@ -17,6 +17,7 @@
 package com.gmail.walles.johan.exactype;
 
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -103,6 +104,15 @@ public class Exactype extends InputMethodService {
         vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
 
         return view;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // Make sure we don't leave stray popup windows behind that are impossible to get rid of
+        feedbackWindow.close();
+        popupKeyboardWindow.dismiss();
+
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

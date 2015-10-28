@@ -28,10 +28,8 @@ To run only the unit tests, start the Unit Tests launch configuration.
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 
-* Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
-thing
-* Try rotating the phone 90 degrees while a popup keyboard is showing and verify nothing bad
-happens
+* Publish beta to Android Market
+* Add some user to the beta program and install on their device
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -152,3 +150,7 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 * Get the FeedbackWindow working in landscape mode.
 * Think about which versions of Android we should build for / support
 * Come up with a way of doing code inspections in Travis
+* Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
+thing
+* Try rotating the phone 90 degrees while a popup keyboard is showing and verify nothing bad
+happens
