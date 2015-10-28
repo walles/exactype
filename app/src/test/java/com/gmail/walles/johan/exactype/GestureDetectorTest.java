@@ -61,8 +61,8 @@ public class GestureDetectorTest {
     private List<PostedEvent> postedEvents;
 
     private static class PostedEvent {
-        public Runnable runnable;
-        public long timeout;
+        public final Runnable runnable;
+        public final long timeout;
         public PostedEvent(Runnable runnable, long timeout) {
             this.runnable = runnable;
             this.timeout = timeout;
@@ -219,7 +219,7 @@ public class GestureDetectorTest {
         }
 
         // Move half way
-        doMotion(T0 + halfWayDt, MotionEvent.ACTION_MOVE, X0 + dx / 2, Y0 + dy / 2);
+        doMotion(T0 + halfWayDt, MotionEvent.ACTION_MOVE, X0 + dx / 2f, Y0 + dy / 2f);
 
         // Release after moving the rest of the way
         doMotion(T0 + dt, MotionEvent.ACTION_UP, X0 + dx, Y0 + dy);

@@ -90,7 +90,7 @@ public class KeyboardTheme {
 
         // From: http://www.slideshare.net/rtc1/intro-todrawingtextandroid
         textPaint.getTextBounds(ALL_HEIGHTS, 0, ALL_HEIGHTS.length(), bounds);
-        fontSize100VerticalCenterOffset = -bounds.top - bounds.height() / 2;
+        fontSize100VerticalCenterOffset = -bounds.top - bounds.height() / 2f;
 
         screenHeight = displayMetrics.heightPixels;
     }

@@ -30,6 +30,8 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 
 * Try rotating the phone 90 degrees while long pressing and verify FeedbackWindow shows the right
 thing
+* Try rotating the phone 90 degrees while a popup keyboard is showing and verify nothing bad
+happens
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself

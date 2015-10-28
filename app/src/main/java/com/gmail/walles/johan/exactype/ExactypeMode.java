@@ -118,7 +118,7 @@ public class ExactypeMode {
                     // lowercase -> uppercase -> numlock
                     switchKey = SwitchKey.NUMLOCK;
                 } else {
-                    // numlock -> uppercase -> lowercase
+                    // Numlock -> uppercase -> lowercase
                     switchKey = SwitchKey.TO_LOWER;
                 }
                 break;

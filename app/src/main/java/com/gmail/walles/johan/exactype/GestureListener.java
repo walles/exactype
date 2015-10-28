@@ -44,19 +44,18 @@ public class GestureListener {
         return true;
     }
 
-    private boolean handleDownSwipe(float dx, float dy) {
+    private void handleDownSwipe(float dx, float dy) {
         if (dy <= 0) {
             // More up than down
-            return false;
+            return;
         }
         if (Math.abs(dx) > dy) {
             // More left / right than down
-            return false;
+            return;
         }
 
         // Down swipe, action!
         exactype.onActionTapped();
-        return true;
     }
 
     public void onSwipe(float dx, float dy) {

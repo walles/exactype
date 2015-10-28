@@ -2,6 +2,23 @@
   <dictionary name="johan">
     <words>
       <w>Exactype</w>
+      <w>aosp</w>
+      <w>asdfghjklöä</w>
+      <w>bolding</w>
+      <w>emoji</w>
+      <w>findbugsfilter</w>
+      <w>googlecode</w>
+      <w>keypress</w>
+      <w>numlock</w>
+      <w>numlocked</w>
+      <w>perf</w>
+      <w>qwertyuiopå</w>
+      <w>ruleset</w>
+      <w>rulesets</w>
+      <w>todrawingtextandroid</w>
+      <w>unshifted</w>
+      <w>zxcvbnm</w>
+      <w>éèëe</w>
     </words>
   </dictionary>
 </component>
