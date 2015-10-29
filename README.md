@@ -25,6 +25,13 @@ also a good way of researching Travis problems locally.
 Note that the shared Exactype run configuration will first run the unit tests, then launch the app.
 To run only the unit tests, start the Unit Tests launch configuration.
 
+## Releasing
+1. Do ```git tag``` and think about what the next version number should be.
+2. Do ```git tag version-1.2.3``` to set the next version number.
+3. ```env JAVA_OPTS=-Xmx512m ./gradlew --no-daemon build```
+4. ```git push --tags```
+5. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
+
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 
@@ -102,6 +109,8 @@ available in Android's standard font.
 lines than between the lines and the edges. Should this be adjusted?
 * Move popup keyboard code from Exactype into its own class.
 * Implicit numlock on typing first digit?
+* On multi touch, interpret the second touch as the end of the first and the start of another single
+touch gesture? How would this interact with two finger swipe for switching layouts?
 
 ## DONE
 * Create an IME that when selected shows an empty view
