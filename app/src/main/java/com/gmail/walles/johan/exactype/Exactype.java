@@ -109,8 +109,12 @@ public class Exactype extends InputMethodService {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         // Make sure we don't leave stray popup windows behind that are impossible to get rid of
-        feedbackWindow.close();
-        popupKeyboardWindow.dismiss();
+        if (feedbackWindow != null) {
+            feedbackWindow.close();
+        }
+        if (popupKeyboardWindow != null) {
+            popupKeyboardWindow.dismiss();
+        }
 
         super.onConfigurationChanged(newConfig);
     }
