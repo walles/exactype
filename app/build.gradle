@@ -87,7 +87,7 @@ android {
 
     signingConfigs {
         release {
-            if (System.console()) {
+            if (System.console() && System.getenv('CI') != "true") {
                 storeFile file(System.console().readLine("\n\$ Enter keystore path: "))
                 storePassword System.console().readLine("\n\$ Enter keystore password: ")
                 keyAlias System.console().readLine("\n\$ Enter key alias: ")
