@@ -42,6 +42,7 @@ A supervised beta tester would be somebody I'm in daily contact with and can dis
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 
+* Fulfill the "Designed for Tablets" criteria on Google Play Store
 * Start out with numeric keyboard if the input field is tagged as being numeric.
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
