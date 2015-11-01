@@ -25,6 +25,11 @@ also a good way of researching Travis problems locally.
 Note that the shared Exactype run configuration will first run the unit tests, then launch the app.
 To run only the unit tests, start the Unit Tests launch configuration.
 
+## Icon
+The `ic_launcher.png` icon is generated from [icon.blend](https://github.com/walles/exactype/blob/master/app/graphics/icon.blend).
+
+To work with the icon, [download the latest version of Blender](http://blender.org/download).
+
 ## Releasing
 1. Do ```git tag``` and think about what the next version number should be.
 2. Do ```git tag version-1.2.3``` to set the next version number.

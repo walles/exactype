@@ -5,3 +5,4 @@
 .DS_Store
 /build
 /captures
+*.blend[1-9]

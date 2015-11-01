@@ -67,6 +67,10 @@ android {
         // Docs at http://tools.android.com/tips/lint-checks
         disable("GradleDependency")
 
+        // Johan doesn't want to generate multiple icon sizes; most phones can resize an icon just
+        // fine by itself.
+        disable("IconMissingDensityFolder")
+
         // This warning wants ExactypeView to implement / call View.performClick() to play a sound
         // (but we want to do that ourselves if at all), report accessibility events (that the
         // keyboard was clicked, but not which key, which won't help anyone), and call any
