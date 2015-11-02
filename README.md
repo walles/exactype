@@ -40,7 +40,6 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 ## TODO Before Getting the First Supervised Beta Tester
 A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
 
-* Publish beta to Android Market
 * Add some user to the beta program and install on their device
 
 ## TODO Before Getting the First Remote Beta Tester
@@ -169,3 +168,4 @@ find out where to position it, you may (or may not) have to call `getLocationInW
 thing
 * Try rotating the phone 90 degrees while a popup keyboard is showing and verify nothing bad
 happens
+* Publish beta to Android Market
