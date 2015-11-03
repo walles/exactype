@@ -116,6 +116,9 @@ lines than between the lines and the edges. Should this be adjusted?
 * Implicit numlock on typing first digit?
 * On multi touch, interpret the second touch as the end of the first and the start of another single
 touch gesture? How would this interact with two finger swipe for switching layouts?
+* Limit keyboard height in millimeters. Try out a good upper bound on a 10 inch tablet.
+* On phone / landscape, maybe compress keyboard height to two lines by shifting the middle row to
+the side? This would require the same spacing on all rows.
 
 ## DONE
 * Create an IME that when selected shows an empty view
