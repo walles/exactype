@@ -37,49 +37,22 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 4. ```git push --tags```
 5. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
 
-## TODO Before Getting the First Supervised Beta Tester
-A supervised beta tester would be somebody I'm in daily contact with and can discuss issues with.
-
-* Add some user to the beta program and install on their device
-
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 
-* Fulfill the "Designed for Tablets" criteria on Google Play Store
-* Test on a tablet, at least a simulated one, in both landscape and portrait mode.
+* Add an Activity that helps users enabling / choosing the new keyboard.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
-* Add audio clicks on key releases
-* Automatic SHIFT handling while typing; caps after '.' for example on caps-mode-sentence fields.
-* Commit things to the view in the background. The receiving view is sometimes slow, and feeding the
-InputConnection in the background should make our keyboard feel snappy even when this happens.
-* Condition audio / vibration feedback on how close the hit was to the key we think the user
-pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
-* Swipe right after a space => ". "
-* Swipe right after ". " => "... "
-* Auto space after punctuation?
-* No auto space after punctuation inside numbers.
-* Show a marker on the keyboard where the user last hit?
-* Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
-people making spaces by mistake when hitting buttons sloppily.
-* Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
-modify the casing of the current word, but if you keep typing it only affects the upcoming letters.
-* Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
-being automatically shifted.
-* Make sure popup keyboard is ignored if finger is released outside of it
-* Make sure long press is canceled if finger is released outside of keyboard
-* Make sure swipe is canceled if finger is released outside of keyboard
 * Make the SHIFT key font smaller than the rest of the keyboard
 * Make the Backspace key look like a Backspace key
-* When the keyboard pops up, hint user what the Action swipe down will do?
+* Hint user about the Action swipe down unless (s)he has already practiced it
 * Hint user to swipe right for space unless (s)he has already done that
 * Hint user to swipe right twice for . unless (s)he has already done that
 * Hint user to swipe right three times for ... unless (s)he has already done that
 * Hint user to long press for numbers unless (s)he has already done that
 * Hint user to press even longer for alternative letters unless (s)he has already done that
 * Hint user to hold shift for numlock unless (s)he has already done that
-* Add an Activity that helps users enabling / choosing the new keyboard.
 
 ## TODO Before Publishing on Google Play
 * Get FeedbackWindow working with popup keyboard
@@ -88,7 +61,6 @@ activity. Note that we most likely need to match their licensing terms for this.
 * Test an English layout and see how that looks; it has shorter rows than Swedish and could look
 bad.
 * Change keyboard layout by swiping left or right with two fingers.
-* Think about splitting the keyboard when wide enough
 * Think about emoji support, or can we do that after Google Play?
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
@@ -118,6 +90,29 @@ touch gesture? How would this interact with two finger swipe for switching layou
 * Limit keyboard height in millimeters. Try out a good upper bound on a 10 inch tablet.
 * On phone / landscape, maybe compress keyboard height to two lines by shifting the middle row to
 the side? This would require the same spacing on all rows.
+* Add audio clicks on key releases?
+* Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
+people making spaces by mistake when hitting buttons sloppily.
+* Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
+modify the casing of the current word, but if you keep typing it only affects the upcoming letters?
+* Make sure two SHIFT presses means ALL CAPS. Both when starting with lowercase letters and when
+being automatically shifted?
+* Commit things to the view in the background? The receiving view is sometimes slow, and feeding the
+InputConnection in the background should make our keyboard feel snappy even when this happens.
+* Automatic caps after '.' on caps-mode-sentence fields. Or always when typing text?
+But not in numbers.
+* Condition audio / vibration feedback on how close the hit was to the key we think the user
+pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
+* Sound instead of vibrations on non-vibrating hardware?
+* Swipe right after a space => ". "?
+* Swipe right after ". " => "... "?
+* Auto space after punctuation?
+* No auto space after punctuation inside numbers.
+* Show a marker on the keyboard where the user last hit?
+* For tablets, consider splitting the keyboard when wide enough
+* Make sure popup keyboard is ignored if finger is released outside of it
+* Make sure long press is canceled if finger is released outside of keyboard
+* Make sure swipe is canceled if finger is released outside of keyboard
 
 ## DONE
 * Create an IME that when selected shows an empty view
@@ -172,3 +167,5 @@ thing
 happens
 * Publish beta to Android Market
 * Start out with numeric keyboard if the input field is tagged as being numeric.
+* Fulfill the "Designed for Tablets" criteria on Google Play Store
+* Test on a tablet, at least a simulated one, in both landscape and portrait mode.
