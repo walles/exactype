@@ -171,13 +171,12 @@ public class ExactypeMode {
     private void registerNumeric(Event event) {
         switch (event) {
             case INSERT_CHAR:
-                if (switchKey == SwitchKey.NUMLOCK) {
-                    // Numlock not in effect because we have a key for switching it on
-                    currentKeyboard = lowercase;
-                    switchKey = SwitchKey.TO_UPPER;
-                } else {
-                    // We're numlocked, do nothing!
+                if (isNumlocked()) {
+                    return;
                 }
+
+                currentKeyboard = lowercase;
+                switchKey = SwitchKey.TO_UPPER;
                 break;
 
             case LONG_PRESS:
@@ -234,6 +233,23 @@ public class ExactypeMode {
                 listener.onModeChange(currentKeyboard, switchKey);
             }
         }
+    }
+
+    public void setNumeric() {
+        if (isNumlocked()) {
+            return;
+        }
+
+        switchKey = (currentKeyboard == caps) ? SwitchKey.TO_UPPER : SwitchKey.TO_LOWER;
+        currentKeyboard = numeric;
+
+        for (ModeChangeListener listener : listeners) {
+            listener.onModeChange(currentKeyboard, switchKey);
+        }
+    }
+
+    private boolean isNumlocked() {
+        return currentKeyboard == numeric && switchKey != SwitchKey.NUMLOCK;
     }
 
     public SwitchKey getModeSwitchKey() {

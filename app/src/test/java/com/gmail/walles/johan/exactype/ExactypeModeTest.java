@@ -201,6 +201,14 @@ public class ExactypeModeTest {
         assertMode(LOWERCASE, ExactypeMode.SwitchKey.TO_UPPER, testMe);
     }
 
+    @Test
+    public void testSetNumeric() {
+        ExactypeMode testMe = createMode();
+
+        testMe.setNumeric();
+        assertMode(NUMERIC, ExactypeMode.SwitchKey.TO_UPPER, testMe);
+    }
+
     private static class LoggingListener implements ExactypeMode.ModeChangeListener {
         private String rows[];
         private ExactypeMode.SwitchKey switchKey;
@@ -271,6 +279,30 @@ public class ExactypeModeTest {
         testMe.setShifted(false);
 
         // Assert that the listener was not called, since we're still at the lowercase keyboard
+        Assert.assertNull(listener.getRows());
+        Assert.assertNull(listener.getSwitchKey());
+    }
+
+    @Test
+    public void testSetNumericCallback() {
+        ExactypeMode testMe = createMode();
+
+        LoggingListener listener = new LoggingListener();
+        testMe.addModeChangeListener(listener);
+
+        // Assert that the listener was called with the expected initial keyboard (caps)
+        Assert.assertArrayEquals(CAPS, listener.getRows());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_LOWER, listener.getSwitchKey());
+
+        testMe.setNumeric();
+
+        // Assert that the listener was called with the numeric keyboard
+        Assert.assertArrayEquals(NUMERIC, listener.getRows());
+        Assert.assertEquals(ExactypeMode.SwitchKey.TO_UPPER, listener.getSwitchKey());
+
+        testMe.setNumeric();
+
+        // Assert that the listener was not called, since we're still at the numeric keyboard
         Assert.assertNull(listener.getRows());
         Assert.assertNull(listener.getSwitchKey());
     }

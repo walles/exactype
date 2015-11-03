@@ -47,7 +47,6 @@ A remote beta tester is somebody I'm not in daily contact with and who will have
 / himself.
 
 * Fulfill the "Designed for Tablets" criteria on Google Play Store
-* Start out with numeric keyboard if the input field is tagged as being numeric.
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
@@ -172,3 +171,4 @@ thing
 * Try rotating the phone 90 degrees while a popup keyboard is showing and verify nothing bad
 happens
 * Publish beta to Android Market
+* Start out with numeric keyboard if the input field is tagged as being numeric.

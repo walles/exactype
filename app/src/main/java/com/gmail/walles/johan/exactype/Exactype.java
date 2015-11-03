@@ -21,6 +21,7 @@ import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -125,6 +126,10 @@ public class Exactype extends InputMethodService {
         // "start out in caps mode":
         // http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html#initialCapsMode
         mode.setShifted(editorInfo.initialCapsMode != 0);
+
+        if ((editorInfo.inputType & InputType.TYPE_MASK_CLASS) != InputType.TYPE_CLASS_TEXT) {
+            mode.setNumeric();
+        }
 
         this.editorInfo = editorInfo;
     }
