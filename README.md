@@ -48,6 +48,13 @@ for auto correction.
 ## TODO Prioritized Beta User Issues
 * Add emoji support
 
+## TODO for Emoji Support
+* Add an EmojiView. It should support scrolling vertically to display more emojis. It should be the
+same size as a keyboard.
+* Add emojis to the EmojiView.
+* Make clicking an emoji add it to the input field.
+* Add a keyboard selector thing that on left swipe scrolls the next keyboard into view.
+
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
@@ -55,6 +62,7 @@ A remote beta tester is somebody I'm not in daily contact with and who will have
 * Add an Activity that helps users enabling / choosing the new keyboard.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
+* Add an emoji keyboard. Switch layouts by swiping left.
 * Make the SHIFT key font smaller than the rest of the keyboard
 * Make the Backspace key look like a Backspace key
 * Hint user about the Action swipe down unless (s)he has already practiced it
@@ -67,8 +75,6 @@ that finger. Adjust position so that no part of the popup window is off screen.
 
 ## TODO Before Publishing on Google Play
 * Get FeedbackWindow working with popup keyboard
-* Take keyboard layouts from the AOSP keyboard and let users choose one or more in a Settings
-activity. Note that we most likely need to match their licensing terms for this.
 * Test an English layout and see how that looks; it has shorter rows than Swedish and could look
 bad.
 * Change keyboard layout by swiping left or right with two fingers.
@@ -112,6 +118,7 @@ the user switches input fields.
 
 ## TODO Misc
 * Are there cases where we should explicitly close ourselves? In onUnbindInput() for example?
+* Add more keyboard layouts.
 * Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
 * Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
@@ -149,6 +156,10 @@ But not in numbers.
 * Make sure swipe is canceled if finger is released outside of keyboard
 * Make sure the vibration duration pref slider doesn't disappear if the user rotates the device
 while the slider is showing
+
+## Won't do
+* Take keyboard layouts from the AOSP keyboard. I looked into this and it was much too complicated.
+Plan B is to create my own layouts and try them on various beta testers.
 
 ## DONE
 * Create an IME that when selected shows an empty view
