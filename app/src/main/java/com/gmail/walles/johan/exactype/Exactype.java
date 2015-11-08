@@ -122,6 +122,10 @@ public class Exactype extends InputMethodService {
 
     @Override
     public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
+        if (restarting) {
+            return;
+        }
+
         // The initialCapsMode docs say that you should generally just take a non-zero value to mean
         // "start out in caps mode":
         // http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html#initialCapsMode
