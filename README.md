@@ -32,10 +32,13 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 
 ## Releasing
 1. Do ```git tag``` and think about what the next version number should be.
-2. Do ```git tag version-1.2.3``` to set the next version number.
+2. Do ```git tag --annotate version-1.2.3``` to set the next version number.
 3. ```env JAVA_OPTS=-Xmx512m ./gradlew --no-daemon build```
-4. ```git push --tags```
-5. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
+4. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
+5. ```git push --tags```
+
+## TODO Prioritized Beta User Issues
+* Make holding down backspace work as expected
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -71,7 +74,6 @@ switching font or something
 
 ## TODO Misc
 * Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
-* Make holding down backspace work as expected
 * Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
 pauses during drawing operations.
