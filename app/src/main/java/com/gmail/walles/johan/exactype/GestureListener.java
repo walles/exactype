@@ -95,6 +95,15 @@ public class GestureListener {
         }
     }
 
+    public void onHold(float x, float y) {
+        char tappedKey = keyCoordinator.getClosestKey(x, y);
+        if (tappedKey != '⌫') {
+            return;
+        }
+
+        exactype.onDeleteTapped();
+    }
+
     public void onDown(float x, float y) {
         exactype.onTouchStart(x, y);
     }

@@ -37,8 +37,15 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 4. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
 5. ```git push --tags```
 
+## TODO for Repeating Backspace
+* Enable the GestureDetector to detect and repetitively report press-and-hold
+* Enable the GestureListener to report holding-delete to Exactype
+* Make sure the GestureListener does *not* report long press / long long press when delete is held
+* Perform word-at-a-time delete when delete is held
+
 ## TODO Prioritized Beta User Issues
 * Make holding down backspace work as expected
+* Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -64,7 +71,6 @@ activity. Note that we most likely need to match their licensing terms for this.
 * Test an English layout and see how that looks; it has shorter rows than Swedish and could look
 bad.
 * Change keyboard layout by swiping left or right with two fingers.
-* Think about emoji support, or can we do that after Google Play?
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
 
