@@ -46,7 +46,7 @@ public class GestureDetector {
         this.listener = listener;
     }
 
-    private void setStart(@Nullable MotionEvent e) {
+    private void setStart(@Nullable final MotionEvent e) {
         if (e == null) {
             startTime = 0;
             isLongPressing = false;
@@ -85,6 +85,28 @@ public class GestureDetector {
                                    }
                                }
                            },
+            GestureDetector.this,
+            startTime + longPressTimeout);
+
+        handler.postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                if (Math.abs(mostRecentX - startX) > touchSlop) {
+                    // We moved too much for a hold, never mind
+                    return;
+                }
+                if (Math.abs(mostRecentY - startY) > touchSlop) {
+                    // We moved too much for a hold, never mind
+                    return;
+                }
+
+                listener.onHold(mostRecentX, mostRecentY);
+
+                handler.postAtTime(
+                    this,
+                    GestureDetector.this,
+                    e.getEventTime() + longPressTimeout / 2);
+            }},
             GestureDetector.this,
             startTime + longPressTimeout);
     }

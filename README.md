@@ -38,7 +38,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO for Repeating Backspace
-* Enable the GestureDetector to detect and repetitively report press-and-hold
+* OK: Enable the GestureDetector to detect and repetitively report press-and-hold
 * Enable the GestureListener to report holding-delete to Exactype
 * Make sure the GestureListener does *not* report long press / long long press when delete is held
 * Perform word-at-a-time delete when delete is held

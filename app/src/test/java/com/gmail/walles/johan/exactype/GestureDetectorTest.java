@@ -360,10 +360,10 @@ public class GestureDetectorTest {
         Mockito.verify(listener).onHold(X0, Y0);
 
         doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 2);
-        Mockito.verify(listener).onHold(X0, Y0);
+        Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
         doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2);
-        Mockito.verify(listener).onHold(X0, Y0);
+        Mockito.verify(listener, Mockito.times(3)).onHold(X0, Y0);
 
         doMotion(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
         Mockito.verify(listener).onUp();
@@ -380,20 +380,23 @@ public class GestureDetectorTest {
         Mockito.verify(listener).onHold(X0, Y0);
 
         doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 2);
-        Mockito.verify(listener).onHold(X0, Y0);
+        Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
         // Moving a little shouldn't cancel anything
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2), MotionEvent.ACTION_MOVE,
-            X0 + TOUCH_SLOP - 1, Y0 + TOUCH_SLOP - 1);
-        Mockito.verify(listener).onHold(X0, Y0);
+        float x = X0 + TOUCH_SLOP - 1;
+        float y = Y0 + TOUCH_SLOP - 1;
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 3), MotionEvent.ACTION_MOVE, x, y);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2);
+        Mockito.verify(listener).onHold(x, y);
 
         // Moving more...
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3), MotionEvent.ACTION_MOVE,
-            X0 + TOUCH_SLOP + 1, Y0 + TOUCH_SLOP + 1);
+        x = X0 + TOUCH_SLOP + 1;
+        y = Y0 + TOUCH_SLOP + 1;
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3), MotionEvent.ACTION_MOVE, x, y);
 
         // ... should cancel the onHold() calls
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT * 10);
-        Mockito.verify(listener, Mockito.never()).onHold(Mockito.anyFloat(), Mockito.anyFloat());
+        Mockito.verify(listener, Mockito.never()).onHold(x, y);
 
         // We should still get onUp().
         doMotion(T0 + LONG_PRESS_TIMEOUT * 11, MotionEvent.ACTION_UP,
