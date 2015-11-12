@@ -74,6 +74,7 @@ public class GestureListenerTest {
         GestureListener testMe = new GestureListener(exactype);
         setKey(testMe, '⌫');
 
+        testMe.onLongPress(5f, 6f);
         testMe.onLongLongPress(5, 6);
         Mockito.verifyNoMoreInteractions(exactype);
     }

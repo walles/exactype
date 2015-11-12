@@ -78,10 +78,20 @@ public class GestureListener {
 
     public void onLongPress(float x, float y) {
         longPressKey = keyCoordinator.getClosestKey(x, y);
+        if (longPressKey == '⌫') {
+            // We report repeats for delete, not long presses
+            return;
+        }
+
         exactype.onLongPress();
     }
 
     public void onLongLongPress(float x, float y) {
+        if (longPressKey == '⌫') {
+            // We want repeats for delete, not popup keyboards
+            return;
+        }
+
         exactype.onRequestPopupKeyboard(longPressKey, x, y);
     }
 
