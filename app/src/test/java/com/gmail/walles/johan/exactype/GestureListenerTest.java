@@ -47,4 +47,45 @@ public class GestureListenerTest {
         testMe.onHold(10, 10);
         Mockito.verifyNoMoreInteractions(exactype);
     }
+
+    @Test
+    public void testOnLongPressDelete() {
+        Exactype exactype = Mockito.mock(Exactype.class);
+        GestureListener testMe = new GestureListener(exactype);
+        setKey(testMe, '⌫');
+
+        testMe.onLongPress(5, 6);
+        Mockito.verifyNoMoreInteractions(exactype);
+    }
+
+    @Test
+    public void testOnLongPressNonDelete() {
+        Exactype exactype = Mockito.mock(Exactype.class);
+        GestureListener testMe = new GestureListener(exactype);
+        setKey(testMe, 'x');
+
+        testMe.onLongPress(5, 6);
+        Mockito.verify(exactype).onLongPress();
+    }
+
+    @Test
+    public void testOnLongLongPressDelete() {
+        Exactype exactype = Mockito.mock(Exactype.class);
+        GestureListener testMe = new GestureListener(exactype);
+        setKey(testMe, '⌫');
+
+        testMe.onLongLongPress(5, 6);
+        Mockito.verifyNoMoreInteractions(exactype);
+    }
+
+    @Test
+    public void testOnLongLongPressNonDelete() {
+        Exactype exactype = Mockito.mock(Exactype.class);
+        GestureListener testMe = new GestureListener(exactype);
+        setKey(testMe, 'x');
+
+        testMe.onLongPress(5f, 6f);
+        testMe.onLongLongPress(5f, 6f);
+        Mockito.verify(exactype).onRequestPopupKeyboard('x', 5f, 6f);
+    }
 }

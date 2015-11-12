@@ -74,6 +74,16 @@ bad.
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
 
+## Feedback ideas
+* Add audio clicks on key releases?
+* Condition audio / vibration feedback on how close the hit was to the key we think the user
+pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
+* Sound instead of vibrations on non-vibrating hardware?
+* Show a marker on the keyboard where the user last hit?
+* If the user is too off in her press, neither buzz nor add a key. We need some kind of feedback
+though to tell the user that "I know you pressed, but it was too bad a hit so you need to improve".
+Maybe flash the keyboard red as well and put a marker where the user pressed?
+
 ## User Feedback
 * "I prefer having all keys the same size"
 * "I prefer a slanted layout, maybe we'd get that by having all keys the same size?"
@@ -98,7 +108,6 @@ touch gesture? How would this interact with two finger swipe for switching layou
 * Limit keyboard height in millimeters. Try out a good upper bound on a 10 inch tablet.
 * On phone / landscape, maybe compress keyboard height to two lines by shifting the middle row to
 the side? This would require the same spacing on all rows.
-* Add audio clicks on key releases?
 * Think about how much a user should need to swipe at the minimum to make a space; we want to avoid
 people making spaces by mistake when hitting buttons sloppily.
 * Pressing SHIFT at the middle / end of words should work as in SwiftKey; it should primarily
@@ -109,14 +118,10 @@ being automatically shifted?
 InputConnection in the background should make our keyboard feel snappy even when this happens.
 * Automatic caps after '.' on caps-mode-sentence fields. Or always when typing text?
 But not in numbers.
-* Condition audio / vibration feedback on how close the hit was to the key we think the user
-pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
-* Sound instead of vibrations on non-vibrating hardware?
 * Swipe right after a space => ". "?
 * Swipe right after ". " => "... "?
 * Auto space after punctuation?
 * No auto space after punctuation inside numbers.
-* Show a marker on the keyboard where the user last hit?
 * For tablets, consider splitting the keyboard when wide enough
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard
