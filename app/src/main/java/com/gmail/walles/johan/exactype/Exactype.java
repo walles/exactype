@@ -152,8 +152,8 @@ public class Exactype extends InputMethodService {
     }
 
     public void onDeleteTapped() {
-        InputConnection inputConnection = getCurrentInputConnection();
         Timer timer = new Timer();
+        InputConnection inputConnection = getCurrentInputConnection();
         timer.addLeg("get selection");
         CharSequence selection = inputConnection.getSelectedText(0);
         if (TextUtils.isEmpty(selection)) {
@@ -166,6 +166,10 @@ public class Exactype extends InputMethodService {
             inputConnection.commitText("", 1);
         }
         Log.d(TAG, "PERF: Delete took " + timer);
+    }
+
+    public void onDeleteHeld() {
+
     }
 
     public void onKeyboardModeSwitchRequested() {

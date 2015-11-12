@@ -35,7 +35,7 @@ public class GestureListenerTest {
         setKey(testMe, '⌫');
 
         testMe.onHold(10, 10);
-        Mockito.verify(exactype).onDeleteTapped();
+        Mockito.verify(exactype).onDeleteHeld();
     }
 
     @Test

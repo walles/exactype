@@ -111,7 +111,7 @@ public class GestureListener {
             return;
         }
 
-        exactype.onDeleteTapped();
+        exactype.onDeleteHeld();
     }
 
     public void onDown(float x, float y) {
