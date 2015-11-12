@@ -16,16 +16,29 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.util.Log;
 import android.view.inputmethod.InputConnection;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Log.class })
 public class ExactypeOnDeleteHeldTest {
+    @Before
+    public void mockAndroidMethods() {
+        PowerMockito.mockStatic(Log.class);
+    }
+
     private static class TestableExactype extends Exactype {
         private final InputConnection inputConnection;
 
@@ -65,7 +78,8 @@ public class ExactypeOnDeleteHeldTest {
         Mockito.verify(inputConnection).deleteSurroundingText(
             beforeLength.capture(), Mockito.eq(0));
 
-        String after = before.substring(0, before.length() - beforeLength.getValue());
+
+        String after = before.substring(0, Math.max(0, before.length() - beforeLength.getValue()));
         return after;
     }
 
@@ -105,12 +119,16 @@ public class ExactypeOnDeleteHeldTest {
 
         Assert.assertEquals("54.", deleteWord("54.32"));
         Assert.assertEquals("54,", deleteWord("54,32"));
+
+        // We're currently looking back 22 chars, this test verifies we don't screw up at the
+        // boundary of that. If Exactype.DELETE_LOOKBACK changes, this test will have to change too.
+        Assert.assertEquals("12345678", deleteWord("123456789012345678901234567890"));
     }
 
     @Test
     public void testDeleteSelectedText() {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
-        Mockito.stub(inputConnection.getSelectedText(0)).toReturn(null);
+        Mockito.stub(inputConnection.getSelectedText(0)).toReturn("something");
 
         Exactype exactype = new TestableExactype(inputConnection);
         exactype.onDeleteHeld();

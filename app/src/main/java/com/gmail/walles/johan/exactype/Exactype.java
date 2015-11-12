@@ -40,6 +40,12 @@ public class Exactype extends InputMethodService {
 
     private static final int VIBRATE_DURATION_MS = 20;
 
+    /**
+     * While doing word-by-word deletion, how far back should we look when attempting to find the
+     * previous word?
+     */
+    private static final int DELETE_LOOKBACK = 22;
+
     private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
@@ -168,8 +174,46 @@ public class Exactype extends InputMethodService {
         Log.d(TAG, "PERF: Delete took " + timer);
     }
 
-    public void onDeleteHeld() {
+    /**
+     * To remove the last word, how many chars would that be?
+     * @param before Text before cursor
+     * @return How many characters we should remove
+     */
+    private int countCharsToDelete(CharSequence before) {
+        int index = before.length() - 1;
 
+        // Count non-alphanumeric characters from the end
+        while (index >=0 && !Character.isLetterOrDigit(before.charAt(index))) {
+            index--;
+        }
+
+        // Count the number of alphanumeric characters preceding those
+        while (index >=0 && Character.isLetterOrDigit(before.charAt(index))) {
+            index--;
+        }
+
+        return before.length() - 1 - index;
+    }
+
+    public void onDeleteHeld() {
+        Timer timer = new Timer();
+        InputConnection inputConnection = getCurrentInputConnection();
+        timer.addLeg("get selection");
+        CharSequence selection = inputConnection.getSelectedText(0);
+        if (selection == null || selection.length() == 0) {
+            // Nothing selected, delete words
+            timer.addLeg("get preceding text");
+            CharSequence before = inputConnection.getTextBeforeCursor(DELETE_LOOKBACK, 0);
+            timer.addLeg("analyze text");
+            int to_delete = countCharsToDelete(before);
+            timer.addLeg("delete word");
+            inputConnection.deleteSurroundingText(to_delete, 0);
+        } else {
+            // Delete selection
+            timer.addLeg("delete selection");
+            inputConnection.commitText("", 1);
+        }
+        Log.d(TAG, "PERF: Delete took " + timer);
     }
 
     public void onKeyboardModeSwitchRequested() {

@@ -42,7 +42,8 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 * OK: Enable the GestureListener to report holding-delete to Exactype
 * OK: Make sure the GestureListener does *not* report long press / long long press when delete is
 held
-* Perform word-at-a-time delete when delete is held
+* OK: Perform word-at-a-time delete when delete is held
+* Validate on simulator / device
 
 ## TODO Prioritized Beta User Issues
 * Make holding down backspace work as expected

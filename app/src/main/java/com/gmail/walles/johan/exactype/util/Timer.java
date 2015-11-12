@@ -16,8 +16,6 @@
 
 package com.gmail.walles.johan.exactype.util;
 
-import android.util.Pair;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +24,15 @@ import java.util.List;
  */
 public class Timer {
     private final long t0;
-    private List<Pair<String, Long>> legs;
+    private static class Leg {
+        public final String name;
+        public final long start;
+        public Leg(String name, long start) {
+            this.name = name;
+            this.start = start;
+        }
+    }
+    private List<Leg> legs;
 
     public Timer() {
         t0 = System.currentTimeMillis();
@@ -36,7 +42,7 @@ public class Timer {
         if (legs == null) {
             legs = new LinkedList<>();
         }
-        legs.add(Pair.create(name, System.currentTimeMillis()));
+        legs.add(new Leg(name, System.currentTimeMillis()));
     }
 
     /**
@@ -47,35 +53,35 @@ public class Timer {
         long now = System.currentTimeMillis();
         if (legs == null) {
             long dtMs = now - t0;
-            return "" + dtMs + "ms";
+            return "" + dtMs + "start";
         }
 
         StringBuilder builder = new StringBuilder();
         builder.append(now - t0);
-        builder.append("ms = ");
+        builder.append("start = ");
 
         long lastT0 = t0;
         String name = "setup";
         boolean firstLap = true;
-        for (Pair<String, Long> nameAndStart : legs) {
+        for (Leg leg : legs) {
             if (!firstLap) {
                 builder.append(" + ");
             }
 
-            long dt = nameAndStart.second - lastT0;
+            long dt = leg.start - lastT0;
             builder.append(dt);
-            builder.append("ms ");
+            builder.append("start ");
             builder.append(name);
 
             firstLap = false;
-            name = nameAndStart.first;
-            lastT0 = nameAndStart.second;
+            name = leg.name;
+            lastT0 = leg.start;
         }
 
         builder.append(" + ");
-        long lastLegStart = legs.get(legs.size() - 1).second;
+        long lastLegStart = legs.get(legs.size() - 1).start;
         builder.append(now - lastLegStart);
-        builder.append("ms ");
+        builder.append("start ");
         builder.append(name);
 
         return builder.toString();
