@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class ExactypeOnDeleteHeldTest {
     private static class TestableExactype extends Exactype {
@@ -37,9 +39,23 @@ public class ExactypeOnDeleteHeldTest {
         }
     }
 
-    private String deleteWord(String before) {
+    private String deleteWord(final String before) {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
         Mockito.stub(inputConnection.getSelectedText(0)).toReturn(null);
+        Mockito.when(
+            inputConnection.getTextBeforeCursor(Mockito.anyInt(), Mockito.eq(0)))
+            .thenAnswer(new Answer<String>()
+            {
+            @Override
+            public String answer(InvocationOnMock invocation) {
+                int n = (Integer)invocation.getArguments()[0];
+                if (n > before.length()) {
+                    n = before.length();
+                }
+
+                return before.substring(before.length() - n);
+            }
+        });
 
         Exactype exactype = new TestableExactype(inputConnection);
         exactype.onDeleteHeld();
@@ -53,13 +69,46 @@ public class ExactypeOnDeleteHeldTest {
         return after;
     }
 
+    /**
+     * After deleting a word, the cursor should be where the just-deleted word used to start.
+     * <p>
+     * Basically we should divide the text into blocks of alphanumeric characters and
+     * non-alphanumeric characters. Then, if the text ends with an alphanumeric block, delete that
+     * one only. If the text ends with a non-alphanumeric block, delete that and the block before
+     * it.
+     * </p>
+     */
     @Test
-    public void testEmpty() {
+    public void testDeleteWord() {
         Assert.assertEquals("", deleteWord(""));
+
+        Assert.assertEquals("", deleteWord("a"));
+        Assert.assertEquals("", deleteWord("="));
+
+        Assert.assertEquals("", deleteWord("a "));
+        Assert.assertEquals("", deleteWord("= "));
+
+        Assert.assertEquals("", deleteWord("aa"));
+        Assert.assertEquals("", deleteWord("aa "));
+
+        Assert.assertEquals("a ", deleteWord("a b"));
+        Assert.assertEquals("a ", deleteWord("a b "));
+        Assert.assertEquals("a ", deleteWord("a b  "));
+
+        Assert.assertEquals("aa ", deleteWord("aa bb"));
+        Assert.assertEquals("aa ", deleteWord("aa bb "));
+        Assert.assertEquals("aa ", deleteWord("aa bb  "));
+
+        Assert.assertEquals("aa  ", deleteWord("aa  bb"));
+        Assert.assertEquals("aa  ", deleteWord("aa  bb "));
+        Assert.assertEquals("aa  ", deleteWord("aa  bb  "));
+
+        Assert.assertEquals("54.", deleteWord("54.32"));
+        Assert.assertEquals("54,", deleteWord("54,32"));
     }
 
     @Test
-    public void testWithSelectedText() {
+    public void testDeleteSelectedText() {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
         Mockito.stub(inputConnection.getSelectedText(0)).toReturn(null);
 
