@@ -36,6 +36,7 @@ public class GestureDetector {
     private float mostRecentY;
     private long startTime;
     private boolean isLongPressing;
+    private int repetitions;
 
     public GestureDetector(Context context, Handler handler, GestureListener listener) {
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
@@ -60,6 +61,8 @@ public class GestureDetector {
 
         mostRecentX = startX;
         mostRecentY = startY;
+
+        repetitions = 0;
 
         handler.postAtTime(new Runnable() {
                                @Override
@@ -101,11 +104,12 @@ public class GestureDetector {
                 }
 
                 listener.onHold(mostRecentX, mostRecentY);
+                repetitions++;
 
                 handler.postAtTime(
                     this,
                     GestureDetector.this,
-                    e.getEventTime() + longPressTimeout / 2);
+                    startTime + repetitions * longPressTimeout);
             }},
             GestureDetector.this,
             startTime + longPressTimeout);

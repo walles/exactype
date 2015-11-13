@@ -43,10 +43,13 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 * OK: Make sure the GestureListener does *not* report long press / long long press when delete is
 held
 * OK: Perform word-at-a-time delete when delete is held
+* Hide feedback window while holding backspace
+* Vibrate for every word deleted?
 * Validate on simulator / device
 
 ## TODO Prioritized Beta User Issues
 * Make holding down backspace work as expected
+* Make sure swiping down after editing event time in the Galaxy Alpha calendar hides the keyboard.
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
