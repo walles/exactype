@@ -53,12 +53,12 @@ public class Timer {
         long now = System.currentTimeMillis();
         if (legs == null) {
             long dtMs = now - t0;
-            return "" + dtMs + "start";
+            return "" + dtMs + "ms";
         }
 
         StringBuilder builder = new StringBuilder();
         builder.append(now - t0);
-        builder.append("start = ");
+        builder.append("ms = ");
 
         long lastT0 = t0;
         String name = "setup";
@@ -70,7 +70,7 @@ public class Timer {
 
             long dt = leg.start - lastT0;
             builder.append(dt);
-            builder.append("start ");
+            builder.append("ms ");
             builder.append(name);
 
             firstLap = false;
@@ -81,7 +81,7 @@ public class Timer {
         builder.append(" + ");
         long lastLegStart = legs.get(legs.size() - 1).start;
         builder.append(now - lastLegStart);
-        builder.append("start ");
+        builder.append("ms ");
         builder.append(name);
 
         return builder.toString();
