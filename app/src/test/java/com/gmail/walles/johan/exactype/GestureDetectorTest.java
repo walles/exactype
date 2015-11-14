@@ -149,12 +149,21 @@ public class GestureDetectorTest {
      * </p>
      */
     private void doMotion(long eventTime, int action, float x, float y) {
+        doWaitUntil(eventTime);
+
+        testMe.onTouchEvent(motionEvent(eventTime, action, x, y));
+    }
+
+    /*
+     * Wait until a specific time, trigger timeout handlers on the way.
+     */
+    private void doWaitUntil(long untilTime) {
         List<Runnable> runUs = new ArrayList<>();
         Iterator<PostedEvent> iterator = postedEvents.iterator();
         while (iterator.hasNext()) {
             PostedEvent event = iterator.next();
 
-            if (eventTime > event.timeout) {
+            if (untilTime > event.timeout) {
                 runUs.add(event.runnable);
                 iterator.remove();
             }
@@ -162,8 +171,6 @@ public class GestureDetectorTest {
         for (Runnable runnable : runUs) {
             runnable.run();
         }
-
-        testMe.onTouchEvent(motionEvent(eventTime, action, x, y));
     }
 
     private void doSingleTap(int sloppiness, int dt) {
@@ -343,5 +350,61 @@ public class GestureDetectorTest {
 
         doMotion(T0 + 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
         Mockito.verify(listener).onUp();
+    }
+
+    @Test
+    public void testHold() {
+        // Press and hold
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+        doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
+        Mockito.verify(listener).onHold(X0, Y0);
+
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 2);
+        Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
+
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2);
+        Mockito.verify(listener, Mockito.times(3)).onHold(X0, Y0);
+
+        doMotion(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
+        Mockito.verify(listener).onUp();
+
+        Mockito.verify(listener, Mockito.never()).
+            onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
+    }
+
+    @Test
+    public void testMoveCancelsHold() {
+        // Press and hold
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+        doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
+        Mockito.verify(listener).onHold(X0, Y0);
+
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 2);
+        Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
+
+        // Moving a little shouldn't cancel anything
+        float x = X0 + TOUCH_SLOP - 1;
+        float y = Y0 + TOUCH_SLOP - 1;
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 3), MotionEvent.ACTION_MOVE, x, y);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2);
+        Mockito.verify(listener).onHold(x, y);
+
+        // Moving more...
+        x = X0 + TOUCH_SLOP + 1;
+        y = Y0 + TOUCH_SLOP + 1;
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3), MotionEvent.ACTION_MOVE, x, y);
+
+        // ... should cancel the onHold() calls
+        doWaitUntil(T0 + LONG_PRESS_TIMEOUT * 10);
+        Mockito.verify(listener, Mockito.never()).onHold(x, y);
+
+        // We should still get onUp().
+        doMotion(T0 + LONG_PRESS_TIMEOUT * 11, MotionEvent.ACTION_UP,
+            X0 + TOUCH_SLOP + 1, Y0 + TOUCH_SLOP + 1);
+        Mockito.verify(listener).onUp();
+
+        // This wasn't a single tap
+        Mockito.verify(listener, Mockito.never()).
+            onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
     }
 }

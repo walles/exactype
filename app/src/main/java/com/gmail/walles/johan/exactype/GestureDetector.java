@@ -36,6 +36,7 @@ public class GestureDetector {
     private float mostRecentY;
     private long startTime;
     private boolean isLongPressing;
+    private int repetitions;
 
     public GestureDetector(Context context, Handler handler, GestureListener listener) {
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
@@ -46,7 +47,7 @@ public class GestureDetector {
         this.listener = listener;
     }
 
-    private void setStart(@Nullable MotionEvent e) {
+    private void setStart(@Nullable final MotionEvent e) {
         if (e == null) {
             startTime = 0;
             isLongPressing = false;
@@ -60,6 +61,8 @@ public class GestureDetector {
 
         mostRecentX = startX;
         mostRecentY = startY;
+
+        repetitions = 0;
 
         handler.postAtTime(new Runnable() {
                                @Override
@@ -85,6 +88,29 @@ public class GestureDetector {
                                    }
                                }
                            },
+            GestureDetector.this,
+            startTime + longPressTimeout);
+
+        handler.postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                if (Math.abs(mostRecentX - startX) > touchSlop) {
+                    // We moved too much for a hold, never mind
+                    return;
+                }
+                if (Math.abs(mostRecentY - startY) > touchSlop) {
+                    // We moved too much for a hold, never mind
+                    return;
+                }
+
+                listener.onHold(mostRecentX, mostRecentY);
+                repetitions++;
+
+                handler.postAtTime(
+                    this,
+                    GestureDetector.this,
+                    startTime + repetitions * longPressTimeout);
+            }},
             GestureDetector.this,
             startTime + longPressTimeout);
     }
