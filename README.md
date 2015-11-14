@@ -43,7 +43,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 * OK: Make sure the GestureListener does *not* report long press / long long press when delete is
 held
 * OK: Perform word-at-a-time delete when delete is held
-* Hide feedback window while holding backspace
+* OK: Hide feedback window while holding backspace
 * Vibrate for every word deleted?
 * Validate on simulator / device
 

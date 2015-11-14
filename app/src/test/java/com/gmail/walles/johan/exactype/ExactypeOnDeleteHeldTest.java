@@ -44,6 +44,11 @@ public class ExactypeOnDeleteHeldTest {
 
         public TestableExactype(InputConnection inputConnection) {
             this.inputConnection = inputConnection;
+            this.feedbackWindow = Mockito.mock(FeedbackWindow.class);
+        }
+
+        public FeedbackWindow getFeedbackWindow() {
+            return feedbackWindow;
         }
 
         @Override
@@ -134,5 +139,17 @@ public class ExactypeOnDeleteHeldTest {
         exactype.onDeleteHeld();
 
         Mockito.verify(inputConnection).commitText("", 1);
+    }
+
+    @Test
+    public void testCloseFeedbackWindow() {
+        InputConnection inputConnection = Mockito.mock(InputConnection.class);
+        Mockito.stub(inputConnection.getSelectedText(0)).toReturn("");
+        Mockito.stub(inputConnection.getTextBeforeCursor(Mockito.anyInt(), Mockito.eq(0))).toReturn("");
+        TestableExactype exactype = new TestableExactype(inputConnection);
+
+        exactype.onDeleteHeld();
+
+        Mockito.verify(exactype.getFeedbackWindow()).close();
     }
 }

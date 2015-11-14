@@ -70,7 +70,8 @@ public class Exactype extends InputMethodService {
     private PopupKeyboardView popupKeyboardView;
     private PopupWindow popupKeyboardWindow;
 
-    private FeedbackWindow feedbackWindow;
+    // Protected for testing purposes, should otherwise be private
+    protected FeedbackWindow feedbackWindow;
 
     private final ExactypeMode mode;
 
@@ -196,6 +197,8 @@ public class Exactype extends InputMethodService {
     }
 
     public void onDeleteHeld() {
+        feedbackWindow.close();
+
         Timer timer = new Timer();
         InputConnection inputConnection = getCurrentInputConnection();
         timer.addLeg("get selection");
