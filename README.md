@@ -37,18 +37,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 4. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
 5. ```git push --tags```
 
-## TODO for Repeating Backspace
-* OK: Enable the GestureDetector to detect and repetitively report press-and-hold
-* OK: Enable the GestureListener to report holding-delete to Exactype
-* OK: Make sure the GestureListener does *not* report long press / long long press when delete is
-held
-* OK: Perform word-at-a-time delete when delete is held
-* OK: Hide feedback window while holding backspace
-* OK: Vibrate for every word deleted?
-* Validate on simulator / device
-
 ## TODO Prioritized Beta User Issues
-* Make holding down backspace work as expected
 * Make sure swiping down after editing event time in the Galaxy Alpha calendar hides the keyboard.
 * Add emoji support
 
@@ -187,3 +176,4 @@ happens
 * Start out with numeric keyboard if the input field is tagged as being numeric.
 * Fulfill the "Designed for Tablets" criteria on Google Play Store
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
+* Make holding down backspace work as expected
