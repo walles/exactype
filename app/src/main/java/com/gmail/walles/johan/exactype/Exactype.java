@@ -217,6 +217,8 @@ public class Exactype extends InputMethodService {
             inputConnection.commitText("", 1);
         }
         Log.d(TAG, "PERF: Delete took " + timer);
+
+        vibrate();
     }
 
     public void onKeyboardModeSwitchRequested() {

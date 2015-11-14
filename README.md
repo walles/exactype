@@ -44,7 +44,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 held
 * OK: Perform word-at-a-time delete when delete is held
 * OK: Hide feedback window while holding backspace
-* Vibrate for every word deleted?
+* OK: Vibrate for every word deleted?
 * Validate on simulator / device
 
 ## TODO Prioritized Beta User Issues
