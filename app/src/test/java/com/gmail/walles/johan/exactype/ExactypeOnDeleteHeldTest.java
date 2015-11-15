@@ -114,9 +114,9 @@ public class ExactypeOnDeleteHeldTest {
         Assert.assertEquals("a ", deleteWord("a b "));
         Assert.assertEquals("a ", deleteWord("a b  "));
 
-        Assert.assertEquals("aa ", deleteWord("aa bb"));
-        Assert.assertEquals("aa ", deleteWord("aa bb "));
-        Assert.assertEquals("aa ", deleteWord("aa bb  "));
+        Assert.assertEquals("AA ", deleteWord("AA bb"));
+        Assert.assertEquals("BB ", deleteWord("BB bb "));
+        Assert.assertEquals("CC ", deleteWord("CC bb  "));
 
         Assert.assertEquals("aa  ", deleteWord("aa  bb"));
         Assert.assertEquals("aa  ", deleteWord("aa  bb "));
