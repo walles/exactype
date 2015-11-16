@@ -76,7 +76,6 @@ public class Exactype extends InputMethodService {
     private final ExactypeMode mode;
 
     private ExactypeView view;
-    private EditorInfo editorInfo;
 
     private float popupX0;
     private float popupY0;
@@ -141,8 +140,6 @@ public class Exactype extends InputMethodService {
         if ((editorInfo.inputType & InputType.TYPE_MASK_CLASS) != InputType.TYPE_CLASS_TEXT) {
             mode.setNumeric();
         }
-
-        this.editorInfo = editorInfo;
     }
 
     public void onLongPress() {
@@ -226,6 +223,8 @@ public class Exactype extends InputMethodService {
     }
 
     public void onActionTapped() {
+        EditorInfo editorInfo = getCurrentInputEditorInfo();
+
         Timer timer = new Timer();
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             getCurrentInputConnection().commitText("\n", 1);
@@ -237,7 +236,7 @@ public class Exactype extends InputMethodService {
         }
 
         getCurrentInputConnection()
-            .performEditorAction(editorInfo.imeOptions | EditorInfo.IME_MASK_ACTION);
+            .performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
         Log.d(TAG, "PERF: Performing editor action took " + timer);
     }
 

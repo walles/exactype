@@ -16,10 +16,27 @@
 
 package com.gmail.walles.johan.exactype;
 
-import org.junit.Assert;
-import org.junit.Test;
+import android.util.Log;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Log.class })
 public class ExactypeTest {
+    @Before
+    public void mockAndroidMethods() {
+        PowerMockito.mockStatic(Log.class);
+    }
+
     @Test
     public void testNumericLayout() {
         Assert.assertEquals(3, Exactype.NUMERIC.length);
@@ -32,5 +49,27 @@ public class ExactypeTest {
 
         Assert.assertTrue("Move some keys from line 2 to line 3", diff <= 1);
         Assert.assertTrue("Move some keys from line 3 to line 2", diff >= -1);
+    }
+
+    @Test
+    public void testOnActionTapped() {
+        final InputConnection inputConnection = Mockito.mock(InputConnection.class);
+        final EditorInfo editorInfo = new EditorInfo();
+        editorInfo.imeOptions = EditorInfo.IME_ACTION_SEARCH + EditorInfo.IME_FLAG_FORCE_ASCII;
+        Exactype exactype = new Exactype() {
+            @Override
+            public InputConnection getCurrentInputConnection() {
+                return inputConnection;
+            }
+
+            @Override
+            public EditorInfo getCurrentInputEditorInfo() {
+                return editorInfo;
+            }
+        };
+
+        exactype.onActionTapped();
+
+        Mockito.verify(inputConnection).performEditorAction(EditorInfo.IME_ACTION_SEARCH);
     }
 }

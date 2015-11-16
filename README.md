@@ -38,7 +38,6 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO Prioritized Beta User Issues
-* Make sure swiping down after editing event time in the Galaxy Alpha calendar hides the keyboard.
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
@@ -83,6 +82,7 @@ Maybe flash the keyboard red as well and put a marker where the user pressed?
 * "I prefer a slanted layout, maybe we'd get that by having all keys the same size?"
 
 ## TODO Misc
+* Are there cases where we should explicitly close ourselves? In onUnbindInput() for example?
 * Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
 * Make sure the hitpoint of lower case 'o' is in the middle of the circle
 * Remove all memory allocations from onDraw() and onMeasure() code paths. This is for avoiding GC
@@ -177,3 +177,4 @@ happens
 * Fulfill the "Designed for Tablets" criteria on Google Play Store
 * Test on a tablet, at least a simulated one, in both landscape and portrait mode.
 * Make holding down backspace work as expected
+* Make sure swiping down after editing event time in the Galaxy Alpha calendar hides the keyboard.
