@@ -49,11 +49,17 @@ for auto correction.
 * Add emoji support
 
 ## TODO for Emoji Support
-* Add an EmojiView. It should support scrolling vertically to display more emojis. It should be the
-same size as a keyboard.
-* Add emojis to the EmojiView.
+* Add a keyboard selector that on left swipe scrolls the keyboard sideways. A horizontal scroll view
+of some kind comes to mind.
+* Add an EmojiView. It should be sized like the keyboard.
+* When swiping the keyboard away, swipe the EmojiView in.
+* When swiping the EmojiView left, swipe the keyboard back in.
+* Make the EmojiView display something.
+* Make the EmojiView display something that is higher than the height of the EmojiView.
+* Make the EmojiView scroll vertically on single finger scroll.
+* Make the EmojiView display some actual emoji.
+* Make the EmojiView display all emoji.
 * Make clicking an emoji add it to the input field.
-* Add a keyboard selector thing that on left swipe scrolls the next keyboard into view.
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
