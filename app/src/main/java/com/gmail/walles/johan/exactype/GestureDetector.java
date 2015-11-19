@@ -193,7 +193,7 @@ public class GestureDetector {
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            listener.onDown(event.getX(), event.getY());
+            listener.onDown();
             setStart(event);
             return true;
         }

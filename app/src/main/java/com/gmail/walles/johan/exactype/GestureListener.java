@@ -83,7 +83,7 @@ public class GestureListener {
             return;
         }
 
-        exactype.onLongPress();
+        exactype.onLongPress(x, y);
     }
 
     public void onLongLongPress(float x, float y) {
@@ -114,8 +114,8 @@ public class GestureListener {
         exactype.onDeleteHeld();
     }
 
-    public void onDown(float x, float y) {
-        exactype.onTouchStart(x, y);
+    public void onDown() {
+        exactype.onTouchStart();
     }
 
     public void onMove(float x, float y) {

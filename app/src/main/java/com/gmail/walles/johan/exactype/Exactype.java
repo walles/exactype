@@ -142,7 +142,9 @@ public class Exactype extends InputMethodService {
         }
     }
 
-    public void onLongPress() {
+    public void onLongPress(float x, float y) {
+        feedbackWindow.show(x, y);
+
         mode.register(ExactypeMode.Event.LONG_PRESS);
     }
 
@@ -312,10 +314,8 @@ public class Exactype extends InputMethodService {
         vibrator.vibrate(VIBRATE_DURATION_MS);
     }
 
-    public void onTouchStart(float x, float y) {
+    public void onTouchStart() {
         vibrate();
-
-        feedbackWindow.show(x, y);
     }
 
     public void onTouchMove(float x, float y) {

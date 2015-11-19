@@ -65,7 +65,7 @@ public class GestureListenerTest {
         setKey(testMe, 'x');
 
         testMe.onLongPress(5, 6);
-        Mockito.verify(exactype).onLongPress();
+        Mockito.verify(exactype).onLongPress(5, 6);
     }
 
     @Test

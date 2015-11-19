@@ -146,6 +146,11 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
      * Close the feedback window
      */
     public void close() {
+        if (fadeout != null) {
+            // Fadeout already in progress, just let that one run its course
+            return;
+        }
+
         fadeout = imageView.animate();
         fadeout.alpha(0f).setDuration(fadeoutDurationMs).setListener(
             new AnimatorListenerAdapter() {

@@ -343,7 +343,7 @@ public class GestureDetectorTest {
     @Test
     public void testDownMoveUpEvents() {
         doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
-        Mockito.verify(listener).onDown(X0, Y0);
+        Mockito.verify(listener).onDown();
 
         doMotion(T0 + 1, MotionEvent.ACTION_MOVE, X0 + 1, Y0 + 2);
         Mockito.verify(listener).onMove(X0 + 1, Y0 + 2);
