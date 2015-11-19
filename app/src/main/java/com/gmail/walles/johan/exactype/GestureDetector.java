@@ -109,7 +109,12 @@ public class GestureDetector {
                 handler.postAtTime(
                     this,
                     GestureDetector.this,
-                    startTime + repetitions * longPressTimeout);
+                    startTime + (repetitions + 1) * longPressTimeout);
+            }
+
+            @Override
+            public String toString() {
+                return "Repeat";
             }},
             GestureDetector.this,
             startTime + longPressTimeout);

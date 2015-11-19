@@ -34,8 +34,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for the {@link GestureDetector}.
@@ -60,6 +64,8 @@ public class GestureDetectorTest {
 
     private List<PostedEvent> postedEvents;
 
+    private Map<String, List<Long>> triggeredEventTimes;
+
     private static class PostedEvent {
         public final Runnable runnable;
         public final long timeout;
@@ -78,6 +84,7 @@ public class GestureDetectorTest {
         Context context = Mockito.mock(Context.class);
 
         postedEvents = new ArrayList<>();
+        triggeredEventTimes = new HashMap<>();
 
         Handler handler = Mockito.mock(Handler.class);
         Mockito.stub(handler.postAtTime(
@@ -163,10 +170,20 @@ public class GestureDetectorTest {
         while (iterator.hasNext()) {
             PostedEvent event = iterator.next();
 
-            if (untilTime > event.timeout) {
-                runUs.add(event.runnable);
-                iterator.remove();
+            if (untilTime <= event.timeout) {
+                continue;
             }
+
+            runUs.add(event.runnable);
+            iterator.remove();
+
+            String eventName = event.runnable.toString();
+            List<Long> times = triggeredEventTimes.get(eventName);
+            if (times == null) {
+                times = new LinkedList<>();
+                triggeredEventTimes.put(eventName, times);
+            }
+            times.add(event.timeout);
         }
         for (Runnable runnable : runUs) {
             runnable.run();
@@ -359,17 +376,23 @@ public class GestureDetectorTest {
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
         Mockito.verify(listener).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) + 2);
         Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) + 2);
         Mockito.verify(listener, Mockito.times(3)).onHold(X0, Y0);
 
-        doMotion(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
+        doMotion(T0 + (LONG_PRESS_TIMEOUT * 4) - 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
         Mockito.verify(listener).onUp();
 
         Mockito.verify(listener, Mockito.never()).
             onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
+
+        Assert.assertEquals(Arrays.toString(new Long[] {
+            T0 + LONG_PRESS_TIMEOUT,
+            T0 + LONG_PRESS_TIMEOUT * 2,
+            T0 + LONG_PRESS_TIMEOUT * 3,
+        }), Arrays.toString(triggeredEventTimes.get("Repeat").toArray(new Long[0])));
     }
 
     @Test
@@ -379,20 +402,20 @@ public class GestureDetectorTest {
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
         Mockito.verify(listener).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) + 2);
         Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
         // Moving a little shouldn't cancel anything
         float x = X0 + TOUCH_SLOP - 1;
         float y = Y0 + TOUCH_SLOP - 1;
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) / 2 + 3), MotionEvent.ACTION_MOVE, x, y);
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 2);
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) + 3), MotionEvent.ACTION_MOVE, x, y);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) + 2);
         Mockito.verify(listener).onHold(x, y);
 
         // Moving more...
         x = X0 + TOUCH_SLOP + 1;
         y = Y0 + TOUCH_SLOP + 1;
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) / 2 + 3), MotionEvent.ACTION_MOVE, x, y);
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) + 3), MotionEvent.ACTION_MOVE, x, y);
 
         // ... should cancel the onHold() calls
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT * 10);

@@ -39,8 +39,6 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 
 ## TODO Prioritized Beta User Issues
 * Add emoji support
-* Holding backspace first deletes *two* words, then one at a time. It should do one-at-a-time from
-the start.
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
@@ -181,3 +179,5 @@ happens
 * Make holding down backspace work as expected
 * Make sure swiping down after editing event time in the Galaxy Alpha calendar hides the keyboard.
 * Disable on-tap popup; none of the testers like it.
+* Holding backspace first deletes *two* words, then one at a time. It should do one-at-a-time from
+the start.
