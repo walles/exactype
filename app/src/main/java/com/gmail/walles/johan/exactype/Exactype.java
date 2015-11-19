@@ -16,7 +16,6 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
@@ -304,14 +303,11 @@ public class Exactype extends InputMethodService {
             return;
         }
 
-        String permission = "android.permission.VIBRATE";
-        int res = checkCallingOrSelfPermission(permission);
-        if (res != PackageManager.PERMISSION_GRANTED) {
-            // No permission to vibrate
-            return;
+        try {
+            vibrator.vibrate(VIBRATE_DURATION_MS);
+        } catch (SecurityException e) {
+            Log.i(TAG, "Not vibrating: " + e.getMessage());
         }
-
-        vibrator.vibrate(VIBRATE_DURATION_MS);
     }
 
     public void onTouchStart() {
