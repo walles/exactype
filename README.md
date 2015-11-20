@@ -67,6 +67,23 @@ bad.
 * Make the letters look nicer by outlining them, shadowing them, anti aliasing them, bolding them,
 switching font or something
 
+## Editing ideas
+When mistyping something, placing the cursor properly for correcting it feels too hard. How about
+this?
+
+* When the user places the cursor in a non-empty field, pop up an arrow keys keyboard somewhere
+around the cursor.
+* The arrows keyboard should have keys for left, right and hide.
+* The arrows keyboard should have a cartoon bubble like pointer to where the cursor was placed so
+that it's obvious they belong together.
+* It should be possible to drag the arrows keyboard around on screen.
+* Typing something on the ordinary keyboard should hide the arrows keyboard.
+* Hiding the ordinary keyboard should hide the arrows keyboard.
+* Test on a phone in portrait orientation.
+* Test on a phone in landscape orientation.
+* Test on a tablet in portrait orientation.
+* Test on a tablet in landscape orientation.
+
 ## Feedback ideas
 * Add audio clicks on key releases?
 * Condition audio / vibration feedback on how close the hit was to the key we think the user
