@@ -46,6 +46,8 @@ public class KeyboardTheme {
     private static final float KEYBOARD_HEIGHT_MULTIPLIER = 1.3f;
 
     private final int screenHeight;
+    private final int screenWidth;
+
     private final Paint textPaint;
     private final Paint strokePaint;
     private final int fontSize100HeightPx;
@@ -93,6 +95,7 @@ public class KeyboardTheme {
         fontSize100VerticalCenterOffset = -bounds.top - bounds.height() / 2f;
 
         screenHeight = displayMetrics.heightPixels;
+        screenWidth = displayMetrics.widthPixels;
     }
 
     public Paint getTextPaint() {
@@ -179,10 +182,15 @@ public class KeyboardTheme {
      */
     public void setBounds(int widthMeasureSpec, int heightMeasureSpec) {
         int maxWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        if (maxWidth > screenWidth) {
+            maxWidth = screenWidth;
+        }
+
         int maxHeight = View.MeasureSpec.getSize(heightMeasureSpec);
         if (maxHeight > screenHeight * 0.4) {
             maxHeight = (int)(screenHeight * 0.4);
         }
+
         Log.d(TAG, "Max bounds are " + maxWidth + "x" + maxHeight);
 
         if (shouldScaleToScreenWidth) {
