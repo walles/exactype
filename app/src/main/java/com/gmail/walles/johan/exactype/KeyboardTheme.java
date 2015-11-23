@@ -38,7 +38,7 @@ public class KeyboardTheme {
      */
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
-    private static final int POPUP_BORDER_WIDTH_DP = 2;
+    static final int POPUP_BORDER_WIDTH_DP = 2;
 
     /**
      * Put some air between the keyboard rows.
@@ -64,6 +64,29 @@ public class KeyboardTheme {
      * down if they don't fit.
      */
     private boolean shouldScaleToScreenWidth;
+
+    /**
+     * This constructor exists for unit testing purposes only.
+     */
+    KeyboardTheme(int screenWidth, int screenHeight,
+                  Paint textPaint,
+                  Paint strokePaint,
+                  int fontSize100HeightPx,
+                  float fontSize100CharWidthPx,
+                  float fontSize100LongestRowLength,
+                  float fontSize100VerticalCenterOffset)
+    {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+
+        this.textPaint = textPaint;
+        this.strokePaint = strokePaint;
+
+        this.fontSize100HeightPx = fontSize100HeightPx;
+        this.fontSize100CharWidthPx = fontSize100CharWidthPx;
+        this.fontSize100LongestRowLength = fontSize100LongestRowLength;
+        this.fontSize100VerticalCenterOffset = fontSize100VerticalCenterOffset;
+    }
 
     public KeyboardTheme(DisplayMetrics displayMetrics) {
         strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
@@ -164,7 +187,7 @@ public class KeyboardTheme {
 
         if (height > maxHeight) {
             // Don't use more than half the height, required in landscape mode
-            factor = factor * maxHeight / height;
+            factor = (width / fontSize100LongestRowLength) * ((float)maxHeight / height);
             height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
             Log.d(TAG, "Size reset to " + width + "x" + height);
         }
@@ -191,7 +214,7 @@ public class KeyboardTheme {
             maxHeight = (int)(screenHeight * 0.4);
         }
 
-        Log.d(TAG, "Max bounds are " + maxWidth + "x" + maxHeight);
+        Log.d(TAG, "Bounds are " + maxWidth + "x" + maxHeight);
 
         if (shouldScaleToScreenWidth) {
             scaleToScreenWidth(maxWidth, maxHeight);
@@ -209,5 +232,7 @@ public class KeyboardTheme {
             width = (width * maxHeight) / height;
             height = maxHeight;
         }
+
+        Log.d(TAG, "Size computed to " + width + "x" + height);
     }
 }
