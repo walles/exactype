@@ -80,7 +80,9 @@ public class Exactype
 
     private final ExactypeMode mode;
 
-    private ExactypeView view;
+    private ExactypeView keyboardView;
+    private EmojiView emojiView;
+    private SwitcherView switcherView;
 
     private float popupX0;
     private float popupY0;
@@ -140,14 +142,17 @@ public class Exactype
         popupKeyboardView = new PopupKeyboardView(this);
         popupKeyboardWindow = new PopupWindow(popupKeyboardView);
 
-        view = new ExactypeView(this);
-        mode.addModeChangeListener(view);
+        keyboardView = new ExactypeView(this);
+        mode.addModeChangeListener(keyboardView);
 
-        feedbackWindow = new FeedbackWindow(this, view);
+        emojiView = new EmojiView(this);
+        switcherView = new SwitcherView(this, keyboardView, emojiView);
+
+        feedbackWindow = new FeedbackWindow(this, keyboardView);
 
         vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
 
-        return view;
+        return switcherView;
     }
 
     @Override
@@ -343,7 +348,7 @@ public class Exactype
         }
 
         popupKeyboardView.setKeys(popupKeys);
-        popupKeyboardView.setTextSize(view.getTextSize());
+        popupKeyboardView.setTextSize(keyboardView.getTextSize());
 
         popupKeyboardWindow.setWidth(popupKeyboardView.getMeasuredWidth());
         popupKeyboardWindow.setHeight(popupKeyboardView.getMeasuredHeight());
@@ -356,9 +361,9 @@ public class Exactype
             popupKeyboardView.getHeight()));
 
         popupX0 = x;
-        if (popupX0 + popupKeyboardWindow.getWidth() > view.getWidth()) {
+        if (popupX0 + popupKeyboardWindow.getWidth() > keyboardView.getWidth()) {
             // Make sure the popup keyboard is left enough to not extend outside of the screen
-            popupX0 = view.getWidth() - popupKeyboardWindow.getWidth();
+            popupX0 = keyboardView.getWidth() - popupKeyboardWindow.getWidth();
         }
         popupY0 = y;
 
@@ -366,7 +371,7 @@ public class Exactype
         //
         // This means that if we want the popup window anywhere but to the bottom right of where
         // the user touched, we'll need do the math ourselves.
-        popupKeyboardWindow.showAtLocation(view, Gravity.NO_GRAVITY, (int)popupX0, (int)popupY0);
+        popupKeyboardWindow.showAtLocation(keyboardView, Gravity.NO_GRAVITY, (int)popupX0, (int)popupY0);
     }
 
     public boolean isPopupKeyboardShowing() {
