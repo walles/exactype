@@ -38,6 +38,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO Prioritized Beta User Issues
+* Add Settings activity with a slider for vibration duration
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
