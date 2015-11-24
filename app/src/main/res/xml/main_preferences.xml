@@ -15,5 +15,12 @@
   ~ limitations under the License.
   -->
 
-<input-method xmlns:android="http://schemas.android.com/apk/res/android"
-              android:settingsActivity="com.gmail.walles.johan.exactype.SettingsActivity"/>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="vibrate_duration_preference"
+        android:title="@string/title_vibrate_duration_preference"
+        android:summary="@string/title_vibrate_duration_preference"
+        android:dialogTitle="@string/title_vibrate_duration_preference"
+        android:defaultValue="20"
+        android:numeric="integer" />
+</PreferenceScreen>

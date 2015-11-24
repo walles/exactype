@@ -17,4 +17,6 @@
 <resources>
     <string name="app_name">Exactype</string>
     <string name="exactype_label">Exactype</string>
+    <string name="exactype_settings">Exactype Settings</string>
+    <string name="title_vibrate_duration_preference">Vibrate Duration</string>
 </resources>
