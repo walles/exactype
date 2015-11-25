@@ -16,12 +16,12 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends AppCompatActivity {
     // FIXME: A 10-100 slider would be better than an edit text for selecting vibration duration.
 
     // FIXME: Ensure the 10-100 vibration range
@@ -29,6 +29,9 @@ public class SettingsActivity extends Activity {
     // FIXME: Actually *use* the configured range
 
     // FIXME: Show the current value in the preferences list
+
+    // FIXME: Add a back arrow to the title bar, compare how this looks to any other keyboard
+    // settings
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
