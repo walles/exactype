@@ -28,8 +28,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     // FIXME: Test rotating the device while showing the slider dialog
 
-    // FIXME: Expose settings activity as a launcher activity
-
     // FIXME: Test settings back arrow both when launched from System Settings and when launched
     // from the launcher.
 
