@@ -39,6 +39,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 
 ## TODO Prioritized Beta User Issues
 * Add Settings activity with a slider for vibration duration
+* Repeating backspace removes one char too many, possibly at the final Up event of the hold
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester

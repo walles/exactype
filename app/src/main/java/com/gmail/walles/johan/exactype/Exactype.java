@@ -16,9 +16,11 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -30,14 +32,18 @@ import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
 import com.gmail.walles.johan.exactype.util.Timer;
+import com.gmail.walles.johan.exactype.util.VibrationUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Exactype extends InputMethodService {
+public class Exactype
+    extends InputMethodService
+    implements SharedPreferences.OnSharedPreferenceChangeListener
+{
     private static final String TAG = "Exactype";
 
-    private static final int VIBRATE_DURATION_MS = 20;
+    private int vibrate_duration_ms = SettingsActivity.DEFAULT_VIBRATE_DURATION_MS;
 
     /**
      * While doing word-by-word deletion, how far back should we look when attempting to find the
@@ -81,6 +87,26 @@ public class Exactype extends InputMethodService {
 
     @Nullable
     private Vibrator vibrator;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+        vibrate_duration_ms =
+            preferences.getInt(SettingsActivity.VIBRATE_DURATION_MS_KEY,
+                SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+        if (SettingsActivity.VIBRATE_DURATION_MS_KEY.equals(key)) {
+            vibrate_duration_ms =
+                preferences.getInt(SettingsActivity.VIBRATE_DURATION_MS_KEY,
+                    SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
+        }
+    }
 
     public Exactype() {
         popupKeysForKey = new HashMap<>();
@@ -216,7 +242,7 @@ public class Exactype extends InputMethodService {
         }
         Log.d(TAG, "PERF: Delete took " + timer);
 
-        vibrate();
+        VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
     }
 
     public void onKeyboardModeSwitchRequested() {
@@ -294,24 +320,8 @@ public class Exactype extends InputMethodService {
         onKeyTapped(popupKeyboardView.getClosestKey(popupX, popupY));
     }
 
-    /**
-     * Vibrate if we can / are allowed to.
-     */
-    private void vibrate() {
-        if (vibrator == null) {
-            // No vibrator / vibrator not set up
-            return;
-        }
-
-        try {
-            vibrator.vibrate(VIBRATE_DURATION_MS);
-        } catch (SecurityException e) {
-            Log.i(TAG, "Not vibrating: " + e.getMessage());
-        }
-    }
-
     public void onTouchStart() {
-        vibrate();
+        VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
     }
 
     public void onTouchMove(float x, float y) {

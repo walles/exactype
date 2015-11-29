@@ -15,10 +15,8 @@
   ~ limitations under the License.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.gmail.walles.johan.exactype.VibrationDurationPreference
-        android:key="vibrate_duration_preference"
-        android:title="@string/title_vibrate_duration_preference"
-        android:dialogTitle="@string/title_vibrate_duration_preference"
-        android:defaultValue="20"/>
-</PreferenceScreen>
+<SeekBar xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:id="@+id/seekbar">
+</SeekBar>

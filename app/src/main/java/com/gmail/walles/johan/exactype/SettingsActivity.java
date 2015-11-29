@@ -16,22 +16,25 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
-    // FIXME: A 10-100 slider would be better than an edit text for selecting vibration duration.
-
-    // FIXME: Ensure the 10-100 vibration range
-
-    // FIXME: Actually *use* the configured range
-
-    // FIXME: Show the current value in the preferences list
-
     // FIXME: Add a back arrow to the title bar, compare how this looks to any other keyboard
     // settings
+
+    // FIXME: Test rotating the device while showing the slider dialog
+
+    // FIXME: Expose settings activity as a launcher activity
+
+    // FIXME: Test settings back arrow both when launched from System Settings and when launched
+    // from the launcher.
+
+    public static final int DEFAULT_VIBRATE_DURATION_MS = 20;
+    public static final String VIBRATE_DURATION_MS_KEY = "vibrate_duration_preference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,10 @@ public class SettingsActivity extends AppCompatActivity {
             .commit();
     }
 
-    public static class Fragment extends PreferenceFragment {
+    public static class Fragment
+        extends PreferenceFragment
+        implements SharedPreferences.OnSharedPreferenceChangeListener
+    {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -53,6 +59,28 @@ public class SettingsActivity extends AppCompatActivity {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.main_preferences);
+
+            // Update summaries on preference changes
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            preferences.registerOnSharedPreferenceChangeListener(this);
+
+            // Update summaries with current values
+            int duration = preferences.getInt(VIBRATE_DURATION_MS_KEY, DEFAULT_VIBRATE_DURATION_MS);
+            setVibrateDurationSummary(duration);
+        }
+
+        private void setVibrateDurationSummary(int ms) {
+            findPreference(VIBRATE_DURATION_MS_KEY).setSummary(Integer.toString(ms) + "ms");
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (VIBRATE_DURATION_MS_KEY.equals(key)) {
+                int duration = sharedPreferences.getInt(
+                    VIBRATE_DURATION_MS_KEY,
+                    DEFAULT_VIBRATE_DURATION_MS);
+                setVibrateDurationSummary(duration);
+            }
         }
     }
 }
