@@ -20,16 +20,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 public class SettingsActivity extends AppCompatActivity {
-    // FIXME: Add a back arrow to the title bar, compare how this looks to any other keyboard
-    // settings
-
     // FIXME: Test rotating the device while showing the slider dialog
-
-    // FIXME: Test settings back arrow both when launched from System Settings and when launched
-    // from the launcher.
 
     public static final int DEFAULT_VIBRATE_DURATION_MS = 20;
     public static final String VIBRATE_DURATION_MS_KEY = "vibrate_duration_preference";
@@ -38,10 +34,25 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
             .replace(android.R.id.content, new Fragment())
             .commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static class Fragment
