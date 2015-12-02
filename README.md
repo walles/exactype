@@ -38,6 +38,7 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO Prioritized Beta User Issues
+* Repeating backspace removes one char too many, possibly at the final Up event of the hold
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
@@ -137,6 +138,8 @@ But not in numbers.
 * Make sure popup keyboard is ignored if finger is released outside of it
 * Make sure long press is canceled if finger is released outside of keyboard
 * Make sure swipe is canceled if finger is released outside of keyboard
+* Make sure the vibration duration pref slider doesn't disappear if the user rotates the device
+while the slider is showing
 
 ## DONE
 * Create an IME that when selected shows an empty view
@@ -198,3 +201,4 @@ happens
 * Disable on-tap popup; none of the testers like it.
 * Holding backspace first deletes *two* words, then one at a time. It should do one-at-a-time from
 the start.
+* Add Settings activity with a slider for vibration duration
