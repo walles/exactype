@@ -25,8 +25,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 public class SettingsActivity extends AppCompatActivity {
-    // FIXME: Test rotating the device while showing the slider dialog
-
     public static final int DEFAULT_VIBRATE_DURATION_MS = 20;
     public static final String VIBRATE_DURATION_MS_KEY = "vibrate_duration_preference";
 
