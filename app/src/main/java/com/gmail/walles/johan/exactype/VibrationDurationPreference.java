@@ -28,7 +28,7 @@ import com.gmail.walles.johan.exactype.util.VibrationUtil;
 
 public class VibrationDurationPreference extends DialogPreference {
     private static final int MIN_MS = 10;
-    private static final int MAX_MS = 60;
+    private static final int MAX_MS = 100;
 
     private int milliseconds;
 
