@@ -92,6 +92,7 @@ public class VibrationDurationPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
         if (positiveResult) {
+            VibrationUtil.vibrate(vibrator, milliseconds);
             persistInt(milliseconds);
         }
     }
