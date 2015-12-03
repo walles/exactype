@@ -38,7 +38,6 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO Prioritized Beta User Issues
-* Repeating backspace removes one char too many, possibly at the final Up event of the hold
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
@@ -94,6 +93,10 @@ pressed. Maybe vibrate on down for close keypresses and always audio-pop on up?
 * If the user is too off in her press, neither buzz nor add a key. We need some kind of feedback
 though to tell the user that "I know you pressed, but it was too bad a hit so you need to improve".
 Maybe flash the keyboard red as well and put a marker where the user pressed?
+* Implement a Spell Checker Service. When the user ends a word containing one or more dodgy
+keypresses, add the original word + corrections for the dodgy keypresses to the (in memory only)
+word list. Maintain a list of at most 50 corrections or so, and possibly drop the whole thing when
+the user switches input fields.
 
 ## User Feedback
 * "I prefer having all keys the same size"
@@ -202,3 +205,4 @@ happens
 * Holding backspace first deletes *two* words, then one at a time. It should do one-at-a-time from
 the start.
 * Add Settings activity with a slider for vibration duration
+* Repeating backspace removes one char too many

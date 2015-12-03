@@ -89,4 +89,29 @@ public class GestureListenerTest {
         testMe.onLongLongPress(5f, 6f);
         Mockito.verify(exactype).onRequestPopupKeyboard('x', 5f, 6f);
     }
+
+    @Test
+    public void testOnLongPressUpDelete() {
+        Exactype exactype = Mockito.mock(Exactype.class);
+        GestureListener testMe = new GestureListener(exactype);
+        setKey(testMe, '⌫');
+
+        testMe.onLongPressUp(5f, 6f);
+
+        // We don't care if isPopupKeyboardShowing() is called...
+        Mockito.verify(exactype, Mockito.atMost(1)).isPopupKeyboardShowing();
+
+        // ... we just want to ensure nothing gets deleted.
+        Mockito.verifyNoMoreInteractions(exactype);
+    }
+
+    @Test
+    public void testOnLongPressUpNonDelete() {
+        Exactype exactype = Mockito.mock(Exactype.class);
+        GestureListener testMe = new GestureListener(exactype);
+        setKey(testMe, 'x');
+
+        testMe.onLongPressUp(5f, 6f);
+        Mockito.verify(exactype).onKeyTapped('x');
+    }
 }

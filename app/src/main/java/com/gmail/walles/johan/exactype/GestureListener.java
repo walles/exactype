@@ -101,6 +101,16 @@ public class GestureListener {
             // breaking some kind of abstraction here...
             exactype.onPopupKeyboardTapped(x, y);
         } else {
+            char tappedKey = keyCoordinator.getClosestKey(x, y);
+            if (tappedKey == '⌫') {
+                // We get a long press up on backspace when the user holds the backspace key, but
+                // when the user releases the backspace key in this case she's already done. Edge
+                // case is when the user long presses something else and slides onto backspace on
+                // the alternate keyboard, but I'm guessing that's uncommon enough that we won't
+                // worry about it for now.
+                return;
+            }
+
             onSingleTap(x, y);
         }
     }
