@@ -19,6 +19,7 @@ package com.gmail.walles.johan.exactype;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.VisibleForTesting;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -38,6 +39,7 @@ public class KeyboardTheme {
      */
     private static final float LETTER_ZOOM_OUT_FACTOR = 3f;
 
+    @VisibleForTesting
     static final int POPUP_BORDER_WIDTH_DP = 2;
 
     /**
@@ -63,11 +65,9 @@ public class KeyboardTheme {
      * The full keyboard should be scaled to screen width; the popup keyboards should be scaled
      * down if they don't fit.
      */
-    private boolean shouldScaleToScreenWidth;
+    private boolean isFullKeyboard;
 
-    /**
-     * This constructor exists for unit testing purposes only.
-     */
+    @VisibleForTesting
     KeyboardTheme(int screenWidth, int screenHeight,
                   Paint textPaint,
                   Paint strokePaint,
@@ -136,7 +136,7 @@ public class KeyboardTheme {
      * @param textSize The wanted font size to use
      */
     public void setContents(String keys, float textSize) {
-        shouldScaleToScreenWidth = false;
+        isFullKeyboard = false;
 
         verticalCenterOffset = (fontSize100VerticalCenterOffset * textSize) / 100f;
 
@@ -149,8 +149,8 @@ public class KeyboardTheme {
         textPaint.setTextSize(textSize);
     }
 
-    public void setShouldComputeTextSize() {
-        shouldScaleToScreenWidth = true;
+    public void setIsFullKeyboard() {
+        isFullKeyboard = true;
     }
 
     public int getWidth() {
@@ -176,21 +176,39 @@ public class KeyboardTheme {
      * @param maxHeight Maximum keyboard height (= half of the screen height)
      */
     private void scaleToScreenWidth(int maxWidth, int maxHeight) {
-        width = maxWidth;
-
         // Scale the font size so that the longest line matches the display width
-        float factor = width / fontSize100LongestRowLength;
+        float factor = maxWidth / fontSize100LongestRowLength;
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
-        height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-        Log.i(TAG, "Size set to " + width + "x" + height);
+        int computedHeight = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
+        Log.i(TAG, "Size set to " + maxWidth + "x" + computedHeight);
 
-        if (height > maxHeight) {
+        if (computedHeight > maxHeight) {
             // Don't use more than half the height, required in landscape mode
-            factor = (width / fontSize100LongestRowLength) * ((float)maxHeight / height);
-            height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-            Log.d(TAG, "Size reset to " + width + "x" + height);
+            factor = (maxWidth / fontSize100LongestRowLength) * ((float)maxHeight / computedHeight);
+            computedHeight = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
+            Log.d(TAG, "Size reset to " + maxWidth + "x" + computedHeight);
         }
+
+        setSize(maxWidth, computedHeight);
+    }
+
+    /**
+     * Set full size keyboard dimensions (in pixels) and scale the font size to match.
+     */
+    public void setSize(int width, int height) {
+        isFullKeyboard = true;
+
+        this.width = width;
+        this.height = height;
+
+        // Scale the font size so that the longest line matches the display width
+        float widthFactor = width / fontSize100LongestRowLength;
+
+        // Scale the font size so that there's room for three rows
+        float heightFactor = height / (3f * fontSize100HeightPx);
+
+        float factor = Math.min(widthFactor, heightFactor);
 
         float textSize = 100 * factor / LETTER_ZOOM_OUT_FACTOR;
         textPaint.setTextSize(textSize);
@@ -216,7 +234,7 @@ public class KeyboardTheme {
 
         Log.d(TAG, "Bounds are " + maxWidth + "x" + maxHeight);
 
-        if (shouldScaleToScreenWidth) {
+        if (isFullKeyboard) {
             scaleToScreenWidth(maxWidth, maxHeight);
 
             return;

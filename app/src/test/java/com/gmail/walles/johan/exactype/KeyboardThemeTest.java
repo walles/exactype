@@ -66,7 +66,7 @@ public class KeyboardThemeTest {
                 screenWidth, screenHeight,
                 textPaint, strokePaint,
                 131, 50f, 50f * 11, 25f);
-        testMe.setShouldComputeTextSize();
+        testMe.setIsFullKeyboard();
         return testMe;
     }
 }

@@ -44,7 +44,7 @@ public class SwitcherView extends HorizontalScrollView {
         addView(linearLayout);
 
         theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
-        theme.setShouldComputeTextSize();
+        theme.setIsFullKeyboard();
     }
 
     @Override

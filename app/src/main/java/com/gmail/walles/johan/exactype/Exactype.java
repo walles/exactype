@@ -22,6 +22,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -63,7 +64,7 @@ public class Exactype
         "ZXCVBNM" // ⇧ = SHIFT, ⌫ = Backspace
     };
 
-    // Default protection for testing purposes
+    @VisibleForTesting
     static final String[] NUMERIC = new String[] {
         "1234567890",
         "@&/:;()-+$",
@@ -75,7 +76,7 @@ public class Exactype
     private PopupKeyboardView popupKeyboardView;
     private PopupWindow popupKeyboardWindow;
 
-    // Protected for testing purposes, should otherwise be private
+    @VisibleForTesting
     protected FeedbackWindow feedbackWindow;
 
     private final ExactypeMode mode;

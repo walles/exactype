@@ -62,7 +62,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     }
 
     public void onModeChange(String[] rows, ExactypeMode.SwitchKey switchKey) {
-        theme.setShouldComputeTextSize();
+        theme.setIsFullKeyboard();
 
         keyCoordinator = new KeyCoordinator(rows);
         keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
@@ -128,6 +128,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
         theme.setSize(screenWidth, MeasureSpec.getSize(heightMeasureSpec));
 
         setMeasuredDimension(theme.getWidth(), theme.getHeight());
