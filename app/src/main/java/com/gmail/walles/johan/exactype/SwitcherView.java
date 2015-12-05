@@ -18,7 +18,6 @@ package com.gmail.walles.johan.exactype;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -36,28 +35,26 @@ public class SwitcherView extends HorizontalScrollView {
     public SwitcherView(Context context, View currentView, View nextView) {
         super(context);
 
+        // FIXME: Do we need to react to device orientation change and recalculate these?
+        ViewGroup.LayoutParams layoutParams = KeyboardTheme.getLayoutParams(context);
+
         // Default to showing currentView, have nextView on standby
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.addView(currentView);
-        linearLayout.addView(nextView);
+        linearLayout.addView(currentView, layoutParams);
+        linearLayout.addView(nextView, layoutParams);
         addView(linearLayout);
 
-        KeyboardTheme theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
-        theme.setIsFullKeyboard();
-
-        // FIXME: Do we need to react to device orientation change and recalculate these?
-        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
-
-        theme.setBounds(screenWidth, screenHeight);
-        setLayoutParams(new ViewGroup.LayoutParams(theme.getWidth(), theme.getHeight()));
-        Log.d("Johan", "SwitcherView sized to " + theme.getWidth() + "x" + theme.getHeight());
+        setLayoutParams(layoutParams);
     }
 
     // FIXME: Intercept left swipe / fling and scroll accordingly
 
     // FIXME: Pass through non-intercepted actions if we're snapped to either side
+
+    // FIXME: Verify swiping for space still works with keyboard in the switcher
+
+    // FIXME: Verify typing still works with keyboard in the switcher
 
     // FIXME: After scrolling, snap to either left or right depending on which is closest
 }

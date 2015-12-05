@@ -16,6 +16,7 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -24,6 +25,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 
 public class KeyboardTheme {
     private static final String TAG = "Exactype";
@@ -119,6 +121,19 @@ public class KeyboardTheme {
 
         screenHeight = displayMetrics.heightPixels;
         screenWidth = displayMetrics.widthPixels;
+    }
+
+    /**
+     * Compute a suitable keyboard size for the screen size
+     */
+    public static ViewGroup.LayoutParams getLayoutParams(Context context) {
+        KeyboardTheme theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
+        theme.setIsFullKeyboard();
+
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        theme.setBounds(screenWidth, screenHeight);
+        return new ViewGroup.LayoutParams(theme.getWidth(), theme.getHeight());
     }
 
     public Paint getTextPaint() {
