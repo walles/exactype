@@ -54,6 +54,7 @@ of some kind comes to mind.
 * Add an EmojiView. It should be sized like the keyboard.
 * When swiping the keyboard away, swipe the EmojiView in.
 * When swiping the EmojiView left, swipe the keyboard back in.
+* Try how the swiping and the views work when rotating the device.
 * Make the EmojiView display something.
 * Make the EmojiView display something that is higher than the height of the EmojiView.
 * Make the EmojiView scroll vertically on single finger scroll.

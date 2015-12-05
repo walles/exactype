@@ -18,7 +18,9 @@ package com.gmail.walles.johan.exactype;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -31,8 +33,6 @@ import android.widget.LinearLayout;
  */
 @SuppressLint("ViewConstructor")
 public class SwitcherView extends HorizontalScrollView {
-    private final KeyboardTheme theme;
-
     public SwitcherView(Context context, View currentView, View nextView) {
         super(context);
 
@@ -43,15 +43,16 @@ public class SwitcherView extends HorizontalScrollView {
         linearLayout.addView(nextView);
         addView(linearLayout);
 
-        theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
+        KeyboardTheme theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
         theme.setIsFullKeyboard();
-    }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        theme.setBounds(widthMeasureSpec, heightMeasureSpec);
+        // FIXME: Do we need to react to device orientation change and recalculate these?
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
-        setMeasuredDimension(theme.getWidth(), theme.getHeight());
+        theme.setBounds(screenWidth, screenHeight);
+        setLayoutParams(new ViewGroup.LayoutParams(theme.getWidth(), theme.getHeight()));
+        Log.d("Johan", "SwitcherView sized to " + theme.getWidth() + "x" + theme.getHeight());
     }
 
     // FIXME: Intercept left swipe / fling and scroll accordingly
@@ -59,5 +60,4 @@ public class SwitcherView extends HorizontalScrollView {
     // FIXME: Pass through non-intercepted actions if we're snapped to either side
 
     // FIXME: After scrolling, snap to either left or right depending on which is closest
-
 }
