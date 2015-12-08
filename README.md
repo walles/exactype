@@ -51,6 +51,11 @@ for auto correction.
 ## TODO for Emoji Support
 * Add a keyboard selector that on left swipe scrolls the keyboard sideways. A horizontal scroll view
 of some kind comes to mind.
+* OK: Make the keyboard selector default to just letting all touch events through.
+* Make our GestureDetector detect the start of a left swipe.
+* On start left swipe, have the keyboard tell the keyboard selector to take over all touch events.
+* Have the keyboard selector start passing touch events through again after the scrolling plus any
+resulting animations are done.
 * Add an EmojiView. It should be sized like the keyboard.
 * When swiping the keyboard away, swipe the EmojiView in.
 * When swiping the EmojiView left, swipe the keyboard back in.

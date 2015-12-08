@@ -18,6 +18,7 @@ package com.gmail.walles.johan.exactype;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -32,8 +33,12 @@ import android.widget.LinearLayout;
  */
 @SuppressLint("ViewConstructor")
 public class SwitcherView extends HorizontalScrollView {
+    private View currentView;
+
     public SwitcherView(Context context, View currentView, View nextView) {
         super(context);
+
+        this.currentView = currentView;
 
         // FIXME: Do we need to react to device orientation change and recalculate these?
         ViewGroup.LayoutParams layoutParams = KeyboardTheme.getLayoutParams(context);
@@ -48,13 +53,14 @@ public class SwitcherView extends HorizontalScrollView {
         setLayoutParams(layoutParams);
     }
 
-    // FIXME: Intercept left swipe / fling and scroll accordingly
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        // Pass all touch events through to the current keyboard
+        return currentView.onTouchEvent(ev);
+    }
 
-    // FIXME: Pass through non-intercepted actions if we're snapped to either side
+    // FIXME: When told to, start using all touch events for scrolling, and don't pass any through
 
-    // FIXME: Verify swiping for space still works with keyboard in the switcher
-
-    // FIXME: Verify typing still works with keyboard in the switcher
-
-    // FIXME: After scrolling, snap to either left or right depending on which is closest
+    // FIXME: When a touch event plus any followup animations are done, start passing touch events
+    // through again
 }
