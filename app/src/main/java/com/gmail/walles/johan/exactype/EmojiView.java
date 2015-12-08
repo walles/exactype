@@ -42,10 +42,7 @@ public class EmojiView extends View implements ExactypeMode.ModeChangeListener {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
-        theme.setSize(screenWidth, MeasureSpec.getSize(heightMeasureSpec));
-
-        setMeasuredDimension(theme.getWidth(), theme.getHeight());
+    protected void onSizeChanged(int width, int height, int oldw, int oldh) {
+        theme.setSize(width, height);
     }
 }

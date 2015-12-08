@@ -127,11 +127,8 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
-        theme.setSize(screenWidth, MeasureSpec.getSize(heightMeasureSpec));
-
-        setMeasuredDimension(theme.getWidth(), theme.getHeight());
+    protected void onSizeChanged(int width, int height, int oldw, int oldh) {
+        theme.setSize(width, height);
         keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
     }
 
