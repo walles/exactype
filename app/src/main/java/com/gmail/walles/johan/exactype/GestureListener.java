@@ -65,6 +65,20 @@ public class GestureListener {
         handleDownSwipe(dx, dy);
     }
 
+    public void onStartSwipe(float dx, float dy) {
+        if (dx > 0) {
+            // This is a right swipe, we want left swipes
+            return;
+        }
+
+        if (Math.abs(dy) > Math.abs(dx)) {
+            // This is more of an up / down swipe than a left swipe, never mind
+            return;
+        }
+
+        exactype.onStartLeftSwipe();
+    }
+
     public void onSingleTap(float x, float y) {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {

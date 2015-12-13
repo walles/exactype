@@ -272,6 +272,7 @@ public class GestureDetectorTest {
         doSingleTap(TOUCH_SLOP + 1, 0);
 
         // Tapping too far == swipe
+        Mockito.verify(listener).onStartSwipe(Mockito.anyFloat(), Mockito.anyFloat());
         Mockito.verify(listener).onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
     }
 
@@ -294,12 +295,14 @@ public class GestureDetectorTest {
     @Test
     public void testFastSwipe() {
         doSwipe(97, 23, LONG_PRESS_TIMEOUT / 2);
+        Mockito.verify(listener).onStartSwipe(Mockito.anyFloat(), Mockito.anyFloat());
         Mockito.verify(listener).onSwipe(97f, 23f);
     }
 
     @Test
     public void testSlowSwipe() {
         doSwipe(97, 23, LONG_PRESS_TIMEOUT * 2);
+        Mockito.verify(listener).onStartSwipe(Mockito.anyFloat(), Mockito.anyFloat());
         Mockito.verify(listener).onSwipe(97f, 23f);
     }
 
@@ -309,7 +312,35 @@ public class GestureDetectorTest {
 
         // We moved too short, that shouldn't count as a swipe
         Mockito.verify(listener, Mockito.never())
+            .onStartSwipe(Mockito.anyFloat(), Mockito.anyFloat());
+        Mockito.verify(listener, Mockito.never())
             .onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
+    }
+
+    @Test
+    public void testSwipeStartHappy() {
+        // Verify we get both swipeStart and swipe when swiping quickly
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+        doMotion(T0 + 1, MotionEvent.ACTION_MOVE, X0 + TOUCH_SLOP + 1, Y0);
+        Mockito.verify(listener).onStartSwipe(TOUCH_SLOP + 1, 0);
+
+        // We should get only one swipe start event
+        doMotion(T0 + 2, MotionEvent.ACTION_MOVE, X0 + TOUCH_SLOP + 2, Y0);
+        Mockito.verify(listener, Mockito.never()).onStartSwipe(TOUCH_SLOP + 2, 0);
+
+        doMotion(T0 + 3, MotionEvent.ACTION_UP, X0 + TOUCH_SLOP + 3, Y0);
+        Mockito.verify(listener).onSwipe(TOUCH_SLOP + 3, 0);
+    }
+
+    @Test
+    public void testSwipeStartSlow() {
+        // Verify we don't get swipeStart when starting to move after LONG_PRESS_TIMEOUT
+        doMotion(T0, MotionEvent.ACTION_DOWN, X0, Y0);
+        doWaitUntil(T0 + LONG_PRESS_TIMEOUT);
+        doMotion(T0 + LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_UP, X0 + TOUCH_SLOP + 2, Y0);
+
+        Mockito.verify(listener, Mockito.never()).onStartSwipe(Mockito.anyFloat(), Mockito.anyFloat());
+        Mockito.verify(listener, Mockito.never()).onSwipe(Mockito.anyFloat(), Mockito.anyFloat());
     }
 
     @Test

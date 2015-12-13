@@ -38,8 +38,10 @@ public class GestureDetector {
     private float mostRecentX;
     private float mostRecentY;
     private long startTime;
+
     private boolean isLongPressing;
     private int repetitions;
+    private boolean hasReportedSwipeStart;
 
     public GestureDetector(Context context, Handler handler, GestureListener listener) {
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
@@ -65,6 +67,8 @@ public class GestureDetector {
         mostRecentY = startY;
 
         repetitions = 0;
+
+        hasReportedSwipeStart = false;
 
         handler.postAtTime(new Runnable() {
                                @Override
@@ -160,6 +164,30 @@ public class GestureDetector {
         resetStart();
 
         return true;
+    }
+
+    private void handleSwipeStart() {
+        if (!isStarted()) {
+            // We don't know how this started, can't work with this
+            return;
+        }
+
+        if (isLongPressing) {
+            return;
+        }
+
+        if (hasReportedSwipeStart) {
+            return;
+        }
+
+        float dx = mostRecentX - startX;
+        float dy = mostRecentY  - startY;
+        if (Math.abs(dx) <= touchSlop && Math.abs(dy) <= touchSlop) {
+            return;
+        }
+
+        listener.onStartSwipe(dx, dy);
+        hasReportedSwipeStart = true;
     }
 
     private boolean handleSwipeEnd(float x, float y) {
@@ -268,6 +296,9 @@ public class GestureDetector {
             listener.onMove(x, y);
             mostRecentX = x;
             mostRecentY = y;
+
+            handleSwipeStart();
+
             return true;
         }
 

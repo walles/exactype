@@ -410,4 +410,8 @@ public class Exactype
     public void onWindowHidden() {
         feedbackWindow.close();
     }
+
+    public void onStartLeftSwipe() {
+        // FIXME: Tell keyboard switcher it's time to start switching
+    }
 }
