@@ -32,6 +32,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
+import com.gmail.walles.johan.exactype.switching.SwitcherView;
 import com.gmail.walles.johan.exactype.util.Timer;
 import com.gmail.walles.johan.exactype.util.VibrationUtil;
 
@@ -412,6 +413,6 @@ public class Exactype
     }
 
     public void onStartLeftSwipe() {
-        // FIXME: Tell keyboard switcher it's time to start switching
+        switcherView.enableSwitchingMode();
     }
 }
