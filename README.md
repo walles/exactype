@@ -58,7 +58,7 @@ events.
 * OK: Add an EmojiView. It should be sized like the keyboard.
 * OK: Have the keyboard selector start passing touch events through again after the scrolling plus
 any resulting animations are done.
-* When swiping the keyboard away, swipe the EmojiView in.
+* OK: When swiping the keyboard away, swipe the EmojiView in.
 * When swiping the EmojiView left, swipe the keyboard back in.
 * Try how the swiping and the views work when rotating the device.
 * Make the EmojiView display something.

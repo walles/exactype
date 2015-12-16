@@ -115,9 +115,9 @@ public class SwitcherView extends HorizontalScrollView {
             isSwitching = false;
 
             // FIXME: Don't do any of these if we're already animating
-            Log.d(TAG, "Scroll is " + getScrollX() + "/" + getContentWidth());
-            FIXME: This test doesn't work; we never animate right
-            if (getScrollX() < getContentWidth() / 2) {
+            int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
+            Log.d(TAG, "Scroll is " + getScrollX() + "/" + screenWidth);
+            if (getScrollX() < screenWidth / 2) {
                 animateLeft();
             } else {
                 animateRight();
@@ -147,10 +147,6 @@ public class SwitcherView extends HorizontalScrollView {
 
         // ... and scroll fully left
         setScrollX(0);
-    }
-
-    private int getContentWidth() {
-        return currentView.getWidth() + nextView.getWidth();
     }
 
     public void enableSwitchingMode() {
