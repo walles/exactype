@@ -24,9 +24,11 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.gmail.walles.johan.exactype.gestures.GestureDetector;
+
 public class ExactypeView extends View implements ExactypeMode.ModeChangeListener {
     private final GestureDetector gestureDetector;
-    private final GestureListener gestureListener;
+    private final KeyboardGestureListener gestureListener;
 
     private KeyCoordinator keyCoordinator;
     private ExactypeMode.SwitchKey switchKey;
@@ -53,7 +55,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
         theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
 
-        gestureListener = new GestureListener(exactype);
+        gestureListener = new KeyboardGestureListener(exactype);
         gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
     }
 

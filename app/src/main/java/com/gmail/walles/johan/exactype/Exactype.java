@@ -32,7 +32,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
-import com.gmail.walles.johan.exactype.switching.SwitcherView;
 import com.gmail.walles.johan.exactype.util.Timer;
 import com.gmail.walles.johan.exactype.util.VibrationUtil;
 
@@ -412,6 +411,10 @@ public class Exactype
         feedbackWindow.close();
     }
 
+    /**
+     * When the user starts swiping left we tell the keyboard switcher to take over touch input and
+     * start switching.
+     */
     public void onStartLeftSwipe() {
         switcherView.enableSwitchingMode();
     }

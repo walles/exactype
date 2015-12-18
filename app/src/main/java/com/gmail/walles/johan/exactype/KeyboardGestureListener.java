@@ -16,12 +16,14 @@
 
 package com.gmail.walles.johan.exactype;
 
-public class GestureListener {
+import com.gmail.walles.johan.exactype.gestures.GestureListener;
+
+public class KeyboardGestureListener implements GestureListener {
     private final Exactype exactype;
     private KeyCoordinator keyCoordinator;
     private char longPressKey;
 
-    public GestureListener(Exactype exactype) {
+    public KeyboardGestureListener(Exactype exactype) {
         this.exactype = exactype;
     }
 
@@ -58,6 +60,7 @@ public class GestureListener {
         exactype.onActionTapped();
     }
 
+    @Override
     public void onSwipe(float dx, float dy) {
         if (handleRightSwipe(dx, dy)) {
             return;
@@ -65,6 +68,7 @@ public class GestureListener {
         handleDownSwipe(dx, dy);
     }
 
+    @Override
     public void onStartSwipe(float dx, float dy) {
         if (dx > 0) {
             // This is a right swipe, we want left swipes
@@ -79,6 +83,7 @@ public class GestureListener {
         exactype.onStartLeftSwipe();
     }
 
+    @Override
     public void onSingleTap(float x, float y) {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
@@ -90,6 +95,7 @@ public class GestureListener {
         }
     }
 
+    @Override
     public void onLongPress(float x, float y) {
         longPressKey = keyCoordinator.getClosestKey(x, y);
         if (longPressKey == '⌫') {
@@ -100,6 +106,7 @@ public class GestureListener {
         exactype.onLongPress(x, y);
     }
 
+    @Override
     public void onLongLongPress(float x, float y) {
         if (longPressKey == '⌫') {
             // We want repeats for delete, not popup keyboards
@@ -109,6 +116,7 @@ public class GestureListener {
         exactype.onRequestPopupKeyboard(longPressKey, x, y);
     }
 
+    @Override
     public void onLongPressUp(float x, float y) {
         if (exactype.isPopupKeyboardShowing()) {
             // Is this really the way to deal with popup keyboard events? I have a feeling we're
@@ -129,6 +137,7 @@ public class GestureListener {
         }
     }
 
+    @Override
     public void onHold(float x, float y) {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey != '⌫') {
@@ -138,14 +147,17 @@ public class GestureListener {
         exactype.onDeleteHeld();
     }
 
+    @Override
     public void onDown() {
         exactype.onTouchStart();
     }
 
+    @Override
     public void onMove(float x, float y) {
         exactype.onTouchMove(x, y);
     }
 
+    @Override
     public void onUp() {
         exactype.onTouchEnd();
     }

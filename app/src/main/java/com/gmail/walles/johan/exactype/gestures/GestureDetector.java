@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype;
+package com.gmail.walles.johan.exactype.gestures;
 
 import android.content.Context;
 import android.os.Handler;
