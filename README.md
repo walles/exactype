@@ -61,9 +61,10 @@ any resulting animations are done.
 * OK: When swiping the keyboard away, swipe the EmojiView in.
 * OK: When swiping the EmojiView left, swipe the keyboard back in.
 * Try how the swiping and the views work when rotating the device.
-* Make the EmojiView display something.
-* Make the EmojiView display something that is higher than the height of the EmojiView.
-* Make the EmojiView scroll vertically on single finger scroll.
+* OK: Make the EmojiView display something.
+* OK: Make the EmojiView display something that is higher than the height of the EmojiView.
+* OK: Make the EmojiView scroll vertically on single finger scroll.
+* Make the EmojiView show multiple columns.
 * Make the EmojiView display some actual emoji.
 * Make the EmojiView display all emoji.
 * Make clicking an emoji add it to the input field.

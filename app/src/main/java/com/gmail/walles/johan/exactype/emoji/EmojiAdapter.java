@@ -16,28 +16,40 @@
 
 package com.gmail.walles.johan.exactype.emoji;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+
+import com.gmail.walles.johan.exactype.R;
 
 public class EmojiAdapter extends BaseAdapter {
+    private final Context context;
+
+    public EmojiAdapter(Context context) {
+        this.context = context;
+    }
+
     @Override
     public int getCount() {
-        return 0;
+        return 45;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        ImageView imageView = new ImageView(context);
+        imageView.setImageResource(R.drawable.ic_launcher);
+        return imageView;
     }
 }

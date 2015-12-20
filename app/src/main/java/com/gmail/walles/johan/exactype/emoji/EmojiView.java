@@ -104,6 +104,6 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
 
         // FIXME: Set up layout: http://developer.android.com/guide/topics/ui/layout/gridview.html
 
-        setAdapter(new EmojiAdapter());
+        setAdapter(new EmojiAdapter(getContext()));
     }
 }
