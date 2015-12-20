@@ -70,6 +70,12 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
                     startScrollLeftDetected = true;
                 }
             });
+
+        setNumColumns(GridView.AUTO_FIT);
+        setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        setGravity(Gravity.CENTER);
+
+        setAdapter(new EmojiAdapter(getContext()));
     }
 
     @Override
@@ -110,17 +116,5 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
 
         // Otherwise, just pass the touch event through to super
         return super.onTouchEvent(ev);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        // FIXME: Set up layout: http://developer.android.com/guide/topics/ui/layout/gridview.html
-        setNumColumns(GridView.AUTO_FIT);
-        setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-        setGravity(Gravity.CENTER);
-
-        setAdapter(new EmojiAdapter(getContext()));
     }
 }
