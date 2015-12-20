@@ -58,7 +58,7 @@ public class SwitcherView extends HorizontalScrollView {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.addView(currentView, layoutParams);
-        linearLayout.addView(nextView, layoutParams);
+        linearLayout.addView(nextView, 1, layoutParams);
         addView(linearLayout);
 
         setLayoutParams(layoutParams);

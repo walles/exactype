@@ -60,14 +60,16 @@ events.
 any resulting animations are done.
 * OK: When swiping the keyboard away, swipe the EmojiView in.
 * OK: When swiping the EmojiView left, swipe the keyboard back in.
-* Try how the swiping and the views work when rotating the device.
 * OK: Make the EmojiView display something.
 * OK: Make the EmojiView display something that is higher than the height of the EmojiView.
 * OK: Make the EmojiView scroll vertically on single finger scroll.
-* Make the EmojiView show multiple columns.
+* OK: Make the EmojiView show multiple columns.
 * Make the EmojiView display some actual emoji.
 * Make the EmojiView display all emoji.
 * Make clicking an emoji add it to the input field.
+* Vibrate when adding emoji.
+* Never show any too-large images in the EmojiView. When writing this it does that on startup.
+* Try how the swiping and the views work when rotating the device.
 
 ## TODO Before Getting the First Remote Beta Tester
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself

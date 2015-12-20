@@ -18,6 +18,7 @@ package com.gmail.walles.johan.exactype.emoji;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.GridView;
 
@@ -29,6 +30,17 @@ import com.gmail.walles.johan.exactype.gestures.GestureListenerAdapter;
 
 @SuppressLint("ViewConstructor")
 public class EmojiView extends GridView implements ExactypeMode.ModeChangeListener {
+    /**
+     * How much space do we have between our columns and rows?
+     */
+    private static final float SPACE_FACTOR = 0.05f;
+
+    /**
+     * Set emoji size so that this number of emojis cover the screen height. We're using .5 at the
+     * end to make the user realize they can scroll down.
+     */
+    private static final float EMOJIS_PER_HEIGHT = 4.5f;
+
     private final KeyboardTheme theme;
     private final Exactype exactype;
 
@@ -67,7 +79,9 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
 
     @Override
     protected void onSizeChanged(int width, int height, int oldw, int oldh) {
-        setColumnWidth((int)(height / 3.5f));
+        setColumnWidth((int)(height / EMOJIS_PER_HEIGHT));
+        setHorizontalSpacing((int)(getColumnWidth() * SPACE_FACTOR));
+        setVerticalSpacing((int)(getColumnWidth() * SPACE_FACTOR));
 
         theme.setSize(width, height);
     }
@@ -103,6 +117,9 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
         super.onAttachedToWindow();
 
         // FIXME: Set up layout: http://developer.android.com/guide/topics/ui/layout/gridview.html
+        setNumColumns(GridView.AUTO_FIT);
+        setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        setGravity(Gravity.CENTER);
 
         setAdapter(new EmojiAdapter(getContext()));
     }

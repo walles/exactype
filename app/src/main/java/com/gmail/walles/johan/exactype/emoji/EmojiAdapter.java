@@ -20,7 +20,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 
 import com.gmail.walles.johan.exactype.R;
 
@@ -48,7 +47,12 @@ public class EmojiAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = new ImageView(context);
+        EmojiImageView imageView;
+        if (convertView != null && convertView instanceof EmojiImageView) {
+            imageView = (EmojiImageView)convertView;
+        } else {
+            imageView = new EmojiImageView(context);
+        }
         imageView.setImageResource(R.drawable.ic_launcher);
         return imageView;
     }
