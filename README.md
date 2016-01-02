@@ -103,6 +103,7 @@ the user switches input fields.
 * "I prefer a slanted layout, maybe we'd get that by having all keys the same size?"
 
 ## TODO Misc
+* Make a promo video
 * Are there cases where we should explicitly close ourselves? In onUnbindInput() for example?
 * Make sure the popup keyboard frame has the same thickness on all sides of the popup keyboard.
 * Make sure the hitpoint of lower case 'o' is in the middle of the circle
