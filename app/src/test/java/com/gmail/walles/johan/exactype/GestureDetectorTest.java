@@ -21,11 +21,14 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import junit.framework.AssertionFailedError;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -125,13 +128,18 @@ public class GestureDetectorTest {
      * that in the unit tests as well.
      */
     private static MotionEvent motionEvent(
-        long eventTime, int action, float x, float y)
+        long eventTime, int action, int pointerIndex, float x, float y)
     {
         Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(T0);
         Mockito.when(MOTION_EVENT.getEventTime()).thenReturn(eventTime);
         Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
-        Mockito.when(MOTION_EVENT.getX()).thenReturn(x);
-        Mockito.when(MOTION_EVENT.getY()).thenReturn(y);
+        Mockito.when(MOTION_EVENT.getX(pointerIndex)).thenReturn(x);
+        Mockito.when(MOTION_EVENT.getY(pointerIndex)).thenReturn(y);
+
+        Mockito.when(MOTION_EVENT.getX())
+            .thenThrow(new AssertionFailedError("Call getX(int) instead"));
+        Mockito.when(MOTION_EVENT.getY())
+            .thenThrow(new AssertionFailedError("Call getY(int) instead"));
 
         return MOTION_EVENT;
     }
@@ -155,10 +163,20 @@ public class GestureDetectorTest {
      * Triggers timeout handler before that if the motion is after the timeout.
      * </p>
      */
-    private void doMotion(long eventTime, int action, float x, float y) {
+    private void doMotion(long eventTime, int action, int pointerIndex, float x, float y) {
         doWaitUntil(eventTime);
 
-        testMe.onTouchEvent(motionEvent(eventTime, action, x, y));
+        testMe.onTouchEvent(motionEvent(eventTime, action, pointerIndex, x, y));
+    }
+
+    /**
+     * Passes a motion to the GestureDetector.
+     * <p>
+     * Triggers timeout handler before that if the motion is after the timeout.
+     * </p>
+     */
+    private void doMotion(long eventTime, int action, float x, float y) {
+        doMotion(eventTime, action, 0, x, y);
     }
 
     /*
@@ -429,5 +447,60 @@ public class GestureDetectorTest {
         // This wasn't a single tap
         Mockito.verify(listener, Mockito.never()).
             onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
+    }
+
+    @Test
+    public void testMultitouchTouchTouch() {
+        final float X1 = X0 + 42;
+        final float Y1 = Y0 + 47;
+
+        // First finger down
+        doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+
+        // Second finger down
+        doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // When the second finger hits, we should treat the first finger as done
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // First finger up
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, 0, X0, Y0);
+
+        // Second finger up
+        doMotion(T0 + 3, MotionEvent.ACTION_UP, 1, X1, Y1);
+
+        // Second finger done, tap should be detected
+        Mockito.verify(listener).onSingleTap(X1, Y1);
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testMultitouchTouchLongLongPess() {
+        final float X1 = X0 + 42;
+        final float Y1 = Y0 + 47;
+
+        // First finger down
+        doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+
+        // Second finger down
+        doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // When the second finger hits, we should treat the first finger as done
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // First finger up
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, 0, X0, Y0);
+
+        // Second finger up after 2x long press timeout
+        doMotion(T0 + 1 + LONG_PRESS_TIMEOUT * 2, MotionEvent.ACTION_UP, 1, X1, Y1);
+
+        // Second finger done, long press events should be reported
+        InOrder inOrder = Mockito.inOrder(listener);
+        inOrder.verify(listener).onLongPress(X1, Y1);
+        inOrder.verify(listener).onLongLongPress(X1, Y1);
+        inOrder.verify(listener).onLongPressUp(X1, Y1);
+        Mockito.verifyNoMoreInteractions(listener);
     }
 }

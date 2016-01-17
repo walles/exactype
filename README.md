@@ -44,6 +44,8 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 
+* On multi touch, interpret the second touch as the end of the first and the start of another single
+touch gesture
 * Add an Activity that helps users enabling / choosing the new keyboard.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
@@ -118,8 +120,6 @@ available in Android's standard font.
 lines than between the lines and the edges. Should this be adjusted?
 * Move popup keyboard code from Exactype into its own class.
 * Implicit numlock on typing first digit?
-* On multi touch, interpret the second touch as the end of the first and the start of another single
-touch gesture? How would this interact with two finger swipe for switching layouts?
 * Limit keyboard height in millimeters. Try out a good upper bound on a 10 inch tablet.
 * On phone / landscape, maybe compress keyboard height to two lines by shifting the middle row to
 the side? This would require the same spacing on all rows.
