@@ -55,8 +55,8 @@ public class GestureDetector {
             return;
         }
 
-        startX = e.getX();
-        startY = e.getY();
+        startX = e.getX(0);
+        startY = e.getY(0);
         startTime = e.getEventTime();
 
         mostRecentX = startX;
@@ -136,13 +136,13 @@ public class GestureDetector {
             return false;
         }
 
-        float dx = event.getX() - startX;
+        float dx = event.getX(0) - startX;
         if (Math.abs(dx) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
         }
 
-        float dy = event.getY() - startY;
+        float dy = event.getY(0) - startY;
         if (Math.abs(dy) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
@@ -165,8 +165,8 @@ public class GestureDetector {
             return false;
         }
 
-        float dx = event.getX() - startX;
-        float dy = event.getY() - startY;
+        float dx = event.getX(0) - startX;
+        float dy = event.getY(0) - startY;
 
         if (Math.abs(dx) < touchSlop && Math.abs(dy) < touchSlop) {
             // Too short for a swipe, never mind
@@ -190,7 +190,7 @@ public class GestureDetector {
             return false;
         }
 
-        listener.onLongPressUp(event.getX(), event.getY());
+        listener.onLongPressUp(event.getX(0), event.getY(0));
         setStart(null);
 
         return true;
@@ -204,9 +204,9 @@ public class GestureDetector {
         }
 
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            listener.onMove(event.getX(), event.getY());
-            mostRecentX = event.getX();
-            mostRecentY = event.getY();
+            listener.onMove(event.getX(0), event.getY(0));
+            mostRecentX = event.getX(0);
+            mostRecentY = event.getY(0);
             return true;
         }
 

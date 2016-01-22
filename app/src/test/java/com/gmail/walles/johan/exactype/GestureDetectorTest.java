@@ -61,6 +61,12 @@ public class GestureDetectorTest {
     private static final int Y0 = 40;
 
     private static final MotionEvent MOTION_EVENT = Mockito.mock(MotionEvent.class);
+    static {
+        Mockito.when(MOTION_EVENT.getX())
+            .thenThrow(new AssertionFailedError("Call getX(int) instead"));
+        Mockito.when(MOTION_EVENT.getY())
+            .thenThrow(new AssertionFailedError("Call getY(int) instead"));
+    }
 
     private GestureDetector testMe;
     private GestureListener listener;
@@ -135,11 +141,6 @@ public class GestureDetectorTest {
         Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
         Mockito.when(MOTION_EVENT.getX(pointerIndex)).thenReturn(x);
         Mockito.when(MOTION_EVENT.getY(pointerIndex)).thenReturn(y);
-
-        Mockito.when(MOTION_EVENT.getX())
-            .thenThrow(new AssertionFailedError("Call getX(int) instead"));
-        Mockito.when(MOTION_EVENT.getY())
-            .thenThrow(new AssertionFailedError("Call getY(int) instead"));
 
         return MOTION_EVENT;
     }
