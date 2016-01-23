@@ -28,6 +28,8 @@ public class GestureDetector {
     private final int longPressTimeout;
     private final Handler handler;
 
+    private int currentPointerIndex;
+
     // Motion events are re-used, so we can't just save the motion event. Instead we save all
     // relevant field values.
     private float startX;
@@ -55,8 +57,8 @@ public class GestureDetector {
             return;
         }
 
-        startX = e.getX(0);
-        startY = e.getY(0);
+        startX = e.getX(currentPointerIndex);
+        startY = e.getY(currentPointerIndex);
         startTime = e.getEventTime();
 
         mostRecentX = startX;
@@ -136,13 +138,13 @@ public class GestureDetector {
             return false;
         }
 
-        float dx = event.getX(0) - startX;
+        float dx = event.getX(currentPointerIndex) - startX;
         if (Math.abs(dx) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
         }
 
-        float dy = event.getY(0) - startY;
+        float dy = event.getY(currentPointerIndex) - startY;
         if (Math.abs(dy) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
@@ -165,8 +167,8 @@ public class GestureDetector {
             return false;
         }
 
-        float dx = event.getX(0) - startX;
-        float dy = event.getY(0) - startY;
+        float dx = event.getX(currentPointerIndex) - startX;
+        float dy = event.getY(currentPointerIndex) - startY;
 
         if (Math.abs(dx) < touchSlop && Math.abs(dy) < touchSlop) {
             // Too short for a swipe, never mind
@@ -190,7 +192,7 @@ public class GestureDetector {
             return false;
         }
 
-        listener.onLongPressUp(event.getX(0), event.getY(0));
+        listener.onLongPressUp(event.getX(currentPointerIndex), event.getY(currentPointerIndex));
         setStart(null);
 
         return true;
@@ -204,9 +206,9 @@ public class GestureDetector {
         }
 
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            listener.onMove(event.getX(0), event.getY(0));
-            mostRecentX = event.getX(0);
-            mostRecentY = event.getY(0);
+            listener.onMove(event.getX(currentPointerIndex), event.getY(currentPointerIndex));
+            mostRecentX = event.getX(currentPointerIndex);
+            mostRecentY = event.getY(currentPointerIndex);
             return true;
         }
 
