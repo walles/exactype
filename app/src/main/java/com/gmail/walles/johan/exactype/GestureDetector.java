@@ -18,6 +18,7 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -27,7 +28,8 @@ public class GestureDetector {
     private final int longPressTimeout;
     private final Handler handler;
 
-    private int currentPointerIndex;
+    @Nullable
+    private Integer currentPointerId;
 
     // Motion events are re-used, so we can't just save the motion event. Instead we save all
     // relevant field values.
@@ -197,7 +199,52 @@ public class GestureDetector {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        return onTouchEvent(event.getAction(), event.getX(0), event.getY(0), event.getEventTime());
+        int action = event.getActionMasked();
+        if (action == MotionEvent.ACTION_POINTER_UP) {
+            // These really mean the same thing, treat them as such
+            action = MotionEvent.ACTION_UP;
+        }
+        if (action == MotionEvent.ACTION_POINTER_DOWN) {
+            // These really mean the same thing, treat them as such
+            action = MotionEvent.ACTION_DOWN;
+        }
+
+        final int eventPointerId = event.getPointerId(event.getActionIndex());
+        if (currentPointerId == null) {
+            if (action == MotionEvent.ACTION_DOWN) {
+                // Take on the newly started event
+                currentPointerId = eventPointerId;
+            } else /* not DOWN */ {
+                // Never mind, we only want new events
+                return false;
+            }
+        } else /* currentPointerId is non-null */ {
+            if (eventPointerId != currentPointerId && action == MotionEvent.ACTION_DOWN) {
+                // Another pointer has gone down, ditch the current one and go with the new one
+
+                // Fake an up for the current pointer...
+                int pointerIndex = event.findPointerIndex(currentPointerId);
+                onTouchEvent(MotionEvent.ACTION_UP,
+                    event.getX(pointerIndex), event.getY(pointerIndex),
+                    event.getEventTime());
+
+                // ... and continue with the new one
+                currentPointerId = eventPointerId;
+            }
+        }
+
+        int pointerIndex = event.findPointerIndex(currentPointerId);
+        final boolean result =
+            onTouchEvent(
+                action,
+                event.getX(pointerIndex), event.getY(pointerIndex),
+                event.getEventTime());
+
+        if (action == MotionEvent.ACTION_UP) {
+            currentPointerId = null;
+        }
+
+        return result;
     }
 
     private boolean onTouchEvent(int action, float x, float y, long timestamp) {

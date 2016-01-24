@@ -66,6 +66,16 @@ public class GestureDetectorTest {
             .thenThrow(new AssertionFailedError("Call getX(int) instead"));
         Mockito.when(MOTION_EVENT.getY())
             .thenThrow(new AssertionFailedError("Call getY(int) instead"));
+        Mockito.when(MOTION_EVENT.getAction())
+            .thenThrow(new AssertionFailedError("Call getActionMasked() instead"));
+
+        Mockito.when(MOTION_EVENT.getPointerId(0)).thenReturn(20);
+        Mockito.when(MOTION_EVENT.getPointerId(1)).thenReturn(21);
+        Mockito.when(MOTION_EVENT.getPointerId(2)).thenReturn(22);
+
+        Mockito.when(MOTION_EVENT.findPointerIndex(20)).thenReturn(0);
+        Mockito.when(MOTION_EVENT.findPointerIndex(21)).thenReturn(1);
+        Mockito.when(MOTION_EVENT.findPointerIndex(22)).thenReturn(2);
     }
 
     private GestureDetector testMe;
@@ -138,7 +148,10 @@ public class GestureDetectorTest {
     {
         Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(T0);
         Mockito.when(MOTION_EVENT.getEventTime()).thenReturn(eventTime);
-        Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
+
+        Mockito.when(MOTION_EVENT.getActionMasked()).thenReturn(action);
+        Mockito.when(MOTION_EVENT.getActionIndex()).thenReturn(pointerIndex);
+
         Mockito.when(MOTION_EVENT.getX(pointerIndex)).thenReturn(x);
         Mockito.when(MOTION_EVENT.getY(pointerIndex)).thenReturn(y);
 
