@@ -219,7 +219,12 @@ public class GestureDetector {
                 return false;
             }
         } else /* currentPointerId is non-null */ {
-            if (eventPointerId != currentPointerId && action == MotionEvent.ACTION_DOWN) {
+            if (eventPointerId != currentPointerId) {
+                if (action != MotionEvent.ACTION_DOWN) {
+                    // We don't care what happens to other pointers unless they go down
+                    return false;
+                }
+
                 // Another pointer has gone down, ditch the current one and go with the new one
 
                 // Fake an up for the current pointer...
