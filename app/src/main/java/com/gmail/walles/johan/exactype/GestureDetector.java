@@ -18,7 +18,6 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -49,17 +48,16 @@ public class GestureDetector {
         this.listener = listener;
     }
 
-    private void setStart(@Nullable final MotionEvent e) {
-        if (e == null) {
-            startTime = 0;
-            isLongPressing = false;
-            handler.removeCallbacksAndMessages(this);
-            return;
-        }
+    private void resetStart() {
+        startTime = 0;
+        isLongPressing = false;
+        handler.removeCallbacksAndMessages(this);
+    }
 
-        startX = e.getX(currentPointerIndex);
-        startY = e.getY(currentPointerIndex);
-        startTime = e.getEventTime();
+    private void setStart(float x, float y, long timestamp) {
+        startX = x;
+        startY = y;
+        startTime = timestamp;
 
         mostRecentX = startX;
         mostRecentY = startY;
@@ -126,25 +124,25 @@ public class GestureDetector {
         return startTime != 0;
     }
 
-    private boolean handleTapEnd(MotionEvent event) {
+    private boolean handleTapEnd(float x, float y, long timestamp) {
         if (!isStarted()) {
             // We don't know how this started, can't work with this
             return false;
         }
 
-        long dt = event.getEventTime() - startTime;
+        long dt = timestamp - startTime;
         if (dt >= longPressTimeout) {
             // End of event but not a tap, never mind
             return false;
         }
 
-        float dx = event.getX(currentPointerIndex) - startX;
+        float dx = x - startX;
         if (Math.abs(dx) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
         }
 
-        float dy = event.getY(currentPointerIndex) - startY;
+        float dy = y - startY;
         if (Math.abs(dy) > touchSlop) {
             // End of event but not a tap, never mind
             return false;
@@ -152,12 +150,12 @@ public class GestureDetector {
 
         // Close enough, quick enough
         listener.onSingleTap(startX, startY);
-        setStart(null);
+        resetStart();
 
         return true;
     }
 
-    private boolean handleSwipeEnd(MotionEvent event) {
+    private boolean handleSwipeEnd(float x, float y) {
         if (!isStarted()) {
             // We don't know how this started, can't work with this
             return false;
@@ -167,8 +165,8 @@ public class GestureDetector {
             return false;
         }
 
-        float dx = event.getX(currentPointerIndex) - startX;
-        float dy = event.getY(currentPointerIndex) - startY;
+        float dx = x - startX;
+        float dy = y - startY;
 
         if (Math.abs(dx) < touchSlop && Math.abs(dy) < touchSlop) {
             // Too short for a swipe, never mind
@@ -177,12 +175,12 @@ public class GestureDetector {
 
         // Far enough
         listener.onSwipe(dx, dy);
-        setStart(null);
+        resetStart();
 
         return true;
     }
 
-    private boolean handleLongPressEnd(MotionEvent event) {
+    private boolean handleLongPressEnd(float x, float y) {
         if (!isStarted()) {
             // We don't know how this started, can't work with this
             return false;
@@ -192,47 +190,51 @@ public class GestureDetector {
             return false;
         }
 
-        listener.onLongPressUp(event.getX(currentPointerIndex), event.getY(currentPointerIndex));
-        setStart(null);
+        listener.onLongPressUp(x, y);
+        resetStart();
 
         return true;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        return onTouchEvent(event.getAction(), event.getX(0), event.getY(0), event.getEventTime());
+    }
+
+    private boolean onTouchEvent(int action, float x, float y, long timestamp) {
+        if (action == MotionEvent.ACTION_DOWN) {
             listener.onDown();
-            setStart(event);
+            setStart(x, y, timestamp);
             return true;
         }
 
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            listener.onMove(event.getX(currentPointerIndex), event.getY(currentPointerIndex));
-            mostRecentX = event.getX(currentPointerIndex);
-            mostRecentY = event.getY(currentPointerIndex);
+        if (action == MotionEvent.ACTION_MOVE) {
+            listener.onMove(x, y);
+            mostRecentX = x;
+            mostRecentY = y;
             return true;
         }
 
-        if (event.getAction() != MotionEvent.ACTION_UP) {
+        if (action != MotionEvent.ACTION_UP) {
             // We ignore non-up events
             return false;
         }
 
         listener.onUp();
 
-        if (handleTapEnd(event)) {
+        if (handleTapEnd(x, y, timestamp)) {
             return true;
         }
 
-        if (handleSwipeEnd(event)) {
+        if (handleSwipeEnd(x, y)) {
             return true;
         }
 
-        if (handleLongPressEnd(event)) {
+        if (handleLongPressEnd(x, y)) {
             return true;
         }
 
         // Gesture ended but we don't know how
-        setStart(null);
+        resetStart();
         return false;
     }
 }
