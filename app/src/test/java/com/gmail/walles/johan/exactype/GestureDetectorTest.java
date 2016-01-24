@@ -474,8 +474,12 @@ public class GestureDetectorTest {
         // Second finger down
         doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
 
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
         // When the second finger hits, we should treat the first finger as done
         Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
         Mockito.verifyNoMoreInteractions(listener);
 
         // First finger up
@@ -486,6 +490,8 @@ public class GestureDetectorTest {
 
         // Second finger done, tap should be detected
         Mockito.verify(listener).onSingleTap(X1, Y1);
+        // One up event per complete tap = two in total
+        Mockito.verify(listener, Mockito.times(2)).onUp();
         Mockito.verifyNoMoreInteractions(listener);
     }
 
@@ -496,12 +502,17 @@ public class GestureDetectorTest {
 
         // First finger down
         doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+        Mockito.verify(listener).onDown();
 
         // Second finger down
         doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
 
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
         // When the second finger hits, we should treat the first finger as done
         Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
         Mockito.verifyNoMoreInteractions(listener);
 
         // First finger up
@@ -537,27 +548,36 @@ public class GestureDetectorTest {
 
         // First finger down
         doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+        Mockito.verify(listener).onDown();
 
         // Second finger down
         doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
         // When the second finger hits, we should treat the first finger as done
         Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
         Mockito.verifyNoMoreInteractions(listener);
 
         // Second finger up
         doMotion(T0 + 2, MotionEvent.ACTION_UP, 1, X1, Y1);
         // When the second finger is lifted, we should we should report its tap
         Mockito.verify(listener).onSingleTap(X1, Y1);
+        Mockito.verify(listener, Mockito.times(2)).onUp();
         Mockito.verifyNoMoreInteractions(listener);
 
         // Second finger down (again)
         doMotion(T0 + 3, MotionEvent.ACTION_DOWN, 1, X2, Y2);
+        Mockito.verify(listener, Mockito.times(3)).onDown(); // Another down event for this time
         Mockito.verifyNoMoreInteractions(listener);
 
         // Second finger up (again)
         doMotion(T0 + 4, MotionEvent.ACTION_UP, 1, X2, Y2);
         // When the second finger is lifted, we should we should report its tap
         Mockito.verify(listener).onSingleTap(X2, Y2);
+        Mockito.verify(listener, Mockito.times(3)).onUp(); // This is the third up event
         Mockito.verifyNoMoreInteractions(listener);
     }
 
@@ -580,11 +600,17 @@ public class GestureDetectorTest {
 
         // First finger down
         doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+        Mockito.verify(listener).onDown();
 
         // Second finger down
         doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
         // When the second finger hits, we should treat the first finger as done
         Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
         Mockito.verifyNoMoreInteractions(listener);
 
         // First finger up
@@ -595,10 +621,12 @@ public class GestureDetectorTest {
         doMotion(T0 + 3, MotionEvent.ACTION_UP, 1, X1, Y1);
         // When the second finger is lifted, we should we should report its tap
         Mockito.verify(listener).onSingleTap(X1, Y1);
+        Mockito.verify(listener, Mockito.times(2)).onUp();
         Mockito.verifyNoMoreInteractions(listener);
 
         // First finger tap
         doMotion(T0 + 4, MotionEvent.ACTION_DOWN, 0, X2, Y2);
+        Mockito.verify(listener).onDown();
         doMotion(T0 + 5, MotionEvent.ACTION_UP, 0, X2, Y2);
         // We should be able to detect a plain tap after the multi touch events are done
         Mockito.verify(listener).onSingleTap(X2, Y2);
