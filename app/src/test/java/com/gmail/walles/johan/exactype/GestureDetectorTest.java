@@ -418,13 +418,13 @@ public class GestureDetectorTest {
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
         Mockito.verify(listener).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 2));
         Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3));
         Mockito.verify(listener, Mockito.times(3)).onHold(X0, Y0);
 
-        doMotion(T0 + (LONG_PRESS_TIMEOUT * 4) - 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
+        doMotion(T0 + (LONG_PRESS_TIMEOUT * 3) + 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
         Mockito.verify(listener).onUp();
 
         Mockito.verify(listener, Mockito.never()).
@@ -444,20 +444,20 @@ public class GestureDetectorTest {
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
         Mockito.verify(listener).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 2));
         Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
         // Moving a little shouldn't cancel anything
         float x = X0 + TOUCH_SLOP - 1;
         float y = Y0 + TOUCH_SLOP - 1;
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) + 3), MotionEvent.ACTION_MOVE, x, y);
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) + 2);
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 2) + 1), MotionEvent.ACTION_MOVE, x, y);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3));
         Mockito.verify(listener).onHold(x, y);
 
         // Moving more...
         x = X0 + TOUCH_SLOP + 1;
         y = Y0 + TOUCH_SLOP + 1;
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) + 3), MotionEvent.ACTION_MOVE, x, y);
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) + 1), MotionEvent.ACTION_MOVE, x, y);
 
         // ... should cancel the onHold() calls
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT * 10);
