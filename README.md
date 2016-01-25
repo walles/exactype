@@ -37,6 +37,11 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 4. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
 5. ```git push --tags```
 
+## TODO Misc
+* Make keyboard more responsive when communicating with the input field is slow.
+* Add support for an English keyboard layout. This is a step towards emoji support (see below); it
+requires us to support more than one keyboard, without needing to make an entirely new keyboard.
+
 ## TODO Prioritized Beta User Issues
 * Add emoji support
 
@@ -44,8 +49,6 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 A remote beta tester is somebody I'm not in daily contact with and who will have to fend for herself
 / himself.
 
-* On multi touch, interpret the second touch as the end of the first and the start of another single
-touch gesture
 * Add an Activity that helps users enabling / choosing the new keyboard.
 * Aim for putting popup keyboard's bottom at the user's finger, and horizontally centered around
 that finger. Adjust position so that no part of the popup window is off screen.
@@ -206,3 +209,5 @@ happens
 the start.
 * Add Settings activity with a slider for vibration duration
 * Repeating backspace removes one char too many
+* On multi touch, interpret the second touch as the end of the first and the start of another single
+touch gesture
