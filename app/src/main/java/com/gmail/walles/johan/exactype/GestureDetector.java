@@ -89,6 +89,11 @@ public class GestureDetector {
                                            startTime + 2 * longPressTimeout);
                                    }
                                }
+
+                               @Override
+                               public String toString() {
+                                   return "Long presses";
+                               }
                            },
             GestureDetector.this,
             startTime + longPressTimeout);

@@ -197,28 +197,38 @@ public class GestureDetectorTest {
      * Wait until a specific time, trigger timeout handlers on the way.
      */
     private void doWaitUntil(long untilTime) {
-        List<Runnable> runUs = new ArrayList<>();
-        Iterator<PostedEvent> iterator = postedEvents.iterator();
-        while (iterator.hasNext()) {
-            PostedEvent event = iterator.next();
+        // Event handlers can add more event handlers, in which case we should run those as well if
+        // they occur before untilTime.
+        while (true) {
+            List<Runnable> runUs = new ArrayList<>();
+            Iterator<PostedEvent> iterator = postedEvents.iterator();
+            while (iterator.hasNext()) {
+                PostedEvent event = iterator.next();
 
-            if (untilTime <= event.timeout) {
-                continue;
+                if (untilTime < event.timeout) {
+                    continue;
+                }
+
+                runUs.add(event.runnable);
+                iterator.remove();
+
+                String eventName = event.runnable.toString();
+                List<Long> times = triggeredEventTimes.get(eventName);
+                if (times == null) {
+                    times = new LinkedList<>();
+                    triggeredEventTimes.put(eventName, times);
+                }
+                times.add(event.timeout);
             }
 
-            runUs.add(event.runnable);
-            iterator.remove();
-
-            String eventName = event.runnable.toString();
-            List<Long> times = triggeredEventTimes.get(eventName);
-            if (times == null) {
-                times = new LinkedList<>();
-                triggeredEventTimes.put(eventName, times);
+            if (runUs.isEmpty()) {
+                // No more event handlers to run
+                return;
             }
-            times.add(event.timeout);
-        }
-        for (Runnable runnable : runUs) {
-            runnable.run();
+
+            for (Runnable runnable : runUs) {
+                runnable.run();
+            }
         }
     }
 
@@ -521,12 +531,11 @@ public class GestureDetectorTest {
         // Second finger up after 2x long press timeout
         doMotion(T0 + 1 + LONG_PRESS_TIMEOUT * 2, MotionEvent.ACTION_UP, 1, X1, Y1);
 
-        // Second finger done, long press events should be reported
+        // Second finger done, long press events should be reported for second finger
         InOrder inOrder = Mockito.inOrder(listener);
         inOrder.verify(listener).onLongPress(X1, Y1);
         inOrder.verify(listener).onLongLongPress(X1, Y1);
         inOrder.verify(listener).onLongPressUp(X1, Y1);
-        Mockito.verifyNoMoreInteractions(listener);
     }
 
     /**
