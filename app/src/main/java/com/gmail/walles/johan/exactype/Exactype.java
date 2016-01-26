@@ -177,9 +177,13 @@ public class Exactype
         mode.register(ExactypeMode.Event.LONG_PRESS);
     }
 
+    protected void enqueue(Runnable inputConnectionAction) {
+        inputConnectionExecutor.execute(inputConnectionAction);
+    }
+
     public void onKeyTapped(final char tappedKey) {
         popupKeyboardWindow.dismiss();
-        inputConnectionExecutor.execute(new Runnable() {
+        enqueue(new Runnable() {
             @Override
             public void run() {
                 Timer timer = new Timer();
@@ -192,7 +196,7 @@ public class Exactype
     }
 
     public void onDeleteTapped() {
-        inputConnectionExecutor.execute(new Runnable() {
+        enqueue(new Runnable() {
             @Override
             public void run() {
                 Timer timer = new Timer();
@@ -234,16 +238,20 @@ public class Exactype
         return before.length() - 1 - index;
     }
 
+    protected boolean queueIsEmpty() {
+        return inputConnectionExecutor.isEmpty();
+    }
+
     public void onDeleteHeld() {
         feedbackWindow.close();
 
-        if (!inputConnectionExecutor.isEmpty()) {
+        if (!queueIsEmpty()) {
             // Don't enqueue new things repetetively if there are already outstanding entries, this
             // is best practices from HyperKey on my DOS machine ages ago. I still miss it.
             return;
         }
 
-        inputConnectionExecutor.execute(new Runnable() {
+        enqueue(new Runnable() {
             @Override
             public void run() {
                 Timer timer = new Timer();
@@ -277,7 +285,7 @@ public class Exactype
     public void onActionTapped() {
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
 
-        inputConnectionExecutor.execute(new Runnable() {
+        enqueue(new Runnable() {
             @Override
             public void run() {
                 Timer timer = new Timer();

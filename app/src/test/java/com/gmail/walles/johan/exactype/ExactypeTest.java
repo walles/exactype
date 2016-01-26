@@ -66,6 +66,11 @@ public class ExactypeTest {
             public EditorInfo getCurrentInputEditorInfo() {
                 return editorInfo;
             }
+
+            @Override
+            public void enqueue(Runnable runnable) {
+                runnable.run();
+            }
         };
 
         exactype.onActionTapped();
