@@ -90,6 +90,14 @@ public class Exactype
 
     private ExactypeExecutor inputConnectionExecutor;
 
+    // We override this method only to add the @Nullable annotation and get the corresponding
+    // warnings
+    @Override
+    @Nullable
+    public InputConnection getCurrentInputConnection() {
+        return super.getCurrentInputConnection();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -187,7 +195,13 @@ public class Exactype
             @Override
             public void run() {
                 Timer timer = new Timer();
-                getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
+                inputConnection.commitText(Character.toString(tappedKey), 1);
                 Log.d(TAG, "PERF: Committing a char took " + timer);
             }
         });
@@ -200,7 +214,12 @@ public class Exactype
             @Override
             public void run() {
                 Timer timer = new Timer();
-                InputConnection inputConnection = getCurrentInputConnection();
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
                 timer.addLeg("get selection");
                 CharSequence selection = inputConnection.getSelectedText(0);
                 if (TextUtils.isEmpty(selection)) {
@@ -255,7 +274,12 @@ public class Exactype
             @Override
             public void run() {
                 Timer timer = new Timer();
-                InputConnection inputConnection = getCurrentInputConnection();
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
                 timer.addLeg("get selection");
                 CharSequence selection = inputConnection.getSelectedText(0);
                 if (selection == null || selection.length() == 0) {
@@ -289,8 +313,14 @@ public class Exactype
             @Override
             public void run() {
                 Timer timer = new Timer();
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
                 if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-                    getCurrentInputConnection().commitText("\n", 1);
+                    inputConnection.commitText("\n", 1);
                     Log.d(TAG, "PERF: Committing a newline took " + timer);
 
                     mode.register(ExactypeMode.Event.INSERT_CHAR);
@@ -298,8 +328,8 @@ public class Exactype
                     return;
                 }
 
-                getCurrentInputConnection()
-                    .performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+                inputConnection.
+                    performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
                 Log.d(TAG, "PERF: Performing editor action took " + timer);
             }
         });
