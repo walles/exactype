@@ -21,11 +21,14 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import junit.framework.AssertionFailedError;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -58,6 +61,22 @@ public class GestureDetectorTest {
     private static final int Y0 = 40;
 
     private static final MotionEvent MOTION_EVENT = Mockito.mock(MotionEvent.class);
+    static {
+        Mockito.when(MOTION_EVENT.getX())
+            .thenThrow(new AssertionFailedError("Call getX(int) instead"));
+        Mockito.when(MOTION_EVENT.getY())
+            .thenThrow(new AssertionFailedError("Call getY(int) instead"));
+        Mockito.when(MOTION_EVENT.getAction())
+            .thenThrow(new AssertionFailedError("Call getActionMasked() instead"));
+
+        Mockito.when(MOTION_EVENT.getPointerId(0)).thenReturn(20);
+        Mockito.when(MOTION_EVENT.getPointerId(1)).thenReturn(21);
+        Mockito.when(MOTION_EVENT.getPointerId(2)).thenReturn(22);
+
+        Mockito.when(MOTION_EVENT.findPointerIndex(20)).thenReturn(0);
+        Mockito.when(MOTION_EVENT.findPointerIndex(21)).thenReturn(1);
+        Mockito.when(MOTION_EVENT.findPointerIndex(22)).thenReturn(2);
+    }
 
     private GestureDetector testMe;
     private GestureListener listener;
@@ -125,13 +144,16 @@ public class GestureDetectorTest {
      * that in the unit tests as well.
      */
     private static MotionEvent motionEvent(
-        long eventTime, int action, float x, float y)
+        long eventTime, int action, int pointerIndex, float x, float y)
     {
         Mockito.when(MOTION_EVENT.getDownTime()).thenReturn(T0);
         Mockito.when(MOTION_EVENT.getEventTime()).thenReturn(eventTime);
-        Mockito.when(MOTION_EVENT.getAction()).thenReturn(action);
-        Mockito.when(MOTION_EVENT.getX()).thenReturn(x);
-        Mockito.when(MOTION_EVENT.getY()).thenReturn(y);
+
+        Mockito.when(MOTION_EVENT.getActionMasked()).thenReturn(action);
+        Mockito.when(MOTION_EVENT.getActionIndex()).thenReturn(pointerIndex);
+
+        Mockito.when(MOTION_EVENT.getX(pointerIndex)).thenReturn(x);
+        Mockito.when(MOTION_EVENT.getY(pointerIndex)).thenReturn(y);
 
         return MOTION_EVENT;
     }
@@ -155,38 +177,58 @@ public class GestureDetectorTest {
      * Triggers timeout handler before that if the motion is after the timeout.
      * </p>
      */
-    private void doMotion(long eventTime, int action, float x, float y) {
+    private void doMotion(long eventTime, int action, int pointerIndex, float x, float y) {
         doWaitUntil(eventTime);
 
-        testMe.onTouchEvent(motionEvent(eventTime, action, x, y));
+        testMe.onTouchEvent(motionEvent(eventTime, action, pointerIndex, x, y));
+    }
+
+    /**
+     * Passes a motion to the GestureDetector.
+     * <p>
+     * Triggers timeout handler before that if the motion is after the timeout.
+     * </p>
+     */
+    private void doMotion(long eventTime, int action, float x, float y) {
+        doMotion(eventTime, action, 0, x, y);
     }
 
     /*
      * Wait until a specific time, trigger timeout handlers on the way.
      */
     private void doWaitUntil(long untilTime) {
-        List<Runnable> runUs = new ArrayList<>();
-        Iterator<PostedEvent> iterator = postedEvents.iterator();
-        while (iterator.hasNext()) {
-            PostedEvent event = iterator.next();
+        // Event handlers can add more event handlers, in which case we should run those as well if
+        // they occur before untilTime.
+        while (true) {
+            List<Runnable> runUs = new ArrayList<>();
+            Iterator<PostedEvent> iterator = postedEvents.iterator();
+            while (iterator.hasNext()) {
+                PostedEvent event = iterator.next();
 
-            if (untilTime <= event.timeout) {
-                continue;
+                if (untilTime < event.timeout) {
+                    continue;
+                }
+
+                runUs.add(event.runnable);
+                iterator.remove();
+
+                String eventName = event.runnable.toString();
+                List<Long> times = triggeredEventTimes.get(eventName);
+                if (times == null) {
+                    times = new LinkedList<>();
+                    triggeredEventTimes.put(eventName, times);
+                }
+                times.add(event.timeout);
             }
 
-            runUs.add(event.runnable);
-            iterator.remove();
-
-            String eventName = event.runnable.toString();
-            List<Long> times = triggeredEventTimes.get(eventName);
-            if (times == null) {
-                times = new LinkedList<>();
-                triggeredEventTimes.put(eventName, times);
+            if (runUs.isEmpty()) {
+                // No more event handlers to run
+                return;
             }
-            times.add(event.timeout);
-        }
-        for (Runnable runnable : runUs) {
-            runnable.run();
+
+            for (Runnable runnable : runUs) {
+                runnable.run();
+            }
         }
     }
 
@@ -376,13 +418,13 @@ public class GestureDetectorTest {
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
         Mockito.verify(listener).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 2));
         Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3));
         Mockito.verify(listener, Mockito.times(3)).onHold(X0, Y0);
 
-        doMotion(T0 + (LONG_PRESS_TIMEOUT * 4) - 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
+        doMotion(T0 + (LONG_PRESS_TIMEOUT * 3) + 2, MotionEvent.ACTION_UP, X0 + 3, Y0 + 5);
         Mockito.verify(listener).onUp();
 
         Mockito.verify(listener, Mockito.never()).
@@ -402,20 +444,20 @@ public class GestureDetectorTest {
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT + 2);
         Mockito.verify(listener).onHold(X0, Y0);
 
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3) + 2);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 2));
         Mockito.verify(listener, Mockito.times(2)).onHold(X0, Y0);
 
         // Moving a little shouldn't cancel anything
         float x = X0 + TOUCH_SLOP - 1;
         float y = Y0 + TOUCH_SLOP - 1;
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) + 3), MotionEvent.ACTION_MOVE, x, y);
-        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 4) + 2);
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 2) + 1), MotionEvent.ACTION_MOVE, x, y);
+        doWaitUntil(T0 + (LONG_PRESS_TIMEOUT * 3));
         Mockito.verify(listener).onHold(x, y);
 
         // Moving more...
         x = X0 + TOUCH_SLOP + 1;
         y = Y0 + TOUCH_SLOP + 1;
-        doMotion((T0 + (LONG_PRESS_TIMEOUT * 4) + 3), MotionEvent.ACTION_MOVE, x, y);
+        doMotion((T0 + (LONG_PRESS_TIMEOUT * 3) + 1), MotionEvent.ACTION_MOVE, x, y);
 
         // ... should cancel the onHold() calls
         doWaitUntil(T0 + LONG_PRESS_TIMEOUT * 10);
@@ -429,5 +471,176 @@ public class GestureDetectorTest {
         // This wasn't a single tap
         Mockito.verify(listener, Mockito.never()).
             onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
+    }
+
+    @Test
+    public void testMultitouchTouchTouch() {
+        final float X1 = X0 + 42;
+        final float Y1 = Y0 + 47;
+
+        // First finger down
+        doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+
+        // Second finger down
+        doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
+        // When the second finger hits, we should treat the first finger as done
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // First finger up
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, 0, X0, Y0);
+
+        // Second finger up
+        doMotion(T0 + 3, MotionEvent.ACTION_UP, 1, X1, Y1);
+
+        // Second finger done, tap should be detected
+        Mockito.verify(listener).onSingleTap(X1, Y1);
+        // One up event per complete tap = two in total
+        Mockito.verify(listener, Mockito.times(2)).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    @Test
+    public void testMultitouchTouchLongLongPess() {
+        final float X1 = X0 + 42;
+        final float Y1 = Y0 + 47;
+
+        // First finger down
+        doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+        Mockito.verify(listener).onDown();
+
+        // Second finger down
+        doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
+        // When the second finger hits, we should treat the first finger as done
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // First finger up
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, 0, X0, Y0);
+
+        // Second finger up after 2x long press timeout
+        doMotion(T0 + 1 + LONG_PRESS_TIMEOUT * 2, MotionEvent.ACTION_UP, 1, X1, Y1);
+
+        // Second finger done, long press events should be reported for second finger
+        InOrder inOrder = Mockito.inOrder(listener);
+        inOrder.verify(listener).onLongPress(X1, Y1);
+        inOrder.verify(listener).onLongLongPress(X1, Y1);
+        inOrder.verify(listener).onLongPressUp(X1, Y1);
+    }
+
+    /**
+     * Test two taps while holding down another key.
+     *
+     * <p>Timeline:
+     * <pre>
+     * 00000
+     *  1 1
+     * </pre>
+     */
+    @Test
+    public void testMultitouchAndSingleTouches1() {
+        final float X1 = X0 + 43;
+        final float Y1 = Y0 + 48;
+
+        final float X2 = X0 + 270;
+        final float Y2 = Y0 + 136;
+
+        // First finger down
+        doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+        Mockito.verify(listener).onDown();
+
+        // Second finger down
+        doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
+        // When the second finger hits, we should treat the first finger as done
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Second finger up
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, 1, X1, Y1);
+        // When the second finger is lifted, we should we should report its tap
+        Mockito.verify(listener).onSingleTap(X1, Y1);
+        Mockito.verify(listener, Mockito.times(2)).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Second finger down (again)
+        doMotion(T0 + 3, MotionEvent.ACTION_DOWN, 1, X2, Y2);
+        Mockito.verify(listener, Mockito.times(3)).onDown(); // Another down event for this time
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Second finger up (again)
+        doMotion(T0 + 4, MotionEvent.ACTION_UP, 1, X2, Y2);
+        // When the second finger is lifted, we should we should report its tap
+        Mockito.verify(listener).onSingleTap(X2, Y2);
+        Mockito.verify(listener, Mockito.times(3)).onUp(); // This is the third up event
+        Mockito.verifyNoMoreInteractions(listener);
+    }
+
+    /**
+     * Test down 0, down 1, up 0, up 1, followed by an ordinary single tap.
+     *
+     * <p>Timeline:
+     * <pre>
+     * 00 0
+     *  11
+     * </pre>
+     */
+    @Test
+    public void testMultitouchAndSingleTouches2() {
+        final float X1 = X0 + 43;
+        final float Y1 = Y0 + 48;
+
+        final float X2 = X0 + 270;
+        final float Y2 = Y0 + 136;
+
+        // First finger down
+        doMotion(T0, MotionEvent.ACTION_DOWN, 0, X0, Y0);
+        Mockito.verify(listener).onDown();
+
+        // Second finger down
+        doMotion(T0 + 1, MotionEvent.ACTION_DOWN, 1, X1, Y1);
+
+        // One down event per finger = two in total
+        Mockito.verify(listener, Mockito.times(2)).onDown();
+
+        // When the second finger hits, we should treat the first finger as done
+        Mockito.verify(listener).onSingleTap(X0, Y0);
+        Mockito.verify(listener).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // First finger up
+        doMotion(T0 + 2, MotionEvent.ACTION_UP, 0, X0, Y0);
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // Second finger up
+        doMotion(T0 + 3, MotionEvent.ACTION_UP, 1, X1, Y1);
+        // When the second finger is lifted, we should we should report its tap
+        Mockito.verify(listener).onSingleTap(X1, Y1);
+        Mockito.verify(listener, Mockito.times(2)).onUp();
+        Mockito.verifyNoMoreInteractions(listener);
+
+        // First finger tap
+        doMotion(T0 + 4, MotionEvent.ACTION_DOWN, 0, X2, Y2);
+        Mockito.verify(listener, Mockito.times(3)).onDown(); // Third down event
+        doMotion(T0 + 5, MotionEvent.ACTION_UP, 0, X2, Y2);
+        Mockito.verify(listener, Mockito.times(3)).onUp(); // Third up event
+
+        // We should be able to detect a plain tap after the multi touch events are done
+        Mockito.verify(listener).onSingleTap(X2, Y2);
+        Mockito.verifyNoMoreInteractions(listener);
     }
 }

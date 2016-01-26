@@ -37,6 +37,11 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 4. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
 5. ```git push --tags```
 
+## TODO Misc
+* Make keyboard more responsive when communicating with the input field is slow.
+* Add support for an English keyboard layout. This is a step towards emoji support (see below); it
+requires us to support more than one keyboard, without needing to make an entirely new keyboard.
+
 ## TODO Prioritized Beta User Issues
 * Add emoji support
 
@@ -118,8 +123,6 @@ available in Android's standard font.
 lines than between the lines and the edges. Should this be adjusted?
 * Move popup keyboard code from Exactype into its own class.
 * Implicit numlock on typing first digit?
-* On multi touch, interpret the second touch as the end of the first and the start of another single
-touch gesture? How would this interact with two finger swipe for switching layouts?
 * Limit keyboard height in millimeters. Try out a good upper bound on a 10 inch tablet.
 * On phone / landscape, maybe compress keyboard height to two lines by shifting the middle row to
 the side? This would require the same spacing on all rows.
@@ -206,3 +209,5 @@ happens
 the start.
 * Add Settings activity with a slider for vibration duration
 * Repeating backspace removes one char too many
+* On multi touch, interpret the second touch as the end of the first and the start of another single
+touch gesture
