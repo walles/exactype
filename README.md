@@ -38,9 +38,12 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO Misc
-* Make keyboard more responsive when communicating with the input field is slow.
 * Add support for an English keyboard layout. This is a step towards emoji support (see below); it
 requires us to support more than one keyboard, without needing to make an entirely new keyboard.
+* Maybe or maybe not before the emojis, make a cursor-keys keyboard that shows up if you move the
+cursor by clicking somewhere. It should contain left, right, backspace and Abc (back to standard
+keyboard). My hypothesis is that simplifying cursor positioning would somewhat alleviate the need
+for auto correction.
 
 ## TODO Prioritized Beta User Issues
 * Add emoji support
@@ -211,3 +214,4 @@ the start.
 * Repeating backspace removes one char too many
 * On multi touch, interpret the second touch as the end of the first and the start of another single
 touch gesture
+* Make keyboard more responsive when communicating with the input field is slow.

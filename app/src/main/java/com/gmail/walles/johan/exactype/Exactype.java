@@ -88,6 +88,16 @@ public class Exactype
     @Nullable
     private Vibrator vibrator;
 
+    private ExactypeExecutor inputConnectionExecutor;
+
+    // We override this method only to add the @Nullable annotation and get the corresponding
+    // warnings
+    @Override
+    @Nullable
+    public InputConnection getCurrentInputConnection() {
+        return super.getCurrentInputConnection();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -97,6 +107,8 @@ public class Exactype
         vibrate_duration_ms =
             preferences.getInt(SettingsActivity.VIBRATE_DURATION_MS_KEY,
                 SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
+
+        inputConnectionExecutor = new ExactypeExecutor();
     }
 
     @Override
@@ -173,30 +185,55 @@ public class Exactype
         mode.register(ExactypeMode.Event.LONG_PRESS);
     }
 
-    public void onKeyTapped(char tappedKey) {
+    protected void enqueue(Runnable inputConnectionAction) {
+        inputConnectionExecutor.execute(inputConnectionAction);
+    }
+
+    public void onKeyTapped(final char tappedKey) {
         popupKeyboardWindow.dismiss();
-        Timer timer = new Timer();
-        getCurrentInputConnection().commitText(Character.toString(tappedKey), 1);
-        Log.d(TAG, "PERF: Committing a char took " + timer);
+        enqueue(new Runnable() {
+            @Override
+            public void run() {
+                Timer timer = new Timer();
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
+                inputConnection.commitText(Character.toString(tappedKey), 1);
+                Log.d(TAG, "PERF: Committing a char took " + timer);
+            }
+        });
 
         mode.register(ExactypeMode.Event.INSERT_CHAR);
     }
 
     public void onDeleteTapped() {
-        Timer timer = new Timer();
-        InputConnection inputConnection = getCurrentInputConnection();
-        timer.addLeg("get selection");
-        CharSequence selection = inputConnection.getSelectedText(0);
-        if (TextUtils.isEmpty(selection)) {
-            // Nothing selected, just backspace
-            timer.addLeg("backspace");
-            inputConnection.deleteSurroundingText(1, 0);
-        } else {
-            // Delete selection
-            timer.addLeg("delete selection");
-            inputConnection.commitText("", 1);
-        }
-        Log.d(TAG, "PERF: Delete took " + timer);
+        enqueue(new Runnable() {
+            @Override
+            public void run() {
+                Timer timer = new Timer();
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
+                timer.addLeg("get selection");
+                CharSequence selection = inputConnection.getSelectedText(0);
+                if (TextUtils.isEmpty(selection)) {
+                    // Nothing selected, just backspace
+                    timer.addLeg("backspace");
+                    inputConnection.deleteSurroundingText(1, 0);
+                } else {
+                    // Delete selection
+                    timer.addLeg("delete selection");
+                    inputConnection.commitText("", 1);
+                }
+                Log.d(TAG, "PERF: Delete took " + timer);
+            }
+        });
     }
 
     /**
@@ -220,27 +257,47 @@ public class Exactype
         return before.length() - 1 - index;
     }
 
+    protected boolean queueIsEmpty() {
+        return inputConnectionExecutor.isEmpty();
+    }
+
     public void onDeleteHeld() {
         feedbackWindow.close();
 
-        Timer timer = new Timer();
-        InputConnection inputConnection = getCurrentInputConnection();
-        timer.addLeg("get selection");
-        CharSequence selection = inputConnection.getSelectedText(0);
-        if (selection == null || selection.length() == 0) {
-            // Nothing selected, delete words
-            timer.addLeg("get preceding text");
-            CharSequence before = inputConnection.getTextBeforeCursor(DELETE_LOOKBACK, 0);
-            timer.addLeg("analyze text");
-            int to_delete = countCharsToDelete(before);
-            timer.addLeg("delete word");
-            inputConnection.deleteSurroundingText(to_delete, 0);
-        } else {
-            // Delete selection
-            timer.addLeg("delete selection");
-            inputConnection.commitText("", 1);
+        if (!queueIsEmpty()) {
+            // Don't enqueue new things repetetively if there are already outstanding entries, this
+            // is best practices from HyperKey on my DOS machine ages ago. I still miss it.
+            return;
         }
-        Log.d(TAG, "PERF: Delete took " + timer);
+
+        enqueue(new Runnable() {
+            @Override
+            public void run() {
+                Timer timer = new Timer();
+
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
+
+                timer.addLeg("get selection");
+                CharSequence selection = inputConnection.getSelectedText(0);
+                if (selection == null || selection.length() == 0) {
+                    // Nothing selected, delete words
+                    timer.addLeg("get preceding text");
+                    CharSequence before = inputConnection.getTextBeforeCursor(DELETE_LOOKBACK, 0);
+                    timer.addLeg("analyze text");
+                    int to_delete = countCharsToDelete(before);
+                    timer.addLeg("delete word");
+                    inputConnection.deleteSurroundingText(to_delete, 0);
+                } else {
+                    // Delete selection
+                    timer.addLeg("delete selection");
+                    inputConnection.commitText("", 1);
+                }
+                Log.d(TAG, "PERF: Delete took " + timer);
+            }
+        });
 
         VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
     }
@@ -250,21 +307,32 @@ public class Exactype
     }
 
     public void onActionTapped() {
-        EditorInfo editorInfo = getCurrentInputEditorInfo();
+        final EditorInfo editorInfo = getCurrentInputEditorInfo();
 
-        Timer timer = new Timer();
-        if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-            getCurrentInputConnection().commitText("\n", 1);
-            Log.d(TAG, "PERF: Committing a newline took " + timer);
+        enqueue(new Runnable() {
+            @Override
+            public void run() {
+                Timer timer = new Timer();
 
-            mode.register(ExactypeMode.Event.INSERT_CHAR);
+                final InputConnection inputConnection = getCurrentInputConnection();
+                if (inputConnection == null) {
+                    return;
+                }
 
-            return;
-        }
+                if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+                    inputConnection.commitText("\n", 1);
+                    Log.d(TAG, "PERF: Committing a newline took " + timer);
 
-        getCurrentInputConnection()
-            .performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
-        Log.d(TAG, "PERF: Performing editor action took " + timer);
+                    mode.register(ExactypeMode.Event.INSERT_CHAR);
+
+                    return;
+                }
+
+                inputConnection.
+                    performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+                Log.d(TAG, "PERF: Performing editor action took " + timer);
+            }
+        });
     }
 
     public void onRequestPopupKeyboard(char baseKey, float x, float y) {

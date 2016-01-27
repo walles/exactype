@@ -55,6 +55,16 @@ public class ExactypeOnDeleteHeldTest {
         public InputConnection getCurrentInputConnection() {
             return inputConnection;
         }
+
+        @Override
+        public void enqueue(Runnable runnable) {
+            runnable.run();
+        }
+
+        @Override
+        protected boolean queueIsEmpty() {
+            return true;
+        }
     }
 
     private String deleteWord(final String before) {
