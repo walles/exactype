@@ -399,4 +399,9 @@ public class Exactype
     public void onTouchEnd() {
         feedbackWindow.close();
     }
+
+    @Override
+    public void onWindowHidden() {
+        feedbackWindow.close();
+    }
 }
