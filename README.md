@@ -37,6 +37,14 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 4. Upload ```app/build/outputs/apk/app-release.apk``` to Google Play
 5. ```git push --tags```
 
+## TODO English
+* Put two different (but equally looking) Swedish keyboards in the switcher
+* Remove all emoji related code from the project
+* Replace one of the Swedish keyboards with an English one
+* Show a toast with the language name when switching keyboards
+* Maybe do a release now?
+* Make it possible to configure in the settings whether to have English, Swedish or both keyboards.
+
 ## TODO Misc
 * Add support for an English keyboard layout. This is a step towards emoji support (see below); it
 requires us to support more than one keyboard, without needing to make an entirely new keyboard.
