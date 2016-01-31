@@ -25,11 +25,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * An single threaded executor providing its own queue.
  */
-public class ExactypeExecutor {
+public class SingleThreadedExecutor {
     private final BlockingQueue<Runnable> workQueue;
     private final Executor executor;
 
-    public ExactypeExecutor() {
+    public SingleThreadedExecutor() {
         workQueue = new LinkedBlockingQueue<>();
         executor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, workQueue);
     }

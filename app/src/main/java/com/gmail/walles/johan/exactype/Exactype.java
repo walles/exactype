@@ -92,7 +92,7 @@ public class Exactype
     @Nullable
     private Vibrator vibrator;
 
-    private ExactypeExecutor inputConnectionExecutor;
+    private SingleThreadedExecutor inputConnectionExecutor;
 
     // We override this method only to add the @Nullable annotation and get the corresponding
     // warnings
@@ -112,7 +112,7 @@ public class Exactype
             preferences.getInt(SettingsActivity.VIBRATE_DURATION_MS_KEY,
                 SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
 
-        inputConnectionExecutor = new ExactypeExecutor();
+        inputConnectionExecutor = new SingleThreadedExecutor();
     }
 
     @Override
