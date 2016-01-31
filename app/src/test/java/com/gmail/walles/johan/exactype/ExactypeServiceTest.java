@@ -31,7 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Log.class })
-public class ExactypeTest {
+public class ExactypeServiceTest {
     @Before
     public void mockAndroidMethods() {
         PowerMockito.mockStatic(Log.class);
@@ -39,12 +39,12 @@ public class ExactypeTest {
 
     @Test
     public void testNumericLayout() {
-        Assert.assertEquals(3, Exactype.NUMERIC.length);
+        Assert.assertEquals(3, ExactypeService.NUMERIC.length);
 
-        Assert.assertEquals("1234567890", Exactype.NUMERIC[0]);
+        Assert.assertEquals("1234567890", ExactypeService.NUMERIC[0]);
 
-        int line2_length = Exactype.NUMERIC[1].length();
-        int line3_length = Exactype.NUMERIC[2].length() + 2; // Add mode switch and backspace
+        int line2_length = ExactypeService.NUMERIC[1].length();
+        int line3_length = ExactypeService.NUMERIC[2].length() + 2; // Add mode switch and backspace
         int diff = line2_length - line3_length;
 
         Assert.assertTrue("Move some keys from line 2 to line 3", diff <= 1);
@@ -56,7 +56,7 @@ public class ExactypeTest {
         final InputConnection inputConnection = Mockito.mock(InputConnection.class);
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.imeOptions = EditorInfo.IME_ACTION_SEARCH + EditorInfo.IME_FLAG_FORCE_ASCII;
-        Exactype exactype = new Exactype() {
+        ExactypeService exactypeService = new ExactypeService() {
             @Override
             public InputConnection getCurrentInputConnection() {
                 return inputConnection;
@@ -73,7 +73,7 @@ public class ExactypeTest {
             }
         };
 
-        exactype.onActionTapped();
+        exactypeService.onActionTapped();
 
         Mockito.verify(inputConnection).performEditorAction(EditorInfo.IME_ACTION_SEARCH);
     }

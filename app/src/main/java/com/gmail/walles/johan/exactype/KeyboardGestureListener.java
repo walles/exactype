@@ -19,12 +19,12 @@ package com.gmail.walles.johan.exactype;
 import com.gmail.walles.johan.exactype.gestures.GestureListener;
 
 public class KeyboardGestureListener implements GestureListener {
-    private final Exactype exactype;
+    private final ExactypeService exactypeService;
     private KeyCoordinator keyCoordinator;
     private char longPressKey;
 
-    public KeyboardGestureListener(Exactype exactype) {
-        this.exactype = exactype;
+    public KeyboardGestureListener(ExactypeService exactypeService) {
+        this.exactypeService = exactypeService;
     }
 
     public void setKeyCoordinator(KeyCoordinator keyCoordinator) {
@@ -42,7 +42,7 @@ public class KeyboardGestureListener implements GestureListener {
         }
 
         // Right swipe, enter space!
-        exactype.onKeyTapped(' ');
+        exactypeService.onKeyTapped(' ');
         return true;
     }
 
@@ -57,7 +57,7 @@ public class KeyboardGestureListener implements GestureListener {
         }
 
         // Down swipe, action!
-        exactype.onActionTapped();
+        exactypeService.onActionTapped();
     }
 
     @Override
@@ -80,18 +80,18 @@ public class KeyboardGestureListener implements GestureListener {
             return;
         }
 
-        exactype.onStartLeftSwipe();
+        exactypeService.onStartLeftSwipe();
     }
 
     @Override
     public void onSingleTap(float x, float y) {
         char tappedKey = keyCoordinator.getClosestKey(x, y);
         if (tappedKey == '⌫') {
-            exactype.onDeleteTapped();
+            exactypeService.onDeleteTapped();
         } else if (tappedKey == ExactypeMode.SwitchKey.MARKER) {
-            exactype.onKeyboardModeSwitchRequested();
+            exactypeService.onKeyboardModeSwitchRequested();
         } else {
-            exactype.onKeyTapped(tappedKey);
+            exactypeService.onKeyTapped(tappedKey);
         }
     }
 
@@ -103,7 +103,7 @@ public class KeyboardGestureListener implements GestureListener {
             return;
         }
 
-        exactype.onLongPress(x, y);
+        exactypeService.onLongPress(x, y);
     }
 
     @Override
@@ -113,15 +113,15 @@ public class KeyboardGestureListener implements GestureListener {
             return;
         }
 
-        exactype.onRequestPopupKeyboard(longPressKey, x, y);
+        exactypeService.onRequestPopupKeyboard(longPressKey, x, y);
     }
 
     @Override
     public void onLongPressUp(float x, float y) {
-        if (exactype.isPopupKeyboardShowing()) {
+        if (exactypeService.isPopupKeyboardShowing()) {
             // Is this really the way to deal with popup keyboard events? I have a feeling we're
             // breaking some kind of abstraction here...
-            exactype.onPopupKeyboardTapped(x, y);
+            exactypeService.onPopupKeyboardTapped(x, y);
         } else {
             char tappedKey = keyCoordinator.getClosestKey(x, y);
             if (tappedKey == '⌫') {
@@ -144,21 +144,21 @@ public class KeyboardGestureListener implements GestureListener {
             return;
         }
 
-        exactype.onDeleteHeld();
+        exactypeService.onDeleteHeld();
     }
 
     @Override
     public void onDown() {
-        exactype.onTouchStart();
+        exactypeService.onTouchStart();
     }
 
     @Override
     public void onMove(float x, float y) {
-        exactype.onTouchMove(x, y);
+        exactypeService.onTouchMove(x, y);
     }
 
     @Override
     public void onUp() {
-        exactype.onTouchEnd();
+        exactypeService.onTouchEnd();
     }
 }

@@ -38,12 +38,11 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO English
+* Move lots of logic from Exactype into ExactypeView.
 * Put two different (but equally looking) Swedish keyboards in the switcher
 * Remove all emoji related code from the project
 * Replace one of the Swedish keyboards with an English one
 * Show a toast with the language name when switching keyboards
-* Make sure we have a KeyboardHolderView, a KeyboardHolderController, an ExactypeKeyboardView and an
-ExactypeKeyboardController. These should be used by the Exactype class to provide the input service.
 * Maybe do a release now?
 * Make it possible to configure in the settings whether to have English, Swedish or both keyboards.
 Make sure we can't select zero languages.

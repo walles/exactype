@@ -39,7 +39,7 @@ import com.gmail.walles.johan.exactype.util.VibrationUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Exactype
+public class ExactypeService
     extends InputMethodService
     implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -124,7 +124,7 @@ public class Exactype
         }
     }
 
-    public Exactype() {
+    public ExactypeService() {
         popupKeysForKey = new HashMap<>();
 
         // FIXME: Maybe we should implicitly have the base key at the end of each of these lists?

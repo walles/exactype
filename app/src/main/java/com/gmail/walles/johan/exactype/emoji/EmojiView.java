@@ -22,7 +22,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.GridView;
 
-import com.gmail.walles.johan.exactype.Exactype;
+import com.gmail.walles.johan.exactype.ExactypeService;
 import com.gmail.walles.johan.exactype.ExactypeMode;
 import com.gmail.walles.johan.exactype.KeyboardTheme;
 import com.gmail.walles.johan.exactype.gestures.GestureDetector;
@@ -42,18 +42,18 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
     private static final float EMOJIS_PER_HEIGHT = 4.5f;
 
     private final KeyboardTheme theme;
-    private final Exactype exactype;
+    private final ExactypeService exactypeService;
 
     private GestureDetector startScrollLeftDetector;
     private boolean startScrollLeftDetected;
 
-    public EmojiView(Exactype exactype) {
-        super(exactype);
+    public EmojiView(ExactypeService exactypeService) {
+        super(exactypeService);
 
-        this.exactype = exactype;
-        theme = new KeyboardTheme(exactype.getResources().getDisplayMetrics());
+        this.exactypeService = exactypeService;
+        theme = new KeyboardTheme(exactypeService.getResources().getDisplayMetrics());
         startScrollLeftDetector =
-            new GestureDetector(exactype, new Handler(), new GestureListenerAdapter()
+            new GestureDetector(exactypeService, new Handler(), new GestureListenerAdapter()
             {
                 @Override
                 public void onStartSwipe(float dx, float dy) {
@@ -103,7 +103,7 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
             startScrollLeftDetected = false;
 
             // User is swiping left, tell ourselves to cancel and the switcher view to take over
-            exactype.onStartLeftSwipe();
+            exactypeService.onStartLeftSwipe();
 
             MotionEvent cancel = MotionEvent.obtain(ev);
             cancel.setAction(MotionEvent.ACTION_CANCEL);

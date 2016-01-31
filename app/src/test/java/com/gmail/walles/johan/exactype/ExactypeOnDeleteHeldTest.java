@@ -39,7 +39,7 @@ public class ExactypeOnDeleteHeldTest {
         PowerMockito.mockStatic(Log.class);
     }
 
-    private static class TestableExactype extends Exactype {
+    private static class TestableExactype extends ExactypeService {
         private final InputConnection inputConnection;
 
         public TestableExactype(InputConnection inputConnection) {
@@ -85,8 +85,8 @@ public class ExactypeOnDeleteHeldTest {
             }
         });
 
-        Exactype exactype = new TestableExactype(inputConnection);
-        exactype.onDeleteHeld();
+        ExactypeService exactypeService = new TestableExactype(inputConnection);
+        exactypeService.onDeleteHeld();
 
         // Capture the parameters passed to deleteSurroundingText()
         ArgumentCaptor<Integer> beforeLength = ArgumentCaptor.forClass(Integer.class);
@@ -136,7 +136,7 @@ public class ExactypeOnDeleteHeldTest {
         Assert.assertEquals("54,", deleteWord("54,32"));
 
         // We're currently looking back 22 chars, this test verifies we don't screw up at the
-        // boundary of that. If Exactype.DELETE_LOOKBACK changes, this test will have to change too.
+        // boundary of that. If ExactypeService.DELETE_LOOKBACK changes, this test will have to change too.
         Assert.assertEquals("12345678", deleteWord("123456789012345678901234567890"));
     }
 
@@ -145,8 +145,8 @@ public class ExactypeOnDeleteHeldTest {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
         Mockito.stub(inputConnection.getSelectedText(0)).toReturn("something");
 
-        Exactype exactype = new TestableExactype(inputConnection);
-        exactype.onDeleteHeld();
+        ExactypeService exactypeService = new TestableExactype(inputConnection);
+        exactypeService.onDeleteHeld();
 
         Mockito.verify(inputConnection).commitText("", 1);
     }

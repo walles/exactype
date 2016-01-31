@@ -25,7 +25,7 @@
                  android:theme="@style/AppTheme">
 
         <!-- Declares the input method service -->
-        <service android:name="Exactype"
+        <service android:name=".ExactypeService"
                  android:label="@string/exactype_label"
                  android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>

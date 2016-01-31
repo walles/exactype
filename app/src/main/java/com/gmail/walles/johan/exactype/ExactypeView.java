@@ -51,12 +51,12 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
     public ExactypeView(Context context) {
         super(context);
-        Exactype exactype = (Exactype)context;
+        ExactypeService exactypeService = (ExactypeService)context;
 
         theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
 
-        gestureListener = new KeyboardGestureListener(exactype);
-        gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
+        gestureListener = new KeyboardGestureListener(exactypeService);
+        gestureDetector = new GestureDetector(exactypeService, new Handler(), gestureListener);
     }
 
     public float getTextSize() {
