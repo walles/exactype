@@ -31,7 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Log.class })
-public class ExactypeServiceTest {
+public class ExactypeViewTest {
     @Before
     public void mockAndroidMethods() {
         PowerMockito.mockStatic(Log.class);
@@ -39,12 +39,12 @@ public class ExactypeServiceTest {
 
     @Test
     public void testNumericLayout() {
-        Assert.assertEquals(3, ExactypeService.NUMERIC.length);
+        Assert.assertEquals(3, ExactypeView.NUMERIC.length);
 
-        Assert.assertEquals("1234567890", ExactypeService.NUMERIC[0]);
+        Assert.assertEquals("1234567890", ExactypeView.NUMERIC[0]);
 
-        int line2_length = ExactypeService.NUMERIC[1].length();
-        int line3_length = ExactypeService.NUMERIC[2].length() + 2; // Add mode switch and backspace
+        int line2_length = ExactypeView.NUMERIC[1].length();
+        int line3_length = ExactypeView.NUMERIC[2].length() + 2; // Add mode switch and backspace
         int diff = line2_length - line3_length;
 
         Assert.assertTrue("Move some keys from line 2 to line 3", diff <= 1);
@@ -54,17 +54,17 @@ public class ExactypeServiceTest {
     @Test
     public void testOnActionTapped() {
         final InputConnection inputConnection = Mockito.mock(InputConnection.class);
+
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.imeOptions = EditorInfo.IME_ACTION_SEARCH + EditorInfo.IME_FLAG_FORCE_ASCII;
-        ExactypeService exactypeService = new ExactypeService() {
+
+        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
+        Mockito.when(exactypeService.getCurrentInputEditorInfo()).thenReturn(editorInfo);
+
+        ExactypeView exactypeView = new ExactypeView(exactypeService) {
             @Override
             public InputConnection getCurrentInputConnection() {
                 return inputConnection;
-            }
-
-            @Override
-            public EditorInfo getCurrentInputEditorInfo() {
-                return editorInfo;
             }
 
             @Override
@@ -73,7 +73,7 @@ public class ExactypeServiceTest {
             }
         };
 
-        exactypeService.onActionTapped();
+        exactypeView.onActionTapped();
 
         Mockito.verify(inputConnection).performEditorAction(EditorInfo.IME_ACTION_SEARCH);
     }

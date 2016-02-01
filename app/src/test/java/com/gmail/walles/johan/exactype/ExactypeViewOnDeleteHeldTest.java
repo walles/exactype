@@ -16,6 +16,8 @@
 
 package com.gmail.walles.johan.exactype;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
 import android.view.inputmethod.InputConnection;
 
@@ -33,16 +35,18 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Log.class })
-public class ExactypeOnDeleteHeldTest {
+public class ExactypeViewOnDeleteHeldTest {
     @Before
     public void mockAndroidMethods() {
         PowerMockito.mockStatic(Log.class);
     }
 
-    private static class TestableExactype extends ExactypeService {
+    @SuppressLint("ViewConstructor")
+    private static class TestableExactypeView extends ExactypeView {
         private final InputConnection inputConnection;
 
-        public TestableExactype(InputConnection inputConnection) {
+        public TestableExactypeView(InputConnection inputConnection) {
+            super(Mockito.mock(Context.class));
             this.inputConnection = inputConnection;
             this.feedbackWindow = Mockito.mock(FeedbackWindow.class);
         }
@@ -85,8 +89,8 @@ public class ExactypeOnDeleteHeldTest {
             }
         });
 
-        ExactypeService exactypeService = new TestableExactype(inputConnection);
-        exactypeService.onDeleteHeld();
+        ExactypeView exactypeView = new TestableExactypeView(inputConnection);
+        exactypeView.onDeleteHeld();
 
         // Capture the parameters passed to deleteSurroundingText()
         ArgumentCaptor<Integer> beforeLength = ArgumentCaptor.forClass(Integer.class);
@@ -145,8 +149,8 @@ public class ExactypeOnDeleteHeldTest {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
         Mockito.stub(inputConnection.getSelectedText(0)).toReturn("something");
 
-        ExactypeService exactypeService = new TestableExactype(inputConnection);
-        exactypeService.onDeleteHeld();
+        ExactypeView exactypeView = new TestableExactypeView(inputConnection);
+        exactypeView.onDeleteHeld();
 
         Mockito.verify(inputConnection).commitText("", 1);
     }
@@ -156,7 +160,7 @@ public class ExactypeOnDeleteHeldTest {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
         Mockito.stub(inputConnection.getSelectedText(0)).toReturn("");
         Mockito.stub(inputConnection.getTextBeforeCursor(Mockito.anyInt(), Mockito.eq(0))).toReturn("");
-        TestableExactype exactype = new TestableExactype(inputConnection);
+        TestableExactypeView exactype = new TestableExactypeView(inputConnection);
 
         exactype.onDeleteHeld();
 

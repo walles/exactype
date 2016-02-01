@@ -75,7 +75,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     private float popupY0;
 
     @VisibleForTesting
-    protected final FeedbackWindow feedbackWindow;
+    protected FeedbackWindow feedbackWindow;
 
     private KeyCoordinator keyCoordinator;
     private ExactypeMode.SwitchKey switchKey;
@@ -218,7 +218,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
     }
 
     @Nullable
-    private InputConnection getCurrentInputConnection() {
+    protected InputConnection getCurrentInputConnection() {
         return exactypeService.getCurrentInputConnection();
     }
 

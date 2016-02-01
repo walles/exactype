@@ -16,106 +16,96 @@
 
 package com.gmail.walles.johan.exactype.gestures;
 
-import com.gmail.walles.johan.exactype.ExactypeService;
-import com.gmail.walles.johan.exactype.KeyCoordinator;
+import com.gmail.walles.johan.exactype.ExactypeView;
 import com.gmail.walles.johan.exactype.KeyboardGestureListener;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class KeyboardGestureListenerTest {
-    private void setKey(KeyboardGestureListener gestureListener, char key) {
-        KeyCoordinator keyCoordinator = Mockito.mock(KeyCoordinator.class);
-        Mockito.stub(
-            keyCoordinator.getClosestKey(Mockito.anyFloat(), Mockito.anyFloat())).
-            toReturn(key);
-        gestureListener.setKeyCoordinator(keyCoordinator);
+    private ExactypeView getViewWithKey(char key) {
+        ExactypeView exactypeView = Mockito.mock(ExactypeView.class);
+        Mockito.when(exactypeView.getClosestKey(Mockito.anyFloat(), Mockito.anyFloat())).
+            thenReturn(key);
+        return exactypeView;
     }
 
     @Test
     public void testOnHoldReportsDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, '⌫');
+        ExactypeView exactypeView = getViewWithKey('⌫');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onHold(10, 10);
-        Mockito.verify(exactypeService).onDeleteHeld();
+        Mockito.verify(exactypeView).onDeleteHeld();
     }
 
     @Test
     public void testOnHoldDoesntReportNonDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, 'x');
+        ExactypeView exactypeView = getViewWithKey('x');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onHold(10, 10);
-        Mockito.verifyNoMoreInteractions(exactypeService);
+        Mockito.verifyNoMoreInteractions(exactypeView);
     }
 
     @Test
     public void testOnLongPressDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, '⌫');
+        ExactypeView exactypeView = getViewWithKey('⌫');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onLongPress(5, 6);
-        Mockito.verifyNoMoreInteractions(exactypeService);
+        Mockito.verifyNoMoreInteractions(exactypeView);
     }
 
     @Test
     public void testOnLongPressNonDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, 'x');
+        ExactypeView exactypeView = getViewWithKey('x');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onLongPress(5, 6);
-        Mockito.verify(exactypeService).onLongPress(5, 6);
+        Mockito.verify(exactypeView).onLongPress(5, 6);
     }
 
     @Test
     public void testOnLongLongPressDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, '⌫');
+        ExactypeView exactypeView = getViewWithKey('⌫');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onLongPress(5f, 6f);
         testMe.onLongLongPress(5, 6);
-        Mockito.verifyNoMoreInteractions(exactypeService);
+        Mockito.verifyNoMoreInteractions(exactypeView);
     }
 
     @Test
     public void testOnLongLongPressNonDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, 'x');
+        ExactypeView exactypeView = getViewWithKey('x');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onLongPress(5f, 6f);
         testMe.onLongLongPress(5f, 6f);
-        Mockito.verify(exactypeService).onRequestPopupKeyboard('x', 5f, 6f);
+        Mockito.verify(exactypeView).onRequestPopupKeyboard('x', 5f, 6f);
     }
 
     @Test
     public void testOnLongPressUpDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, '⌫');
+        ExactypeView exactypeView = getViewWithKey('⌫');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onLongPressUp(5f, 6f);
 
         // We don't care if isPopupKeyboardShowing() is called...
-        Mockito.verify(exactypeService, Mockito.atMost(1)).isPopupKeyboardShowing();
+        Mockito.verify(exactypeView, Mockito.atMost(1)).isPopupKeyboardShowing();
 
         // ... we just want to ensure nothing gets deleted.
-        Mockito.verifyNoMoreInteractions(exactypeService);
+        Mockito.verifyNoMoreInteractions(exactypeView);
     }
 
     @Test
     public void testOnLongPressUpNonDelete() {
-        ExactypeService exactypeService = Mockito.mock(ExactypeService.class);
-        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeService);
-        setKey(testMe, 'x');
+        ExactypeView exactypeView = getViewWithKey('x');
+        KeyboardGestureListener testMe = new KeyboardGestureListener(exactypeView);
 
         testMe.onLongPressUp(5f, 6f);
-        Mockito.verify(exactypeService).onKeyTapped('x');
+        Mockito.verify(exactypeView).onKeyTapped('x');
     }
 }
