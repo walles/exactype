@@ -18,7 +18,6 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Vibrator;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
@@ -32,12 +31,12 @@ public class VibrationDurationPreference extends DialogPreference {
 
     private int milliseconds;
 
-    private Vibrator vibrator;
+    private VibrationUtil vibrator;
 
     public VibrationDurationPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator = new VibrationUtil(context);
 
         setDialogLayoutResource(R.layout.slider);
         setPositiveButtonText(android.R.string.ok);
@@ -66,7 +65,7 @@ public class VibrationDurationPreference extends DialogPreference {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                VibrationUtil.vibrate(vibrator, milliseconds);
+                vibrator.vibrate(milliseconds);
             }
         });
     }
@@ -92,7 +91,7 @@ public class VibrationDurationPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
         if (positiveResult) {
-            VibrationUtil.vibrate(vibrator, milliseconds);
+            vibrator.vibrate(milliseconds);
             persistInt(milliseconds);
         }
     }

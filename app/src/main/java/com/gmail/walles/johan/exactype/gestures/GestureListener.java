@@ -16,9 +16,6 @@
 
 package com.gmail.walles.johan.exactype.gestures;
 
-/**
- * Created by johan on 2015-12-18.
- */
 public interface GestureListener {
     void onSwipe(float dx, float dy);
 

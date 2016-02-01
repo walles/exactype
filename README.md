@@ -38,7 +38,10 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 5. ```git push --tags```
 
 ## TODO English
-* Move lots of logic from Exactype into ExactypeView.
+* Let KeyboardGestureListener talk to ExactypeView rather than talking to ExactypeService.
+* Make the Switcher keep track of the current mode, and report any changes to all its configured
+ExactypeViews. This way sliding sideways will maintain the keyboard mode, which feels reasonable.
+* Make ExactypeService talk only to the Switcher, not to any keyboard view
 * Put two different (but equally looking) Swedish keyboards in the switcher
 * Remove all emoji related code from the project
 * Replace one of the Swedish keyboards with an English one
@@ -46,10 +49,13 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 * Maybe do a release now?
 * Make it possible to configure in the settings whether to have English, Swedish or both keyboards.
 Make sure we can't select zero languages.
+* Make PopupKeys never return any key available on the primary keyboards in any popup?
 
 ## TODO Misc
 * Add support for an English keyboard layout. This is a step towards emoji support (see below); it
 requires us to support more than one keyboard, without needing to make an entirely new keyboard.
+* Think about why I sometimes get 'j' when swiping right for space. I most likely end some space-
+swipes on 'j', could they be detected as taps under certain conditions?
 * Maybe or maybe not before the emojis, make a cursor-keys keyboard that shows up if you move the
 cursor by clicking somewhere. It should contain left, right, backspace and Abc (back to standard
 keyboard). My hypothesis is that simplifying cursor positioning would somewhat alleviate the need

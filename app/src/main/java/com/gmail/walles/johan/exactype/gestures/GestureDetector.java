@@ -231,6 +231,11 @@ public class GestureDetector {
         return true;
     }
 
+    /**
+     * Record a touch event
+     *
+     * @return True if the event was consumed, false otherwise
+     */
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_POINTER_UP) {

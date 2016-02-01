@@ -18,13 +18,16 @@ package com.gmail.walles.johan.exactype;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+
+import com.gmail.walles.johan.exactype.gestures.GestureDetector;
+import com.gmail.walles.johan.exactype.gestures.GestureListenerAdapter;
 
 /**
  * View for switching between different keyboard layouts.
@@ -41,7 +44,6 @@ public class SwitcherView extends HorizontalScrollView {
     private View nextView;
 
     private boolean isSwitching;
-    private MotionEvent downEvent;
     private final GestureDetector gestureDetector;
 
     public SwitcherView(Context context, View currentView, View nextView) {
@@ -63,24 +65,43 @@ public class SwitcherView extends HorizontalScrollView {
 
         setLayoutParams(layoutParams);
 
-        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+        gestureDetector = new GestureDetector(
+            context, new Handler(), new GestureListenerAdapter()
+        {
             @Override
-            public boolean onDown(MotionEvent e) {
-                // We must return true here otherwise gesture detection won't work:
-                // http://stackoverflow.com/a/5464365/473672
-                return true;
+            public void onMove(float x, float y) {
+                scrollTo(Math.round(x), 0);
             }
 
-            // FIXME: Override onFling and animate!
+            @Override
+            public void onStartSwipe(float dx, float dy) {
+                if (Math.abs(dy) > Math.abs(dx)) {
+                    // More vertical than horizontal
+                    return;
+                }
+
+                if (dx > 0) {
+                    // More right than left
+                    return;
+                }
+
+                // It's a left swipe, enable switching mode!
+                isSwitching = true;
+            }
 
             @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                scrollBy(Math.round(distanceX), 0);
-                return true;
+            public void onUp() {
+                isSwitching = false;
+
+                int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
+                Log.d(TAG, "Scroll is " + getScrollX() + "/" + screenWidth);
+                if (getScrollX() < screenWidth / 2) {
+                    switchLeft();
+                } else {
+                    switchRight();
+                }
             }
         });
-
-        gestureDetector.setIsLongpressEnabled(false);
     }
 
     @Override
@@ -91,48 +112,22 @@ public class SwitcherView extends HorizontalScrollView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (downEvent != null) {
-                downEvent.recycle();
-            }
+        boolean result = gestureDetector.onTouchEvent(ev);
 
-            downEvent = MotionEvent.obtain(ev);
+        if (isSwitching) {
+            // Don't pass any events through while switching
+            return result;
         }
 
-        if (!isSwitching /* && !isAnimating */) {
-            // Pass all touch events through to the current keyboard
-            return currentView.onTouchEvent(ev);
-        }
-
-        // FIXME: Cancel any running animation; new touches have precedence!
-
-        // Pass the touch to our gesture detector and scroll accordingly
-        gestureDetector.onTouchEvent(ev);
-
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            isSwitching = false;
-
-            // FIXME: Don't do any of these if we're already animating
-            int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
-            Log.d(TAG, "Scroll is " + getScrollX() + "/" + screenWidth);
-            if (getScrollX() < screenWidth / 2) {
-                animateLeft();
-            } else {
-                animateRight();
-            }
-        }
-
-        return true;
+        // Pass all touch events through to the current keyboard
+        return currentView.onTouchEvent(ev);
     }
 
-    private void animateLeft() {
-        // FIXME: Actually animate this...
+    private void switchLeft() {
         setScrollX(0);
     }
 
-    private void animateRight() {
-        // FIXME: Actually animate, then finish with this...
-
+    private void switchRight() {
         // Move currentView last...
         LinearLayout linearLayout = (LinearLayout)getChildAt(0);
         linearLayout.removeView(currentView);
@@ -145,12 +140,5 @@ public class SwitcherView extends HorizontalScrollView {
 
         // ... and scroll fully left
         setScrollX(0);
-    }
-
-    public void enableSwitchingMode() {
-        isSwitching = true;
-
-        // Inform our gesture detection on when and where the down event happened
-        gestureDetector.onTouchEvent(downEvent);
     }
 }

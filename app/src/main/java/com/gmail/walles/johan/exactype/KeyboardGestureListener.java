@@ -19,16 +19,11 @@ package com.gmail.walles.johan.exactype;
 import com.gmail.walles.johan.exactype.gestures.GestureListener;
 
 public class KeyboardGestureListener implements GestureListener {
-    private final ExactypeService exactypeService;
-    private KeyCoordinator keyCoordinator;
+    private final ExactypeView exactypeView;
     private char longPressKey;
 
-    public KeyboardGestureListener(ExactypeService exactypeService) {
-        this.exactypeService = exactypeService;
-    }
-
-    public void setKeyCoordinator(KeyCoordinator keyCoordinator) {
-        this.keyCoordinator = keyCoordinator;
+    public KeyboardGestureListener(ExactypeView exactypeView) {
+        this.exactypeView = exactypeView;
     }
 
     private boolean handleRightSwipe(float dx, float dy) {
@@ -42,7 +37,7 @@ public class KeyboardGestureListener implements GestureListener {
         }
 
         // Right swipe, enter space!
-        exactypeService.onKeyTapped(' ');
+        exactypeView.onKeyTapped(' ');
         return true;
     }
 
@@ -57,7 +52,7 @@ public class KeyboardGestureListener implements GestureListener {
         }
 
         // Down swipe, action!
-        exactypeService.onActionTapped();
+        exactypeView.onActionTapped();
     }
 
     @Override
@@ -70,40 +65,30 @@ public class KeyboardGestureListener implements GestureListener {
 
     @Override
     public void onStartSwipe(float dx, float dy) {
-        if (dx > 0) {
-            // This is a right swipe, we want left swipes
-            return;
-        }
-
-        if (Math.abs(dy) > Math.abs(dx)) {
-            // This is more of an up / down swipe than a left swipe, never mind
-            return;
-        }
-
-        exactypeService.onStartLeftSwipe();
+        // This method intentionally left blank
     }
 
     @Override
     public void onSingleTap(float x, float y) {
-        char tappedKey = keyCoordinator.getClosestKey(x, y);
+        char tappedKey = exactypeView.getClosestKey(x, y);
         if (tappedKey == '⌫') {
-            exactypeService.onDeleteTapped();
+            exactypeView.onDeleteTapped();
         } else if (tappedKey == ExactypeMode.SwitchKey.MARKER) {
-            exactypeService.onKeyboardModeSwitchRequested();
+            exactypeView.onKeyboardModeSwitchRequested();
         } else {
-            exactypeService.onKeyTapped(tappedKey);
+            exactypeView.onKeyTapped(tappedKey);
         }
     }
 
     @Override
     public void onLongPress(float x, float y) {
-        longPressKey = keyCoordinator.getClosestKey(x, y);
+        longPressKey = exactypeView.getClosestKey(x, y);
         if (longPressKey == '⌫') {
             // We report repeats for delete, not long presses
             return;
         }
 
-        exactypeService.onLongPress(x, y);
+        exactypeView.onLongPress(x, y);
     }
 
     @Override
@@ -113,17 +98,17 @@ public class KeyboardGestureListener implements GestureListener {
             return;
         }
 
-        exactypeService.onRequestPopupKeyboard(longPressKey, x, y);
+        exactypeView.onRequestPopupKeyboard(longPressKey, x, y);
     }
 
     @Override
     public void onLongPressUp(float x, float y) {
-        if (exactypeService.isPopupKeyboardShowing()) {
+        if (exactypeView.isPopupKeyboardShowing()) {
             // Is this really the way to deal with popup keyboard events? I have a feeling we're
             // breaking some kind of abstraction here...
-            exactypeService.onPopupKeyboardTapped(x, y);
+            exactypeView.onPopupKeyboardTapped(x, y);
         } else {
-            char tappedKey = keyCoordinator.getClosestKey(x, y);
+            char tappedKey = exactypeView.getClosestKey(x, y);
             if (tappedKey == '⌫') {
                 // We get a long press up on backspace when the user holds the backspace key, but
                 // when the user releases the backspace key in this case she's already done. Edge
@@ -139,26 +124,26 @@ public class KeyboardGestureListener implements GestureListener {
 
     @Override
     public void onHold(float x, float y) {
-        char tappedKey = keyCoordinator.getClosestKey(x, y);
+        char tappedKey = exactypeView.getClosestKey(x, y);
         if (tappedKey != '⌫') {
             return;
         }
 
-        exactypeService.onDeleteHeld();
+        exactypeView.onDeleteHeld();
     }
 
     @Override
     public void onDown() {
-        exactypeService.onTouchStart();
+        exactypeView.onTouchStart();
     }
 
     @Override
     public void onMove(float x, float y) {
-        exactypeService.onTouchMove(x, y);
+        exactypeView.onTouchMove(x, y);
     }
 
     @Override
     public void onUp() {
-        exactypeService.onTouchEnd();
+        exactypeView.onTouchEnd();
     }
 }

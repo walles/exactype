@@ -16,21 +16,56 @@
 
 package com.gmail.walles.johan.exactype.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-public class VibrationUtil {
+import com.gmail.walles.johan.exactype.SettingsActivity;
+
+public class VibrationUtil implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "Exactype";
 
-    private VibrationUtil() {
-        // This constructor is just here to make sure nobody instantiates this class
+    @Nullable
+    private final Vibrator vibrator;
+
+    private int vibrate_duration_ms = SettingsActivity.DEFAULT_VIBRATE_DURATION_MS;
+
+    public VibrationUtil(Context context) {
+        vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+
+        final SharedPreferences preferences =
+            PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+        vibrate_duration_ms =
+            preferences.getInt(SettingsActivity.VIBRATE_DURATION_MS_KEY,
+                SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+        if (SettingsActivity.VIBRATE_DURATION_MS_KEY.equals(key)) {
+            vibrate_duration_ms =
+                preferences.getInt(SettingsActivity.VIBRATE_DURATION_MS_KEY,
+                    SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
+        }
+    }
+
+    /**
+     * Vibrate according to the vibration preference.
+     */
+    public void vibrate() {
+        vibrate(vibrate_duration_ms);
     }
 
     /**
      * Vibrate if we can / are allowed to.
+     *
+     * @see #vibrate()
      */
-    public static void vibrate(@Nullable Vibrator vibrator, int milliseconds) {
+    public void vibrate(int milliseconds) {
         if (vibrator == null) {
             Log.i(TAG, "Not vibrating; no vibration support / vibrator not set up");
             return;

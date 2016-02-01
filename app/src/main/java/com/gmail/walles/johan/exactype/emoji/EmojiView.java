@@ -102,9 +102,6 @@ public class EmojiView extends GridView implements ExactypeMode.ModeChangeListen
         if (startScrollLeftDetected) {
             startScrollLeftDetected = false;
 
-            // User is swiping left, tell ourselves to cancel and the switcher view to take over
-            exactypeService.onStartLeftSwipe();
-
             MotionEvent cancel = MotionEvent.obtain(ev);
             cancel.setAction(MotionEvent.ACTION_CANCEL);
             try {
