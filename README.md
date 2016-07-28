@@ -44,6 +44,8 @@ requires us to support more than one keyboard, without needing to make an entire
 cursor by clicking somewhere. It should contain left, right, backspace and Abc (back to standard
 keyboard). My hypothesis is that simplifying cursor positioning would somewhat alleviate the need
 for auto correction.
+* Set `android:fullBackupContent` in `AndroidManifest.xml` to something more thought-through than
+just `false`.
 
 ## TODO Prioritized Beta User Issues
 * Add emoji support
