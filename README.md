@@ -9,7 +9,9 @@ Features (will) include:
 
 * Large keys that are easy to hit
 * Instant feedback on each key press on whether or not it was precise
-* Gestures for common operations (including typing space)
+* Gestures for common operations:
+    * Swipe right (anywhere) for space
+    * Swipe down (anywhere) for search / send / done
 
 ## Hacking
 * `git clone git@github.com:walles/exactype.git`
