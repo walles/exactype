@@ -49,6 +49,9 @@ def getVersionName = { ->
 }
 
 android {
+    // NOTICE: These must match the values in .travis.yml
+    // NOTICE: Do any changes to these on a branch; the Travis builds tend to start failing when
+    // these values are changed!
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
