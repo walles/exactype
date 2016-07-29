@@ -86,7 +86,7 @@ public class GestureDetector {
                                        handler.postAtTime(
                                            this,
                                            GestureDetector.this,
-                                           startTime + 2 * longPressTimeout);
+                                           startTime + 3 * longPressTimeout);
                                    }
                                }
 

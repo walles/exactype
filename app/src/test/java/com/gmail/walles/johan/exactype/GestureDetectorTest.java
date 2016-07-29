@@ -54,6 +54,7 @@ import java.util.Map;
 @PrepareForTest({ ViewConfiguration.class })
 public class GestureDetectorTest {
     private static final int LONG_PRESS_TIMEOUT = 29;
+    private static final int LONG_LONG_PRESS_TIMEOUT = LONG_PRESS_TIMEOUT * 3;
     private static final int TOUCH_SLOP = 7;
 
     private static final long T0 = 10;
@@ -365,7 +366,7 @@ public class GestureDetectorTest {
         Mockito.verify(listener).onLongPress(X0, Y0);
 
         // Simulate waiting another LONG_PRESS_TIMEOUT
-        doMotion(T0 + 2 * LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 2, Y0);
+        doMotion(T0 + LONG_LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_MOVE, X0 + 2, Y0);
 
         // X0 + 1 here is because we didn't move to X0 + 2 until after the second long press timeout
         // had expired
@@ -373,7 +374,7 @@ public class GestureDetectorTest {
 
         int x1 = X0 + 29;
         int y1 = Y0 + 31;
-        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+        doMotion(T0 + 2 * LONG_LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
     }
@@ -394,7 +395,7 @@ public class GestureDetectorTest {
 
         // Give the long long press notification a chance to trigger even though it should have been
         // canceled, then release.
-        doMotion(T0 + 3 * LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, x1, y1);
+        doMotion(T0 + LONG_LONG_PRESS_TIMEOUT + 1, MotionEvent.ACTION_UP, x1, y1);
 
         Mockito.verify(listener).onLongPressUp(x1, y1);
     }
@@ -528,8 +529,8 @@ public class GestureDetectorTest {
         // First finger up
         doMotion(T0 + 2, MotionEvent.ACTION_UP, 0, X0, Y0);
 
-        // Second finger up after 2x long press timeout
-        doMotion(T0 + 1 + LONG_PRESS_TIMEOUT * 2, MotionEvent.ACTION_UP, 1, X1, Y1);
+        // Second finger up after long long press timeout
+        doMotion(T0 + 1 + LONG_LONG_PRESS_TIMEOUT, MotionEvent.ACTION_UP, 1, X1, Y1);
 
         // Second finger done, long press events should be reported for second finger
         InOrder inOrder = Mockito.inOrder(listener);
