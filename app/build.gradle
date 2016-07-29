@@ -52,13 +52,13 @@ android {
     // NOTICE: These must match the values in .travis.yml
     // NOTICE: Do any changes to these on a branch; the Travis builds tend to start failing when
     // these values are changed!
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.gmail.walles.johan.exactype"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode getVersionCode()
         versionName getVersionName()
     }
@@ -73,9 +73,6 @@ android {
         // Johan doesn't want to generate multiple icon sizes; most phones can resize an icon just
         // fine by itself.
         disable("IconMissingDensityFolder")
-
-        // Can't manage to build in Travis with API-23, just ignore this for now.
-        disable("OldTargetApi")
 
         // This warning wants ExactypeView to implement / call View.performClick() to play a sound
         // (but we want to do that ourselves if at all), report accessibility events (that the
@@ -157,7 +154,7 @@ check.doLast {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.3.0'
 
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
