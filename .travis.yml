@@ -2,16 +2,19 @@ language: android
 script: ./gradlew check --continue
 android:
   components:
-    # The BuildTools version used by your project, must match the values in app/build.gradle
-    - build-tools-22.0.1
+    # From: https://docs.travis-ci.com/user/languages/android#Overview
+    # Use the latest revision of Android SDK Tools
+    # NOTICE: Must come before the buildtools and sdk settings below
+    - platform-tools
+    - tools
 
-    # The SDK version used to compile your project, must match the values in app/build.gradle
-    - android-22
+    # The BuildTools version used by your project
+    # NOTICE: Must match the values in app/build.gradle
+    - build-tools-23.0.3
+
+    # The SDK version used to compile your project
+    # NOTICE: Must match the values in app/build.gradle
+    - android-23
 
     # For appcompat-v7 support library
     - extra-android-m2repository
-
-    # From: https://docs.travis-ci.com/user/languages/android#Overview
-    # Use the latest revision of Android SDK Tools
-    - platform-tools
-    - tools

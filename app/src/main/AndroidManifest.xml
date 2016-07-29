@@ -24,7 +24,11 @@
     Ignore GoogleAppIndexingWarning; it assumes this app is another front end for some web
     site, which it isn't.
     -->
+    <!--
+    FIXME: We should research what fullBackupContent should really be; "false" is most likely not it.
+    -->
     <application android:allowBackup="true"
+                 android:fullBackupContent="false"
                  android:label="@string/app_name"
                  android:icon="@drawable/ic_launcher"
                  android:theme="@style/AppTheme"
