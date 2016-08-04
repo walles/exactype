@@ -16,29 +16,16 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.util.Log;
 import android.view.inputmethod.InputConnection;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Log.class })
 public class ExactypeOnDeleteHeldTest {
-    @Before
-    public void mockAndroidMethods() {
-        PowerMockito.mockStatic(Log.class);
-    }
-
     private static class TestableExactype extends Exactype {
         private final InputConnection inputConnection;
 

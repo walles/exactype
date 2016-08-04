@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 
-import com.gmail.walles.johan.exactype.util.VibrationUtil;
+import com.gmail.walles.johan.exactype.util.VibrationUtils;
 
 public class VibrationDurationPreference extends DialogPreference {
     private static final int MIN_MS = 10;
@@ -66,7 +66,7 @@ public class VibrationDurationPreference extends DialogPreference {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                VibrationUtil.vibrate(vibrator, milliseconds);
+                VibrationUtils.vibrate(vibrator, milliseconds);
             }
         });
     }
@@ -92,7 +92,7 @@ public class VibrationDurationPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
         if (positiveResult) {
-            VibrationUtil.vibrate(vibrator, milliseconds);
+            VibrationUtils.vibrate(vibrator, milliseconds);
             persistInt(milliseconds);
         }
     }

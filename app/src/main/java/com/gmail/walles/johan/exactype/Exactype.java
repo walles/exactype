@@ -24,25 +24,25 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
+import com.gmail.walles.johan.exactype.util.LoggingUtils;
 import com.gmail.walles.johan.exactype.util.Timer;
-import com.gmail.walles.johan.exactype.util.VibrationUtil;
+import com.gmail.walles.johan.exactype.util.VibrationUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 public class Exactype
     extends InputMethodService
     implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    private static final String TAG = "Exactype";
-
     private int vibrate_duration_ms = SettingsActivity.DEFAULT_VIBRATE_DURATION_MS;
 
     /**
@@ -100,6 +100,8 @@ public class Exactype
 
     @Override
     public void onCreate() {
+        LoggingUtils.setUpLogging();
+
         super.onCreate();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -202,7 +204,7 @@ public class Exactype
                 }
 
                 inputConnection.commitText(Character.toString(tappedKey), 1);
-                Log.d(TAG, "PERF: Committing a char took " + timer);
+                Timber.d("PERF: Committing a char took %s", timer);
             }
         });
 
@@ -231,7 +233,7 @@ public class Exactype
                     timer.addLeg("delete selection");
                     inputConnection.commitText("", 1);
                 }
-                Log.d(TAG, "PERF: Delete took " + timer);
+                Timber.d("PERF: Delete took %s", timer);
             }
         });
     }
@@ -295,11 +297,11 @@ public class Exactype
                     timer.addLeg("delete selection");
                     inputConnection.commitText("", 1);
                 }
-                Log.d(TAG, "PERF: Delete took " + timer);
+                Timber.d("PERF: Delete took %s", timer);
             }
         });
 
-        VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
+        VibrationUtils.vibrate(vibrator, vibrate_duration_ms);
     }
 
     public void onKeyboardModeSwitchRequested() {
@@ -321,7 +323,7 @@ public class Exactype
 
                 if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                     inputConnection.commitText("\n", 1);
-                    Log.d(TAG, "PERF: Committing a newline took " + timer);
+                    Timber.d("PERF: Committing a newline took %s", timer);
 
                     mode.register(ExactypeMode.Event.INSERT_CHAR);
 
@@ -330,7 +332,7 @@ public class Exactype
 
                 inputConnection.
                     performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
-                Log.d(TAG, "PERF: Performing editor action took " + timer);
+                Timber.d("PERF: Performing editor action took %s", timer);
             }
         });
     }
@@ -351,9 +353,9 @@ public class Exactype
         // Without this the popup window will be constrained to the inside of the keyboard view
         popupKeyboardWindow.setClippingEnabled(false);
 
-        Log.d(TAG, String.format("Popup keyboard window size set to %dx%d",
+        Timber.d("Popup keyboard window size set to %dx%d",
             popupKeyboardView.getWidth(),
-            popupKeyboardView.getHeight()));
+            popupKeyboardView.getHeight());
 
         popupX0 = x;
         if (popupX0 + popupKeyboardWindow.getWidth() > view.getWidth()) {
@@ -389,7 +391,7 @@ public class Exactype
     }
 
     public void onTouchStart() {
-        VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
+        VibrationUtils.vibrate(vibrator, vibrate_duration_ms);
     }
 
     public void onTouchMove(float x, float y) {
