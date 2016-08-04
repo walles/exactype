@@ -100,7 +100,7 @@ public class Exactype
 
     @Override
     public void onCreate() {
-        LoggingUtils.setUpLogging();
+        LoggingUtils.setUpLogging(this);
 
         super.onCreate();
 
