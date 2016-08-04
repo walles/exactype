@@ -18,11 +18,10 @@ package com.gmail.walles.johan.exactype.util;
 
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
+import timber.log.Timber;
 
 public class VibrationUtil {
-    private static final String TAG = "Exactype";
-
     private VibrationUtil() {
         // This constructor is just here to make sure nobody instantiates this class
     }
@@ -32,15 +31,15 @@ public class VibrationUtil {
      */
     public static void vibrate(@Nullable Vibrator vibrator, int milliseconds) {
         if (vibrator == null) {
-            Log.i(TAG, "Not vibrating; no vibration support / vibrator not set up");
+            Timber.i("Not vibrating; no vibration support / vibrator not set up");
             return;
         }
 
         try {
             vibrator.vibrate(milliseconds);
-            Log.d(TAG, milliseconds + "ms vibration started...");
+            Timber.d("%dms vibration started...", milliseconds);
         } catch (SecurityException e) {
-            Log.i(TAG, "Not vibrating: " + e.getMessage());
+            Timber.i("Not vibrating: %s", e.getMessage());
         }
     }
 }

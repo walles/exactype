@@ -18,12 +18,11 @@ package com.gmail.walles.johan.exactype;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.View;
 
-public class PopupKeyboardView extends View {
-    private static final String TAG = "Exactype";
+import timber.log.Timber;
 
+public class PopupKeyboardView extends View {
     private KeyCoordinator keyCoordinator;
     private KeyboardTheme theme;
     private String keys;
@@ -59,12 +58,10 @@ public class PopupKeyboardView extends View {
         }
 
         theme.setContents(keys, textSize);
-        Log.d(TAG, String.format("Popup keyboard view size set to %dx%d",
-            theme.getWidth(), theme.getHeight()));
+        Timber.d("Popup keyboard view size set to %dx%d", theme.getWidth(), theme.getHeight());
         keyCoordinator.setSize(theme.getWidth(), theme.getHeight());
         setMeasuredDimension(theme.getWidth(), theme.getHeight());
-        Log.d(TAG, String.format("Popup keyboard view size is %dx%d",
-            getWidth(), getHeight()));
+        Timber.d("Popup keyboard view size is %dx%d", getWidth(), getHeight());
     }
 
     @Override

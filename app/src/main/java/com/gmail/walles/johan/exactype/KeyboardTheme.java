@@ -20,13 +20,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
-public class KeyboardTheme {
-    private static final String TAG = "Exactype";
+import timber.log.Timber;
 
+public class KeyboardTheme {
     public static final int BACKGROUND_COLOR = Color.BLUE;
     private static final int COLOR = Color.WHITE;
 
@@ -157,13 +156,13 @@ public class KeyboardTheme {
 
         // Sum up the heights of all keyboard rows with the new font size to get height in px
         height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-        Log.i(TAG, "Size set to " + width + "x" + height);
+        Timber.i("Size set to %dx%d", width, height);
 
         if (height > maxHeight) {
             // Don't use more than half the height, required in landscape mode
             factor = factor * maxHeight / height;
             height = Math.round(3 * fontSize100HeightPx * factor * KEYBOARD_HEIGHT_MULTIPLIER);
-            Log.d(TAG, "Size reset to " + width + "x" + height);
+            Timber.d("Size reset to %dx%d", width, height);
         }
 
         float textSize = 100 * factor / LETTER_ZOOM_OUT_FACTOR;
@@ -183,7 +182,7 @@ public class KeyboardTheme {
         if (maxHeight > screenHeight * 0.4) {
             maxHeight = (int)(screenHeight * 0.4);
         }
-        Log.d(TAG, "Max bounds are " + maxWidth + "x" + maxHeight);
+        Timber.d("Max bounds are %dx%d", maxWidth, maxHeight);
 
         if (shouldScaleToScreenWidth) {
             scaleToScreenWidth(maxWidth, maxHeight);
