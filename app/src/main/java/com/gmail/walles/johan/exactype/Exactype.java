@@ -30,8 +30,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
+import com.gmail.walles.johan.exactype.util.LoggingUtils;
 import com.gmail.walles.johan.exactype.util.Timer;
-import com.gmail.walles.johan.exactype.util.VibrationUtil;
+import com.gmail.walles.johan.exactype.util.VibrationUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,6 +100,8 @@ public class Exactype
 
     @Override
     public void onCreate() {
+        LoggingUtils.setUpLogging();
+
         super.onCreate();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -298,7 +301,7 @@ public class Exactype
             }
         });
 
-        VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
+        VibrationUtils.vibrate(vibrator, vibrate_duration_ms);
     }
 
     public void onKeyboardModeSwitchRequested() {
@@ -388,7 +391,7 @@ public class Exactype
     }
 
     public void onTouchStart() {
-        VibrationUtil.vibrate(vibrator, vibrate_duration_ms);
+        VibrationUtils.vibrate(vibrator, vibrate_duration_ms);
     }
 
     public void onTouchMove(float x, float y) {

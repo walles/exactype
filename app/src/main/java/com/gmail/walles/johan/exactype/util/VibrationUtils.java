@@ -21,8 +21,8 @@ import android.support.annotation.Nullable;
 
 import timber.log.Timber;
 
-public class VibrationUtil {
-    private VibrationUtil() {
+public class VibrationUtils {
+    private VibrationUtils() {
         // This constructor is just here to make sure nobody instantiates this class
     }
 

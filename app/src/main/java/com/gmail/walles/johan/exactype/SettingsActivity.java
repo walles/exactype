@@ -24,12 +24,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.gmail.walles.johan.exactype.util.LoggingUtils;
+
 public class SettingsActivity extends AppCompatActivity {
     public static final int DEFAULT_VIBRATE_DURATION_MS = 20;
     public static final String VIBRATE_DURATION_MS_KEY = "vibrate_duration_preference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LoggingUtils.setUpLogging();
+
         super.onCreate(savedInstanceState);
 
         final ActionBar actionBar = getSupportActionBar();
