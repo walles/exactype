@@ -46,6 +46,13 @@ public class Timer {
     }
 
     /**
+     * Returns for how long this timer has been executing.
+     */
+    public long getMs() {
+        return System.currentTimeMillis() - t0;
+    }
+
+    /**
      * @return "47ms" or "100ms = 13ms setup + 87ms something else"
      */
     @Override

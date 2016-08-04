@@ -30,6 +30,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
+import com.crashlytics.android.answers.CustomEvent;
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 import com.gmail.walles.johan.exactype.util.Timer;
 import com.gmail.walles.johan.exactype.util.VibrationUtils;
@@ -205,6 +206,8 @@ public class Exactype
 
                 inputConnection.commitText(Character.toString(tappedKey), 1);
                 Timber.d("PERF: Committing a char took %s", timer);
+                LoggingUtils.logCustom(new CustomEvent("Perf").putCustomAttribute(
+                    "Commit char ms", timer.getMs()));
             }
         });
 
@@ -234,6 +237,8 @@ public class Exactype
                     inputConnection.commitText("", 1);
                 }
                 Timber.d("PERF: Delete took %s", timer);
+                LoggingUtils.logCustom(new CustomEvent("Perf").putCustomAttribute(
+                    "Delete char ms", timer.getMs()));
             }
         });
     }
@@ -292,10 +297,14 @@ public class Exactype
                     int to_delete = countCharsToDelete(before);
                     timer.addLeg("delete word");
                     inputConnection.deleteSurroundingText(to_delete, 0);
+                    LoggingUtils.logCustom(new CustomEvent("Perf").putCustomAttribute(
+                        "Delete word ms", timer.getMs()));
                 } else {
                     // Delete selection
                     timer.addLeg("delete selection");
                     inputConnection.commitText("", 1);
+                    LoggingUtils.logCustom(new CustomEvent("Perf").putCustomAttribute(
+                        "Delete selection ms", timer.getMs()));
                 }
                 Timber.d("PERF: Delete took %s", timer);
             }
@@ -324,6 +333,8 @@ public class Exactype
                 if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                     inputConnection.commitText("\n", 1);
                     Timber.d("PERF: Committing a newline took %s", timer);
+                    LoggingUtils.logCustom(new CustomEvent("Perf").putCustomAttribute(
+                        "Commit newline ms", timer.getMs()));
 
                     mode.register(ExactypeMode.Event.INSERT_CHAR);
 
@@ -333,6 +344,8 @@ public class Exactype
                 inputConnection.
                     performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
                 Timber.d("PERF: Performing editor action took %s", timer);
+                LoggingUtils.logCustom(new CustomEvent("Perf").putCustomAttribute(
+                    "Perform editor action ms", timer.getMs()));
             }
         });
     }
