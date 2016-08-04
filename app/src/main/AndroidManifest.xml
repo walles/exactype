@@ -21,11 +21,6 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--
-    FIXME: For DEBUG builds only
-    -->
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!--
     Ignore GoogleAppIndexingWarning; it assumes this app is another front end for some web
     site, which it isn't.
     -->
