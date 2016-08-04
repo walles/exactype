@@ -59,6 +59,11 @@ public class LoggingUtils {
         if (EmulatorUtils.isRunningOnEmulator()) {
             return false;
         }
+        final Object javaVendorUrl = System.getProperties().get("java.vendor.url");
+        if (!javaVendorUrl.equals("http://www.android.com")) {
+            // Only do Crashlytics from Android
+            return false;
+        }
 
         return true;
     }
