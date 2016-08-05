@@ -1,5 +1,8 @@
 language: android
+before_script: echo apiKey=0 > app/fabric.properties
 script: ./gradlew check --continue
+env:
+  - GRADLE_OPTS="-Xmx512m -XX:MaxPermSize=512m"
 android:
   components:
     # From: https://docs.travis-ci.com/user/languages/android#Overview

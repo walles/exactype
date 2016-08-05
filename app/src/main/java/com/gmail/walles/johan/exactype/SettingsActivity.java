@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        LoggingUtils.setUpLogging();
+        LoggingUtils.setUpLogging(this);
 
         super.onCreate(savedInstanceState);
 

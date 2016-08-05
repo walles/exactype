@@ -14,7 +14,27 @@
  * limitations under the License.
  */
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        // The dynamic version here is explicitly recommended by the Crashlytics docs:
+        // https://docs.fabric.io/android/fabric/integration.html#modify-build-gradle
+        //noinspection GradleDynamicVersion
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
 apply plugin: 'com.android.application'
+
+// Fabric / Crashlytics must come after the Android plugin
+apply plugin: 'io.fabric'
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
 
@@ -156,6 +176,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.jakewharton.timber:timber:4.1.2'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
+        transitive = true;
+    }
 
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
