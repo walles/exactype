@@ -20,14 +20,18 @@ import android.os.Build;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 public class EmulatorUtils {
+    public static final boolean IS_ON_EMULATOR = isRunningOnEmulator();
+    public static final boolean IS_ON_ANDROID = isRunningOnAndroid();
+
     private EmulatorUtils() {
         throw new UnsupportedOperationException("Utility class, please don't instantiate");
     }
 
-    public static boolean isRunningOnEmulator() {
+    private static boolean isRunningOnEmulator() {
         // Inspired by
         // http://stackoverflow.com/questions/2799097/how-can-i-detect-when-an-android-application-is-running-in>
         if (Build.PRODUCT == null) {
@@ -47,5 +51,16 @@ public class EmulatorUtils {
         // If the build identifier contains only the above keywords in some order, then we're
         // in an emulator
         return parts.isEmpty();
+    }
+
+    private static boolean isRunningOnAndroid() {
+        // Inspired by: https://developer.android.com/reference/java/lang/System.html#getProperties()
+        // Developed using trial and error...
+        final Properties properties = System.getProperties();
+        final String httpAgent = (String)properties.get("http.agent");
+        if (httpAgent == null) {
+            return false;
+        }
+        return httpAgent.contains("Android");
     }
 }

@@ -45,6 +45,8 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class LoggingUtils {
+    public static final boolean IS_CRASHLYTICS_ENABLED = isCrashlyticsEnabled();
+
     private static Class<Timber> initializedLoggingClass = null;
 
     private LoggingUtils() {
@@ -56,12 +58,10 @@ public class LoggingUtils {
             // We don't want Internet access in release builds, so no Crashlytics there
             return false;
         }
-        if (EmulatorUtils.isRunningOnEmulator()) {
+        if (EmulatorUtils.IS_ON_EMULATOR) {
             return false;
         }
-        final Object javaVendorUrl = System.getProperties().get("java.vendor.url");
-        if (!javaVendorUrl.equals("http://www.android.com")) {
-            // Only do Crashlytics from Android
+        if (!EmulatorUtils.IS_ON_ANDROID) {
             return false;
         }
 
@@ -69,7 +69,7 @@ public class LoggingUtils {
     }
 
     public static void logCustom(CustomEvent event) {
-        if (isCrashlyticsEnabled()) {
+        if (IS_CRASHLYTICS_ENABLED) {
             event.putCustomAttribute("App Version", BuildConfig.VERSION_NAME); //NON-NLS
             Answers.getInstance().logCustom(event);
         }
@@ -77,7 +77,7 @@ public class LoggingUtils {
 
     public static void setUpLogging(Context context) {
         Timber.Tree tree;
-        if (isCrashlyticsEnabled()) {
+        if (IS_CRASHLYTICS_ENABLED) {
             tree = new CrashlyticsTree(context);
         } else {
             tree = new LocalTree();
@@ -88,6 +88,12 @@ public class LoggingUtils {
             Timber.plant(tree);
             Timber.v("Logging tree planted: %s", tree.getClass());
         }
+
+        Timber.i("Logging configured: Crashlytics=%b, DEBUG=%b, Emulator=%b, Android=%b",
+            IS_CRASHLYTICS_ENABLED,
+            BuildConfig.DEBUG,
+            EmulatorUtils.IS_ON_EMULATOR,
+            EmulatorUtils.IS_ON_ANDROID);
     }
 
     private static class CrashlyticsTree extends Timber.Tree {
