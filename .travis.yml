@@ -1,5 +1,5 @@
 language: android
-before_script: echo api-key=0 > app/fabric.properties
+before_script: echo apiKey=0 > app/fabric.properties
 script: ./gradlew check --continue
 android:
   components:
