@@ -151,6 +151,13 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
             return;
         }
 
+        if (imageView == null) {
+            // https://fabric.io/johan-walles-projects/android/apps/com.gmail.walles.johan.exactype/issues/57b18503ffcdc04250abc844
+            //
+            // Note that if get more NPEs on imageView accesses we should tag it with @Nullable
+            return;
+        }
+
         fadeout = imageView.animate();
         fadeout.alpha(0f).setDuration(fadeoutDurationMs).setListener(
             new AnimatorListenerAdapter() {
