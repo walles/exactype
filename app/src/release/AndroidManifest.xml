@@ -16,7 +16,14 @@
 
 <!-- See: http://stackoverflow.com/a/29317682/473672 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.gmail.walles.johan.exactype">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!--
+    Remove INTERNET permission from release builds; we don't want our users to worry about any
+    keystrokes being logged.
+
+    See: http://tools.android.com/tech-docs/new-build-system/user-guide/manifest-merger#TOC-Markers
+    -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
 </manifest>
