@@ -114,20 +114,26 @@ android {
         htmlOutput file("$project.buildDir/reports/lint.html")
     }
 
-    signingConfigs {
-        // See: https://stackoverflow.com/a/21020469/473672
-        release {
-            // Set these values as A=B in ~/.gradle/gradle.properties
-            storeFile file(RELEASE_STORE_FILE)
-            storePassword RELEASE_STORE_PASSWORD
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword RELEASE_KEY_PASSWORD
-        }
-    }
+    // Read signing properties from ~/.gradle/exactype.properties
+    //
+    // From: https://www.timroes.de/2013/09/22/handling-signing-configs-with-gradle/
+    if(new File("${gradle.gradleUserHomeDir}/exactype.properties").exists()) {
+        Properties props = new Properties()
+        props.load(new FileInputStream(file("${gradle.gradleUserHomeDir}/exactype.properties")))
 
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
+        signingConfigs {
+            release {
+                storeFile file(props['keystore'])
+                storePassword props['keystore.password']
+                keyAlias props['keyAlias']
+                keyPassword props['keyPassword']
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

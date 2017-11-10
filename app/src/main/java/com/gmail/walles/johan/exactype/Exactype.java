@@ -273,8 +273,8 @@ public class Exactype
         feedbackWindow.close();
 
         if (!queueIsEmpty()) {
-            // Don't enqueue new things repetetively if there are already outstanding entries, this
-            // is best practices from HyperKey on my DOS machine ages ago. I still miss it.
+            // Don't enqueue new things repeatedly if there are already outstanding entries. This is
+            // best practices from HyperKey on my DOS machine ages ago. I still miss it.
             return;
         }
 
