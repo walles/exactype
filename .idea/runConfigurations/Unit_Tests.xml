@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Unit Tests" type="JUnit" factoryName="JUnit" singleton="true">
+  <configuration default="false" name="Unit Tests" type="AndroidJUnit" factoryName="Android JUnit" singleton="true">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <module name="app" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -21,3 +22,4 @@
     <method />
   </configuration>
 </component>
+
