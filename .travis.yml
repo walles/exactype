@@ -6,7 +6,7 @@ before_script: echo apiKey=0 > app/fabric.properties
 script: ./gradlew check --continue
 
 env:
-  - GRADLE_OPTS="-Xmx512m -XX:MaxPermSize=512m"
+  - GRADLE_OPTS="-Xmx512m"
 
 android:
   components:
@@ -18,7 +18,7 @@ android:
 
     # The BuildTools version used by your project
     # NOTICE: Must match the values in app/build.gradle
-    - build-tools-23.0.3
+    - build-tools-26.0.2
 
     # The SDK version used to compile your project
     # NOTICE: Must match the values in app/build.gradle
