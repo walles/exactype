@@ -22,6 +22,8 @@ import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import timber.log.Timber;
+
 public class GestureDetector {
     private final GestureListener listener;
     private final int touchSlop;
@@ -273,6 +275,7 @@ public class GestureDetector {
 
         if (action != MotionEvent.ACTION_UP) {
             // We ignore non-up events
+            Timber.i("Ignoring event with action type: %d", action);
             return false;
         }
 
@@ -291,6 +294,14 @@ public class GestureDetector {
         }
 
         // Gesture ended but we don't know how
+        Timber.w(new RuntimeException("Gesture ended but we don't know how"),
+            "start=(%f, %f) mostRecent=(%f, %f), age=%dms, reps=%d, isLongPressing=%b",
+            startX, startY,
+            mostRecentX, mostRecentY,
+            timestamp - startTime,
+            repetitions,
+            isLongPressing);
+
         resetStart();
         return false;
     }
