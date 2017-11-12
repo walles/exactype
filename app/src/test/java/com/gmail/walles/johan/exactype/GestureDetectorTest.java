@@ -101,8 +101,6 @@ public class GestureDetectorTest {
 
         listener = Mockito.mock(GestureListener.class);
 
-        Context context = Mockito.mock(Context.class);
-
         postedEvents = new ArrayList<>();
         triggeredEventTimes = new HashMap<>();
 
@@ -131,7 +129,11 @@ public class GestureDetectorTest {
                 }
             }).when(handler).removeCallbacksAndMessages(Mockito.anyObject());
 
-        testMe = new GestureDetector(context, handler, listener);
+        // The "* 20" here is a hack to get us the touch slop expected by our tests
+        testMe = new GestureDetector(TOUCH_SLOP * 20, handler, listener);
+
+        // Without this our tests will fail
+        Assert.assertEquals(TOUCH_SLOP, testMe.touchSlop);
     }
 
     @After

@@ -16,7 +16,6 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
@@ -26,7 +25,7 @@ import timber.log.Timber;
 
 public class GestureDetector {
     private final GestureListener listener;
-    private final int touchSlop;
+    final int touchSlop;
     private final int longPressTimeout;
     private final Handler handler;
 
@@ -43,10 +42,13 @@ public class GestureDetector {
     private boolean isLongPressing;
     private int repetitions;
 
-    public GestureDetector(Context context, Handler handler, GestureListener listener) {
-        ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-        touchSlop = viewConfiguration.getScaledTouchSlop();
+    public GestureDetector(int displayWidth, Handler handler, GestureListener listener) {
+        int buttonWidth = displayWidth / 10; // Assuming 10 buttons per row
+        touchSlop = buttonWidth / 2;
+
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
+
+        Timber.d("Gesture Detector: Touch slop=%dpx, Long press timeout=%dms", touchSlop, longPressTimeout);
 
         this.handler = handler;
         this.listener = listener;

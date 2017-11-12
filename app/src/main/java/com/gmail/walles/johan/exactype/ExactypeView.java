@@ -19,10 +19,13 @@ package com.gmail.walles.johan.exactype;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 
 public class ExactypeView extends View implements ExactypeMode.ModeChangeListener {
     private final GestureDetector gestureDetector;
@@ -54,7 +57,16 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
         theme = new KeyboardTheme(context.getResources().getDisplayMetrics());
 
         gestureListener = new GestureListener(exactype);
-        gestureDetector = new GestureDetector(exactype, new Handler(), gestureListener);
+
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager == null) {
+            throw new RuntimeException("Unable to retrieve WindowManager");
+        }
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int displayWidth = size.x;
+        gestureDetector = new GestureDetector(displayWidth, new Handler(), gestureListener);
     }
 
     public float getTextSize() {
