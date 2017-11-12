@@ -82,7 +82,7 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
 
         // Use half transparent background color for pixels outside of the keyboard
         canvas.drawColor(
-            KeyboardTheme.BACKGROUND_COLOR & 0xffffff | (0x80 << 24),
+            (KeyboardTheme.BACKGROUND_COLOR & 0xffffff) | 0x80_00_00_00,
             PorterDuff.Mode.SRC);
 
         // Copy keyboard pixels into our .canvas
