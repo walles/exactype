@@ -195,52 +195,46 @@ public class Exactype
 
     public void onKeyTapped(final char tappedKey) {
         popupKeyboardWindow.dismiss();
-        enqueue(new Runnable() {
-            @Override
-            public void run() {
-                Timer timer = new Timer();
+        enqueue(() -> {
+            Timer timer = new Timer();
 
-                final InputConnection inputConnection = getCurrentInputConnection();
-                if (inputConnection == null) {
-                    return;
-                }
-
-                inputConnection.commitText(Character.toString(tappedKey), 1);
-                Timber.d("PERF: Committing a char took %s", timer);
-                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
-                    "Commit char ms", timer.getMs()));
+            final InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection == null) {
+                return;
             }
+
+            inputConnection.commitText(Character.toString(tappedKey), 1);
+            Timber.d("PERF: Committing a char took %s", timer);
+            LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                "Commit char ms", timer.getMs()));
         });
 
         mode.register(ExactypeMode.Event.INSERT_CHAR);
     }
 
     public void onDeleteTapped() {
-        enqueue(new Runnable() {
-            @Override
-            public void run() {
-                Timer timer = new Timer();
+        enqueue(() -> {
+            Timer timer = new Timer();
 
-                final InputConnection inputConnection = getCurrentInputConnection();
-                if (inputConnection == null) {
-                    return;
-                }
-
-                timer.addLeg("get selection");
-                CharSequence selection = inputConnection.getSelectedText(0);
-                if (TextUtils.isEmpty(selection)) {
-                    // Nothing selected, just backspace
-                    timer.addLeg("backspace");
-                    inputConnection.deleteSurroundingText(1, 0);
-                } else {
-                    // Delete selection
-                    timer.addLeg("delete selection");
-                    inputConnection.commitText("", 1);
-                }
-                Timber.d("PERF: Delete took %s", timer);
-                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
-                    "Delete char ms", timer.getMs()));
+            final InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection == null) {
+                return;
             }
+
+            timer.addLeg("get selection");
+            CharSequence selection = inputConnection.getSelectedText(0);
+            if (TextUtils.isEmpty(selection)) {
+                // Nothing selected, just backspace
+                timer.addLeg("backspace");
+                inputConnection.deleteSurroundingText(1, 0);
+            } else {
+                // Delete selection
+                timer.addLeg("delete selection");
+                inputConnection.commitText("", 1);
+            }
+            Timber.d("PERF: Delete took %s", timer);
+            LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                "Delete char ms", timer.getMs()));
         });
     }
 
@@ -278,37 +272,34 @@ public class Exactype
             return;
         }
 
-        enqueue(new Runnable() {
-            @Override
-            public void run() {
-                Timer timer = new Timer();
+        enqueue(() -> {
+            Timer timer = new Timer();
 
-                final InputConnection inputConnection = getCurrentInputConnection();
-                if (inputConnection == null) {
-                    return;
-                }
-
-                timer.addLeg("get selection");
-                CharSequence selection = inputConnection.getSelectedText(0);
-                if (selection == null || selection.length() == 0) {
-                    // Nothing selected, delete words
-                    timer.addLeg("get preceding text");
-                    CharSequence before = inputConnection.getTextBeforeCursor(DELETE_LOOKBACK, 0);
-                    timer.addLeg("analyze text");
-                    int to_delete = countCharsToDelete(before);
-                    timer.addLeg("delete word");
-                    inputConnection.deleteSurroundingText(to_delete, 0);
-                    LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
-                        "Delete word ms", timer.getMs()));
-                } else {
-                    // Delete selection
-                    timer.addLeg("delete selection");
-                    inputConnection.commitText("", 1);
-                    LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
-                        "Delete selection ms", timer.getMs()));
-                }
-                Timber.d("PERF: Delete took %s", timer);
+            final InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection == null) {
+                return;
             }
+
+            timer.addLeg("get selection");
+            CharSequence selection = inputConnection.getSelectedText(0);
+            if (selection == null || selection.length() == 0) {
+                // Nothing selected, delete words
+                timer.addLeg("get preceding text");
+                CharSequence before = inputConnection.getTextBeforeCursor(DELETE_LOOKBACK, 0);
+                timer.addLeg("analyze text");
+                int to_delete = countCharsToDelete(before);
+                timer.addLeg("delete word");
+                inputConnection.deleteSurroundingText(to_delete, 0);
+                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                    "Delete word ms", timer.getMs()));
+            } else {
+                // Delete selection
+                timer.addLeg("delete selection");
+                inputConnection.commitText("", 1);
+                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                    "Delete selection ms", timer.getMs()));
+            }
+            Timber.d("PERF: Delete took %s", timer);
         });
 
         VibrationUtils.vibrate(vibrator, vibrate_duration_ms);
@@ -321,33 +312,30 @@ public class Exactype
     public void onActionTapped() {
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
 
-        enqueue(new Runnable() {
-            @Override
-            public void run() {
-                Timer timer = new Timer();
+        enqueue(() -> {
+            Timer timer = new Timer();
 
-                final InputConnection inputConnection = getCurrentInputConnection();
-                if (inputConnection == null) {
-                    return;
-                }
-
-                if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-                    inputConnection.commitText("\n", 1);
-                    Timber.d("PERF: Committing a newline took %s", timer);
-                    LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
-                        "Commit newline ms", timer.getMs()));
-
-                    mode.register(ExactypeMode.Event.INSERT_CHAR);
-
-                    return;
-                }
-
-                inputConnection.
-                    performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
-                Timber.d("PERF: Performing editor action took %s", timer);
-                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
-                    "Perform editor action ms", timer.getMs()));
+            final InputConnection inputConnection = getCurrentInputConnection();
+            if (inputConnection == null) {
+                return;
             }
+
+            if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+                inputConnection.commitText("\n", 1);
+                Timber.d("PERF: Committing a newline took %s", timer);
+                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                    "Commit newline ms", timer.getMs()));
+
+                mode.register(ExactypeMode.Event.INSERT_CHAR);
+
+                return;
+            }
+
+            inputConnection.
+                performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+            Timber.d("PERF: Performing editor action took %s", timer);
+            LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                "Perform editor action ms", timer.getMs()));
         });
     }
 

@@ -73,13 +73,18 @@ android {
     // NOTICE: Do any changes to these on a branch; the Travis builds tend to start failing when
     // these values are changed!
     compileSdkVersion 23
-
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.gmail.walles.johan.exactype"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode getVersionCode()
         versionName getVersionName()
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     lintOptions {
@@ -113,11 +118,10 @@ android {
         htmlReport true
         htmlOutput file("$project.buildDir/reports/lint.html")
     }
-
     // Read signing properties from ~/.gradle/exactype.properties
     //
     // From: https://www.timroes.de/2013/09/22/handling-signing-configs-with-gradle/
-    if(new File("${gradle.gradleUserHomeDir}/exactype.properties").exists()) {
+    if (new File("${gradle.gradleUserHomeDir}/exactype.properties").exists()) {
         Properties props = new Properties()
         props.load(new FileInputStream(file("${gradle.gradleUserHomeDir}/exactype.properties")))
 
@@ -181,16 +185,15 @@ check.doLast {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:23.3.0'
     implementation 'com.jakewharton.timber:timber:4.6.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true
     }
-
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-core:1.10.19"
-    testImplementation "org.powermock:powermock-core:1.6.2"
-    testImplementation "org.powermock:powermock-module-junit4:1.6.2"
-    testImplementation "org.powermock:powermock-api-mockito:1.6.2"
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.powermock:powermock-core:1.6.2'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.2'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.2'
 }
