@@ -18,16 +18,23 @@ package com.gmail.walles.johan.exactype;
 
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+
+import com.crashlytics.android.answers.CustomEvent;
+import com.gmail.walles.johan.exactype.util.LoggingUtils;
 
 import timber.log.Timber;
 
 public class GestureDetector {
+    private static final String TOUCH_EVENT = "Touch";
+
     private final GestureListener listener;
     final int touchSlop;
     private final int longPressTimeout;
     private final Handler handler;
+    private final DisplayMetrics displayMetrics;
 
     @Nullable
     private Integer currentPointerId;
@@ -42,8 +49,10 @@ public class GestureDetector {
     private boolean isLongPressing;
     private int repetitions;
 
-    public GestureDetector(int displayWidth, Handler handler, GestureListener listener) {
-        int buttonWidth = displayWidth / 10; // Assuming 10 buttons per row
+    public GestureDetector(DisplayMetrics displayMetrics, Handler handler, GestureListener listener) {
+        this.displayMetrics = displayMetrics;
+
+        int buttonWidth = displayMetrics.widthPixels / 10; // Assuming 10 buttons per row
         touchSlop = buttonWidth / 2;
 
         longPressTimeout = ViewConfiguration.getLongPressTimeout();
@@ -282,6 +291,13 @@ public class GestureDetector {
         }
 
         listener.onUp();
+
+        CustomEvent touchMetadata = new CustomEvent(TOUCH_EVENT);
+        touchMetadata.putCustomAttribute(
+            "Horizontal distance (mm)", Math.abs(x - startX) / displayMetrics.xdpi * 25.4f);
+        touchMetadata.putCustomAttribute(
+            "Vertical distance (mm)", Math.abs(y - startY) / displayMetrics.ydpi * 25.4f);
+        LoggingUtils.logCustom(touchMetadata);
 
         if (handleTapEnd(x, y, timestamp)) {
             return true;

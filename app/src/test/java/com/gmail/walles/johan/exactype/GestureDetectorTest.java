@@ -16,8 +16,8 @@
 
 package com.gmail.walles.johan.exactype;
 
-import android.content.Context;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -30,8 +30,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -108,29 +106,25 @@ public class GestureDetectorTest {
         Mockito.stub(handler.postAtTime(
             Mockito.any(Runnable.class),
             Mockito.anyObject(),
-            Mockito.anyLong())).toAnswer(new Answer<Boolean>() {
-            @Override
-            public Boolean answer(InvocationOnMock invocation) {
+            Mockito.anyLong())).toAnswer(invocation -> {
                 postedEvents.add(new PostedEvent(
                     (Runnable)invocation.getArguments()[0],
                     (long)invocation.getArguments()[2]));
 
                 return true;
-            }
-        });
+            });
 
         Mockito.doAnswer(
-            new Answer<Void>() {
-                @Override
-                public Void answer(InvocationOnMock invocation) {
-                    postedEvents.clear();
+            invocation -> {
+                postedEvents.clear();
 
-                    return null;
-                }
+                return null;
             }).when(handler).removeCallbacksAndMessages(Mockito.anyObject());
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
         // The "* 20" here is a hack to get us the touch slop expected by our tests
-        testMe = new GestureDetector(TOUCH_SLOP * 20, handler, listener);
+        displayMetrics.widthPixels = TOUCH_SLOP * 20;
+        testMe = new GestureDetector(displayMetrics, handler, listener);
 
         // Without this our tests will fail
         Assert.assertEquals(TOUCH_SLOP, testMe.touchSlop);
@@ -169,7 +163,7 @@ public class GestureDetectorTest {
 
         PowerMockito.mockStatic(ViewConfiguration.class);
         Mockito.when(ViewConfiguration.getLongPressTimeout()).thenReturn(LONG_PRESS_TIMEOUT);
-        Mockito.when(ViewConfiguration.get((Context)Mockito.any())).thenReturn(viewConfiguration);
+        Mockito.when(ViewConfiguration.get(Mockito.any())).thenReturn(viewConfiguration);
 
         Mockito.when(viewConfiguration.getScaledTouchSlop()).thenReturn(TOUCH_SLOP);
     }
