@@ -73,7 +73,7 @@ android {
     // NOTICE: Do any changes to these on a branch; the Travis builds tend to start failing when
     // these values are changed!
     compileSdkVersion 23
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.1'
     defaultConfig {
         applicationId "com.gmail.walles.johan.exactype"
         minSdkVersion 16
