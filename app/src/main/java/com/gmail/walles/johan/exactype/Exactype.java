@@ -204,7 +204,6 @@ public class Exactype
             }
 
             inputConnection.commitText(Character.toString(tappedKey), 1);
-            Timber.d("PERF: Committing a char took %s", timer);
             LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Commit char ms", timer.getMs()));
         });
@@ -232,7 +231,6 @@ public class Exactype
                 timer.addLeg("delete selection");
                 inputConnection.commitText("", 1);
             }
-            Timber.d("PERF: Delete took %s", timer);
             LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Delete char ms", timer.getMs()));
         });
@@ -299,7 +297,6 @@ public class Exactype
                 LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Delete selection ms", timer.getMs()));
             }
-            Timber.d("PERF: Delete took %s", timer);
         });
 
         VibrationUtils.vibrate(vibrator, vibrate_duration_ms);
@@ -322,7 +319,6 @@ public class Exactype
 
             if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                 inputConnection.commitText("\n", 1);
-                Timber.d("PERF: Committing a newline took %s", timer);
                 LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Commit newline ms", timer.getMs()));
 
@@ -333,7 +329,6 @@ public class Exactype
 
             inputConnection.
                 performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
-            Timber.d("PERF: Performing editor action took %s", timer);
             LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Perform editor action ms", timer.getMs()));
         });

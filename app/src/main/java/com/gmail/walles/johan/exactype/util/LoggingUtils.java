@@ -69,6 +69,9 @@ public class LoggingUtils {
     }
 
     public static void logCustom(CustomEvent event) {
+        if (EmulatorUtils.IS_ON_ANDROID) {
+            Timber.d("Custom Event: %s", event.toString());
+        }
         if (IS_CRASHLYTICS_ENABLED) {
             event.putCustomAttribute("App Version", BuildConfig.VERSION_NAME); //NON-NLS
             Answers.getInstance().logCustom(event);
