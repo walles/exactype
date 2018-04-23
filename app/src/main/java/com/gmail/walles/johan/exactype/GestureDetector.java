@@ -29,6 +29,14 @@ import timber.log.Timber;
 
 public class GestureDetector {
     private static final String TOUCH_EVENT = "Touch";
+    private static final String SWIPE_EVENT_HORIZONTAL = "Horizontal Swipe";
+    private static final String SWIPE_EVENT_VERTICAL = "Vertical Swipe";
+    private static final float MM_PER_INCH = 25.4f;
+
+    private enum Direction {
+        HORIZONTAL,
+        VERTICAL
+    }
 
     private final GestureListener listener;
     final int touchSlop;
@@ -270,6 +278,17 @@ public class GestureDetector {
         return result;
     }
 
+    private float pixelsToMm(float pixels, Direction direction) {
+        switch (direction) {
+            case VERTICAL:
+                return (pixels / displayMetrics.ydpi) * MM_PER_INCH;
+            case HORIZONTAL:
+                return (pixels / displayMetrics.xdpi) * MM_PER_INCH;
+            default:
+                throw new RuntimeException("Unknown direction value: " + direction);
+        }
+    }
+
     private boolean onTouchEvent(int action, float x, float y, long timestamp) {
         if (action == MotionEvent.ACTION_DOWN) {
             listener.onDown();
@@ -292,18 +311,32 @@ public class GestureDetector {
 
         listener.onUp();
 
-        CustomEvent touchMetadata = new CustomEvent(TOUCH_EVENT);
-        touchMetadata.putCustomAttribute(
-            "Horizontal distance (mm)", Math.abs(x - startX) / displayMetrics.xdpi * 25.4f);
-        touchMetadata.putCustomAttribute(
-            "Vertical distance (mm)", Math.abs(y - startY) / displayMetrics.ydpi * 25.4f);
-        LoggingUtils.logCustom(touchMetadata);
-
+        float dx = Math.abs(x - startX);
+        float dy = Math.abs(y - startY);
         if (handleTapEnd(x, y, timestamp)) {
+            CustomEvent touchMetadata = new CustomEvent(TOUCH_EVENT);
+            touchMetadata.putCustomAttribute(
+                "Horizontal distance (mm)", pixelsToMm(dx, Direction.HORIZONTAL));
+            touchMetadata.putCustomAttribute(
+                "Vertical distance (mm)", pixelsToMm(dy, Direction.VERTICAL));
+            LoggingUtils.logCustom(touchMetadata);
+
             return true;
         }
 
         if (handleSwipeEnd(x, y)) {
+            CustomEvent touchMetadata;
+            if (dx > dy) {
+                touchMetadata = new CustomEvent(SWIPE_EVENT_HORIZONTAL);
+                touchMetadata.putCustomAttribute(
+                    "Distance (mm)", pixelsToMm(dx, Direction.HORIZONTAL));
+            } else {
+                touchMetadata = new CustomEvent(SWIPE_EVENT_VERTICAL);
+                touchMetadata.putCustomAttribute(
+                    "Distance (mm)", pixelsToMm(dy, Direction.VERTICAL));
+            }
+            LoggingUtils.logCustom(touchMetadata);
+
             return true;
         }
 
