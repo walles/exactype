@@ -18,8 +18,6 @@ Features (will) include:
 * [Download and install Android Studio](https://developer.android.com/sdk/index.html)
 * Start Android Studio
 * "Open an existing Android Studio project" and point it to where you cloned the source code
-* Add an `app/fabric.properties` file with one line: "`apiKey=0`" (or follow the [official Crashlytics
-instructions](https://docs.fabric.io/android/fabric/settings/working-in-teams.html#android-projects))
 * Next to the green play button in the top toolbar, make sure the dropdown says "Exactype"
 * Click the green play button to build / launch, install any requested components
 * Do `./gradlew check` to test and lint code before making a pull request. This is
@@ -28,9 +26,6 @@ also a good way of researching Travis problems locally.
 
 Note that the shared Exactype run configuration will first run the unit tests, then launch the app.
 To run only the unit tests, start the Unit Tests launch configuration.
-
-## Crashlytics
-
 
 ## Icon
 The `ic_launcher.png` icon is generated from [icon.blend](https://github.com/walles/exactype/blob/master/app/graphics/icon.blend).

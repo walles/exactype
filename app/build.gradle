@@ -14,29 +14,7 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        // The dynamic version here is explicitly recommended by the Crashlytics docs:
-        // https://docs.fabric.io/android/fabric/integration.html#modify-build-gradle
-        //noinspection GradleDynamicVersion
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
-
 apply plugin: 'com.android.application'
-
-// Fabric / Crashlytics must come after the Android plugin
-apply plugin: 'io.fabric'
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
-
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
 
 // From: http://stackoverflow.com/questions/17097263/automatically-versioning-android-project-from-git-describe-with-android-studio-g
 def getVersionCode = { ->
@@ -72,14 +50,17 @@ android {
     // NOTICE: These must match the values in .travis.yml
     // NOTICE: Do any changes to these on a branch; the Travis builds tend to start failing when
     // these values are changed!
-    compileSdkVersion 23
+    compileSdkVersion 30
     // ^^^ READ THE ABOVE NOTICE!! ^^^
-    buildToolsVersion '27.0.1'
+    buildToolsVersion '29.0.3'
     // ^^^ READ THE ABOVE NOTICE!! ^^^
     defaultConfig {
         applicationId "com.gmail.walles.johan.exactype"
-        minSdkVersion 16
-        targetSdkVersion 23
+
+        // At the time of changing this to 22, 22 represented a bit above 90% of all users,
+        // something to keep in mind for potential future bumps.
+        minSdkVersion 22
+        targetSdkVersion 30
         versionCode getVersionCode()
         versionName getVersionName()
     }
@@ -144,58 +125,13 @@ android {
     }
 }
 
-task pmd (type: Pmd, dependsOn: "assembleDebug") {
-    ruleSetFiles = files("${project.rootDir}/config/pmd-ruleset.xml")
-    ignoreFailures = false
-    consoleOutput = true
-    ruleSets = []
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-}
-
-// Getting text output from Findbugs is broken in the Gradle plugin
-// (https://issues.gradle.org/browse/GRADLE-2994), so if people want to diagnose a FindBugs
-// problem they'll just have to run "gradle check" locally.
-//
-// When that problem is fixed we should update this code to print a text report on stdout.
-task findbugs(type: FindBugs) {
-    reports {
-        // What we really want here is text on stdout but that doesn't work:
-        // https://issues.gradle.org/browse/GRADLE-2994
-        xml.enabled = false
-        html.enabled = true
-    }
-
-    ignoreFailures = false
-    effort = "max"
-    reportLevel = "low"
-    excludeFilter = new File("${project.rootDir}/config/findbugs-filter.xml")
-    classes = files("${project.rootDir}/app/build/intermediates/classes")
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    classpath = files()
-}
-
-check.doLast {
-    project.tasks.getByName("pmd").execute()
-    project.tasks.getByName("findbugs").execute()
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:23.3.0'
-    implementation 'com.jakewharton.timber:timber:4.6.0'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
-        transitive = true
-    }
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
-    testImplementation 'org.powermock:powermock-core:1.6.2'
-    testImplementation 'org.powermock:powermock-module-junit4:1.6.2'
-    testImplementation 'org.powermock:powermock-api-mockito:1.6.2'
+    testImplementation 'org.mockito:mockito-core:2.28.2'
+    testImplementation 'org.powermock:powermock-core:2.0.7'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.7'
+    testImplementation 'org.powermock:powermock-api-mockito2:2.0.7'
 }

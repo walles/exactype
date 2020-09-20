@@ -20,9 +20,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 public class ExactypeView extends View implements ExactypeMode.ModeChangeListener {
     private final GestureDetector gestureDetector;
@@ -78,7 +79,7 @@ public class ExactypeView extends View implements ExactypeMode.ModeChangeListene
 
     @Override
     protected void onDraw(Canvas canvas) {
-        updateBitmap(canvas.getWidth(), canvas.getHeight());
+        updateBitmap(getWidth(), getHeight());
 
         canvas.drawBitmap(bitmap, 0, 0, null);
 

@@ -22,8 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class ExactypeOnDeleteHeldTest {
     private static class TestableExactype extends Exactype {
@@ -56,21 +54,17 @@ public class ExactypeOnDeleteHeldTest {
 
     private String deleteWord(final String before) {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
-        Mockito.stub(inputConnection.getSelectedText(0)).toReturn(null);
+        Mockito.when(inputConnection.getSelectedText(0)).thenReturn(null);
         Mockito.when(
             inputConnection.getTextBeforeCursor(Mockito.anyInt(), Mockito.eq(0)))
-            .thenAnswer(new Answer<String>()
-            {
-            @Override
-            public String answer(InvocationOnMock invocation) {
+            .thenAnswer(invocation -> {
                 int n = (Integer)invocation.getArguments()[0];
                 if (n > before.length()) {
                     n = before.length();
                 }
 
                 return before.substring(before.length() - n);
-            }
-        });
+            });
 
         Exactype exactype = new TestableExactype(inputConnection);
         exactype.onDeleteHeld();
@@ -130,7 +124,7 @@ public class ExactypeOnDeleteHeldTest {
     @Test
     public void testDeleteSelectedText() {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
-        Mockito.stub(inputConnection.getSelectedText(0)).toReturn("something");
+        Mockito.when(inputConnection.getSelectedText(0)).thenReturn("something");
 
         Exactype exactype = new TestableExactype(inputConnection);
         exactype.onDeleteHeld();
@@ -141,8 +135,8 @@ public class ExactypeOnDeleteHeldTest {
     @Test
     public void testCloseFeedbackWindow() {
         InputConnection inputConnection = Mockito.mock(InputConnection.class);
-        Mockito.stub(inputConnection.getSelectedText(0)).toReturn("");
-        Mockito.stub(inputConnection.getTextBeforeCursor(Mockito.anyInt(), Mockito.eq(0))).toReturn("");
+        Mockito.when(inputConnection.getSelectedText(0)).thenReturn("");
+        Mockito.when(inputConnection.getTextBeforeCursor(Mockito.anyInt(), Mockito.eq(0))).thenReturn("");
         TestableExactype exactype = new TestableExactype(inputConnection);
 
         exactype.onDeleteHeld();

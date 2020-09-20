@@ -103,10 +103,10 @@ public class GestureDetectorTest {
         triggeredEventTimes = new HashMap<>();
 
         Handler handler = Mockito.mock(Handler.class);
-        Mockito.stub(handler.postAtTime(
+        Mockito.when(handler.postAtTime(
             Mockito.any(Runnable.class),
-            Mockito.anyObject(),
-            Mockito.anyLong())).toAnswer(invocation -> {
+            Mockito.any(),
+            Mockito.anyLong())).then(invocation -> {
                 postedEvents.add(new PostedEvent(
                     (Runnable)invocation.getArguments()[0],
                     (long)invocation.getArguments()[2]));
@@ -119,7 +119,7 @@ public class GestureDetectorTest {
                 postedEvents.clear();
 
                 return null;
-            }).when(handler).removeCallbacksAndMessages(Mockito.anyObject());
+            }).when(handler).removeCallbacksAndMessages(Mockito.any());
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         // The "* 20" here is a hack to get us the touch slop expected by our tests
@@ -427,6 +427,7 @@ public class GestureDetectorTest {
         Mockito.verify(listener, Mockito.never()).
             onSingleTap(Mockito.anyFloat(), Mockito.anyFloat());
 
+        //noinspection ConstantConditions
         Assert.assertEquals(Arrays.toString(new Long[] {
             T0 + LONG_PRESS_TIMEOUT,
             T0 + LONG_PRESS_TIMEOUT * 2,
