@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2015 Johan Walles <johan.walles@gmail.com>
+  ~ Copyright 2020 Johan Walles <johan.walles@gmail.com>
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,41 +15,52 @@
   ~ limitations under the License.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.gmail.walles.johan.exactype">
+<manifest package="com.gmail.walles.johan.exactype"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--
-    Ignore GoogleAppIndexingWarning; it assumes this app is another front end for some web
+    NOTICE: Ignore GoogleAppIndexingWarning; it assumes this app is another front end for some web
     site, which it isn't.
     -->
-    <!--
-    FIXME: We should research what fullBackupContent should really be; "false" is most likely not it.
-    -->
-    <application android:allowBackup="true"
-                 android:fullBackupContent="false"
-                 android:label="@string/app_name"
-                 android:icon="@drawable/ic_launcher"
-                 android:theme="@style/AppTheme"
-                 tools:ignore="GoogleAppIndexingWarning">
+    <application
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".stats.StatsActivity"
+            android:label="@string/exactype_stats">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <!-- Declares the input method service -->
-        <service android:name="Exactype"
-                 android:label="@string/exactype_label"
-                 android:permission="android.permission.BIND_INPUT_METHOD">
+        <service
+            android:name=".Exactype"
+            android:label="@string/exactype_label"
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
-            <meta-data android:name="android.view.im"
-                       android:resource="@xml/method" />
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
         </service>
 
-        <activity android:name=".SettingsActivity"
-                  android:label="@string/exactype_settings">
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/exactype_settings">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

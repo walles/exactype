@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2015 Johan Walles <johan.walles@gmail.com>
+  ~ Copyright 2020 Johan Walles <johan.walles@gmail.com>
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,10 +15,9 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <string name="app_name">Exactype</string>
-    <string name="exactype_label">Exactype</string>
-    <string name="exactype_settings">Exactype Settings</string>
-    <string name="title_vibrate_duration_preference">Vibrate Duration</string>
-    <string name="exactype_stats">Exactype Statistics</string>
-</resources>
+<FrameLayout android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StatsActivity" />
