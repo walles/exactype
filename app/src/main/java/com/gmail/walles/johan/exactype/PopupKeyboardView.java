@@ -24,7 +24,7 @@ import timber.log.Timber;
 
 public class PopupKeyboardView extends View {
     private KeyCoordinator keyCoordinator;
-    private KeyboardTheme theme;
+    private final KeyboardTheme theme;
     private String keys;
 
     private float textSize;

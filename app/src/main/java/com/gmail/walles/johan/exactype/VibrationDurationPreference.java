@@ -32,7 +32,7 @@ public class VibrationDurationPreference extends DialogPreference {
 
     private int milliseconds;
 
-    private Vibrator vibrator;
+    private final Vibrator vibrator;
 
     public VibrationDurationPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,7 +50,7 @@ public class VibrationDurationPreference extends DialogPreference {
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
 
-        SeekBar seekBar = (SeekBar)view.findViewById(R.id.seekbar);
+        SeekBar seekBar = view.findViewById(R.id.seekbar);
         seekBar.setMax(MAX_MS - MIN_MS);
         seekBar.setProgress(milliseconds - MIN_MS);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

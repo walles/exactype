@@ -29,6 +29,8 @@ import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import androidx.annotation.Nullable;
+
 /**
  * A box somewhere above the keyboard showing where the keyboard is being touched.
  */
@@ -42,6 +44,8 @@ public class FeedbackWindow implements ExactypeView.UpdatedListener {
     private final ExactypeView exactypeView;
 
     private final int fadeoutDurationMs;
+
+    @Nullable
     private ViewPropertyAnimator fadeout;
 
     private int size;

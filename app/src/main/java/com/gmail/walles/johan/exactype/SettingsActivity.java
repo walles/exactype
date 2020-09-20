@@ -20,11 +20,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final int DEFAULT_VIBRATE_DURATION_MS = 20;
@@ -81,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void setVibrateDurationSummary(int ms) {
-            findPreference(VIBRATE_DURATION_MS_KEY).setSummary(Integer.toString(ms) + "ms");
+            findPreference(VIBRATE_DURATION_MS_KEY).setSummary(ms + "ms");
         }
 
         @Override

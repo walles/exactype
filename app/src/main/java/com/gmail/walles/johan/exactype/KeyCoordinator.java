@@ -70,7 +70,7 @@ public class KeyCoordinator {
 
         @Override
         public int hashCode() {
-            int result = (int) character;
+            int result = character;
             result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
             result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
             return result;
@@ -80,7 +80,7 @@ public class KeyCoordinator {
     private final String[] rows;
     private final KeyInfo[] keys;
 
-    public KeyCoordinator(String rows[]) {
+    public KeyCoordinator(String[] rows) {
         this.rows = rows;
 
         int keyCount = 0;
