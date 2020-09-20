@@ -1,7 +1,9 @@
 language: android
 jdk: oraclejdk8
 
-before_script: echo apiKey=0 > app/fabric.properties
+before_install:
+  # NOTICE: Must match the values in app/build.gradle, and the "android-NN" entry below
+  - yes | sdkmanager "platforms;android-30"
 
 script: ./gradlew check --continue
 
@@ -18,11 +20,11 @@ android:
 
     # The BuildTools version used by your project
     # NOTICE: Must match the values in app/build.gradle
-    - build-tools-27.0.1
+    - build-tools-29.0.3
 
     # The SDK version used to compile your project
-    # NOTICE: Must match the values in app/build.gradle
-    - android-23
+    # NOTICE: Must match the values in app/build.gradle, and the "before_install" section above ^
+    - android-30
 
     # For appcompat-v7 support library
     - extra-android-m2repository

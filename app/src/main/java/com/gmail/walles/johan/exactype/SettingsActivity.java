@@ -20,8 +20,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        LoggingUtils.setUpLogging(this);
+        LoggingUtils.setUpLogging();
 
         super.onCreate(savedInstanceState);
 

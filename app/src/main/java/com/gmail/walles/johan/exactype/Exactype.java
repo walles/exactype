@@ -21,7 +21,7 @@ import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -30,7 +30,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
-import com.crashlytics.android.answers.CustomEvent;
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 import com.gmail.walles.johan.exactype.util.Timer;
 import com.gmail.walles.johan.exactype.util.VibrationUtils;
@@ -102,7 +101,7 @@ public class Exactype
 
     @Override
     public void onCreate() {
-        LoggingUtils.setUpLogging(this);
+        LoggingUtils.setUpLogging();
 
         super.onCreate();
 
@@ -204,7 +203,7 @@ public class Exactype
             }
 
             inputConnection.commitText(Character.toString(tappedKey), 1);
-            LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+            LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Commit char ms", timer.getMs()));
         });
 
@@ -231,7 +230,7 @@ public class Exactype
                 timer.addLeg("delete selection");
                 inputConnection.commitText("", 1);
             }
-            LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+            LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Delete char ms", timer.getMs()));
         });
     }
@@ -288,13 +287,13 @@ public class Exactype
                 int to_delete = countCharsToDelete(before);
                 timer.addLeg("delete word");
                 inputConnection.deleteSurroundingText(to_delete, 0);
-                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Delete word ms", timer.getMs()));
             } else {
                 // Delete selection
                 timer.addLeg("delete selection");
                 inputConnection.commitText("", 1);
-                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Delete selection ms", timer.getMs()));
             }
         });
@@ -319,7 +318,7 @@ public class Exactype
 
             if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                 inputConnection.commitText("\n", 1);
-                LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+                LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Commit newline ms", timer.getMs()));
 
                 mode.register(ExactypeMode.Event.INSERT_CHAR);
@@ -329,7 +328,7 @@ public class Exactype
 
             inputConnection.
                 performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
-            LoggingUtils.logCustom(new CustomEvent(PERF_EVENT).putCustomAttribute(
+            LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Perform editor action ms", timer.getMs()));
         });
     }

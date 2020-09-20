@@ -17,7 +17,7 @@
 package com.gmail.walles.johan.exactype.util;
 
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import timber.log.Timber;
 

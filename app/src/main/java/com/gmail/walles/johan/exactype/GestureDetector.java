@@ -17,14 +17,13 @@
 package com.gmail.walles.johan.exactype;
 
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import com.crashlytics.android.answers.CustomEvent;
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 
+import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 public class GestureDetector {
@@ -314,7 +313,7 @@ public class GestureDetector {
         float dx = Math.abs(x - startX);
         float dy = Math.abs(y - startY);
         if (handleTapEnd(x, y, timestamp)) {
-            CustomEvent touchMetadata = new CustomEvent(TOUCH_EVENT);
+            LoggingUtils.CustomEvent touchMetadata = new LoggingUtils.CustomEvent(TOUCH_EVENT);
             touchMetadata.putCustomAttribute(
                 "Horizontal distance (mm)", pixelsToMm(dx, Direction.HORIZONTAL));
             touchMetadata.putCustomAttribute(
@@ -325,13 +324,13 @@ public class GestureDetector {
         }
 
         if (handleSwipeEnd(x, y)) {
-            CustomEvent touchMetadata;
+            LoggingUtils.CustomEvent touchMetadata;
             if (dx > dy) {
-                touchMetadata = new CustomEvent(SWIPE_EVENT_HORIZONTAL);
+                touchMetadata = new LoggingUtils.CustomEvent(SWIPE_EVENT_HORIZONTAL);
                 touchMetadata.putCustomAttribute(
                     "Distance (mm)", pixelsToMm(dx, Direction.HORIZONTAL));
             } else {
-                touchMetadata = new CustomEvent(SWIPE_EVENT_VERTICAL);
+                touchMetadata = new LoggingUtils.CustomEvent(SWIPE_EVENT_VERTICAL);
                 touchMetadata.putCustomAttribute(
                     "Distance (mm)", pixelsToMm(dy, Direction.VERTICAL));
             }

@@ -22,9 +22,9 @@ import org.mockito.Mockito;
 public class GestureListenerTest {
     private void setKey(GestureListener gestureListener, char key) {
         KeyCoordinator keyCoordinator = Mockito.mock(KeyCoordinator.class);
-        Mockito.stub(
+        Mockito.when(
             keyCoordinator.getClosestKey(Mockito.anyFloat(), Mockito.anyFloat())).
-            toReturn(key);
+            thenReturn(key);
         gestureListener.setKeyCoordinator(keyCoordinator);
     }
 
