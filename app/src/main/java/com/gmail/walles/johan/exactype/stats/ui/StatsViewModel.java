@@ -16,8 +16,30 @@
 
 package com.gmail.walles.johan.exactype.stats.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.lifecycle.ViewModel;
 
 public class StatsViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
+    public static class Entry {
+        public final char character;
+        public final int count;
+
+        private Entry(char character, int count) {
+            this.character = character;
+            this.count = count;
+        }
+    }
+
+    public final List<Entry> entries = new ArrayList<>();
+
+    public StatsViewModel() {
+        // Add fake data
+        for (int i = 0; i < 20; i++) {
+            char character = (char)('a' + i);
+            int count = i * 71 + 17;
+            entries.add(new Entry(character, count));
+        }
+    }
 }

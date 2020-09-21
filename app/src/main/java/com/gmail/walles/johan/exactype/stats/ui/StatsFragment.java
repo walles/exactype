@@ -41,7 +41,7 @@ import timber.log.Timber;
 
 public class StatsFragment extends Fragment {
 
-    private StatsViewModel mViewModel;
+    private StatsViewModel viewModel;
 
     public static StatsFragment newInstance() {
         return new StatsFragment();
@@ -58,8 +58,7 @@ public class StatsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
-        // TODO: Use the ViewModel
+        viewModel = new ViewModelProvider(this).get(StatsViewModel.class);
     }
 
     @Override
@@ -92,17 +91,14 @@ public class StatsFragment extends Fragment {
 
         TableLayout table = view.findViewById(R.id.statsTable);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        for (int i = 0; i < 20; i++) {
-            char character = (char)('a' + i);
-            int count = i * 71 + 17;
-
+        for (StatsViewModel.Entry entry: viewModel.entries) {
             TextView charColumn = new TextView(context);
-            charColumn.setText(Character.toString(character));
+            charColumn.setText(Character.toString(entry.character));
             charColumn.setGravity(Gravity.END);
             charColumn.setLayoutParams(fiveDpOnEachSide);
 
             TextView countColumn = new TextView(context);
-            countColumn.setText(numberFormat.format(count));
+            countColumn.setText(numberFormat.format(entry.count));
             countColumn.setGravity(Gravity.END);
             countColumn.setLayoutParams(fiveDpOnEachSide);
 
