@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.gmail.walles.johan.exactype.R;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,7 @@ public class StatsFragment extends Fragment {
         }
 
         TableLayout table = view.findViewById(R.id.statsTable);
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
         for (int i = 0; i < 20; i++) {
             char character = (char)('a' + i);
             int count = i * 71 + 17;
@@ -76,7 +78,7 @@ public class StatsFragment extends Fragment {
             charColumn.setText(Character.toString(character));
 
             TextView countColumn = new TextView(getContext());
-            countColumn.setText(String.format(Locale.getDefault(), "%d", count));
+            countColumn.setText(numberFormat.format(count));
 
             TableRow row = new TableRow(getContext());
             row.addView(charColumn);
