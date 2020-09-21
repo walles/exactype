@@ -20,13 +20,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.gmail.walles.johan.exactype.R;
+
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import timber.log.Timber;
 
 public class StatsFragment extends Fragment {
 
@@ -51,4 +57,32 @@ public class StatsFragment extends Fragment {
         // TODO: Use the ViewModel
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        View view = getView();
+        if (view == null) {
+            Timber.w("View was null when trying to populate stats table");
+            return;
+        }
+
+        TableLayout table = view.findViewById(R.id.statsTable);
+        for (int i = 0; i < 20; i++) {
+            char character = (char)('a' + i);
+            int count = i * 71 + 17;
+
+            TextView charColumn = new TextView(getContext());
+            charColumn.setText(Character.toString(character));
+
+            TextView countColumn = new TextView(getContext());
+            countColumn.setText(String.format(Locale.getDefault(), "%d", count));
+
+            TableRow row = new TableRow(getContext());
+            row.addView(charColumn);
+            row.addView(countColumn);
+
+            table.addView(row);
+        }
+    }
 }
