@@ -23,14 +23,61 @@
     android:layout_height="match_parent"
     tools:context=".ui.StatsFragment">
 
-    <TextView
-        android:id="@+id/message"
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="StatsFragment"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableLayout
+            android:id="@+id/statsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="UselessLeaf">
+
+            <TableRow>
+
+                <TextView
+                    android:layout_margin="5dp"
+                    android:text="Character" />
+
+                <TextView
+                    android:layout_margin="5dp"
+                    android:text="Count" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:gravity="end"
+                    android:text="e" />
+
+                <TextView
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:gravity="end"
+                    android:text="12345" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:gravity="end"
+                    android:text="x" />
+
+                <TextView
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:gravity="end"
+                    android:text="4" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
