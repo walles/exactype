@@ -46,36 +46,7 @@
                 <TextView
                     android:layout_margin="5dp"
                     android:text="Count" />
-            </TableRow>
 
-            <TableRow>
-
-                <TextView
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
-                    android:gravity="end"
-                    android:text="e" />
-
-                <TextView
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
-                    android:gravity="end"
-                    android:text="12345" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
-                    android:gravity="end"
-                    android:text="x" />
-
-                <TextView
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
-                    android:gravity="end"
-                    android:text="4" />
             </TableRow>
         </TableLayout>
     </ScrollView>

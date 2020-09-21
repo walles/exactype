@@ -16,7 +16,10 @@
 
 package com.gmail.walles.johan.exactype.stats.ui;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +36,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import timber.log.Timber;
 
 public class StatsFragment extends Fragment {
@@ -55,7 +58,7 @@ public class StatsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(StatsViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
         // TODO: Use the ViewModel
     }
 
@@ -69,21 +72,41 @@ public class StatsFragment extends Fragment {
             return;
         }
 
+        Context context = getContext();
+        if (context == null) {
+            Timber.w("Context was null when trying to populate stats table");
+            return;
+        }
+
+        Resources r = context.getResources();
+        int fiveDpInPixels = (int)TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            5,
+            r.getDisplayMetrics()
+        );
+        TableRow.LayoutParams fiveDpOnEachSide = new TableRow.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        fiveDpOnEachSide.setMargins(fiveDpInPixels, 0, fiveDpInPixels, 0);
+
         TableLayout table = view.findViewById(R.id.statsTable);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
         for (int i = 0; i < 20; i++) {
             char character = (char)('a' + i);
             int count = i * 71 + 17;
 
-            TextView charColumn = new TextView(getContext());
+            TextView charColumn = new TextView(context);
             charColumn.setText(Character.toString(character));
             charColumn.setGravity(Gravity.END);
+            charColumn.setLayoutParams(fiveDpOnEachSide);
 
-            TextView countColumn = new TextView(getContext());
+            TextView countColumn = new TextView(context);
             countColumn.setText(numberFormat.format(count));
             countColumn.setGravity(Gravity.END);
+            countColumn.setLayoutParams(fiveDpOnEachSide);
 
-            TableRow row = new TableRow(getContext());
+            TableRow row = new TableRow(context);
             row.addView(charColumn);
             row.addView(countColumn);
 
