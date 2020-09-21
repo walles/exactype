@@ -17,6 +17,7 @@
 package com.gmail.walles.johan.exactype.stats.ui;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,9 +77,11 @@ public class StatsFragment extends Fragment {
 
             TextView charColumn = new TextView(getContext());
             charColumn.setText(Character.toString(character));
+            charColumn.setGravity(Gravity.END);
 
             TextView countColumn = new TextView(getContext());
             countColumn.setText(numberFormat.format(count));
+            countColumn.setGravity(Gravity.END);
 
             TableRow row = new TableRow(getContext());
             row.addView(charColumn);
