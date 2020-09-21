@@ -37,15 +37,15 @@
             android:layout_height="wrap_content"
             tools:ignore="UselessLeaf">
 
-            <TableRow>
+            <TableRow tools:ignore="UselessParent">
 
                 <TextView
                     android:layout_margin="5dp"
-                    android:text="Character" />
+                    android:text="@string/stats_column_character" />
 
                 <TextView
                     android:layout_margin="5dp"
-                    android:text="Count" />
+                    android:text="@string/stats_column_count" />
 
             </TableRow>
         </TableLayout>

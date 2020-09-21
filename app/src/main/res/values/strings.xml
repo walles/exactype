@@ -20,4 +20,6 @@
     <string name="exactype_settings">Exactype Settings</string>
     <string name="title_vibrate_duration_preference">Vibrate Duration</string>
     <string name="exactype_stats">Exactype Statistics</string>
+    <string name="stats_column_character">Character</string>
+    <string name="stats_column_count">Count</string>
 </resources>
