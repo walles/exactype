@@ -16,8 +16,11 @@
 
 package com.gmail.walles.johan.exactype.stats;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -47,14 +50,34 @@ class StatsTracker {
         }
         counts.put(character, count + 1);
 
-        writeCountsToFile(counts);
+        try {
+            writeCountsToFile(counts);
+        } catch (IOException e) {
+            Timber.w(e,
+                "Failed writing stats to file: %s",
+                backingFile.getAbsolutePath());
+        }
     }
 
     public static Map<Character, Integer> readCountsFromFile(File countsFile) throws IOException {
         // FIXME: Write code here
     }
 
-    private void writeCountsToFile(Map<Character, Integer> counts) {
-        // FIXME: Write code here
+    private void writeCountsToFile(Map<Character, Integer> counts) throws IOException {
+        File tempFile = new File(backingFile.getAbsolutePath(), ".tmp");
+        try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+             PrintWriter out = new PrintWriter(bufferedOutputStream)) {
+            for (Map.Entry<Character, Integer> entry: counts.entrySet()) {
+                out.print(entry.getKey());
+                out.print(": ");
+                out.println(entry.getValue());
+            }
+        }
+
+        if (!tempFile.renameTo(backingFile)) {
+            throw new IOException(
+                "Rename failed: " + tempFile.getAbsolutePath() + "->" + backingFile.getAbsolutePath());
+        }
     }
 }
