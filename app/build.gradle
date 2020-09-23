@@ -57,8 +57,8 @@ android {
     defaultConfig {
         applicationId "com.gmail.walles.johan.exactype"
 
-        // At the time of changing this to 22, 22 represented a bit above 90% of all users,
-        // something to keep in mind for potential future bumps.
+        // At the time of changing this to 22, in September 2020, "22" represented a bit above 90%
+        // of all users, something to keep in mind for potential future bumps.
         minSdkVersion 22
         targetSdkVersion 30
         versionCode getVersionCode()
@@ -132,6 +132,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest:2.1'
     testImplementation 'org.mockito:mockito-core:2.28.2'
     testImplementation 'org.powermock:powermock-core:2.0.7'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.7'
