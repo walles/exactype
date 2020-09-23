@@ -16,11 +16,13 @@
 
 package com.gmail.walles.johan.exactype.stats;
 
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -60,14 +62,44 @@ class StatsTracker {
     }
 
     public static Map<Character, Integer> readCountsFromFile(File countsFile) throws IOException {
-        // FIXME: Write code here
+        Map<Character, Integer> returnMe = new HashMap<>();
+        try (FileReader fileReader = new FileReader(countsFile);
+             BufferedReader in = new BufferedReader(fileReader)) {
+            while(true) {
+                String line = in.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                final String COMPLAINT = "Line not on 'x: 12345' format: ";
+                if (line.length() < "x: 5".length()) {
+                    // Line not long enough to contain what we want
+                    throw new IOException(COMPLAINT + line);
+                }
+
+                char character = line.charAt(0);
+                if (line.charAt(1) != ':' || line.charAt(2) != ' ') {
+                    throw new IOException(COMPLAINT + line);
+                }
+
+                int count;
+                try {
+                    count = Integer.parseInt(line.substring(3));
+                } catch (NumberFormatException e) {
+                    throw new IOException(COMPLAINT + line, e);
+                }
+
+                returnMe.put(character, count);
+            }
+        }
+
+        return returnMe;
     }
 
     private void writeCountsToFile(Map<Character, Integer> counts) throws IOException {
         File tempFile = new File(backingFile.getAbsolutePath(), ".tmp");
-        try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-             PrintWriter out = new PrintWriter(bufferedOutputStream)) {
+        try (FileWriter fileWriter = new FileWriter(tempFile);
+             PrintWriter out = new PrintWriter(fileWriter)) {
             for (Map.Entry<Character, Integer> entry: counts.entrySet()) {
                 out.print(entry.getKey());
                 out.print(": ");

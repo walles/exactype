@@ -47,7 +47,7 @@ public class StatsTrackerTest {
     }
 
     @Test
-    public void testSortedCounts() throws IOException {
+    public void testCountCharacter() throws IOException {
         File backingFile = folder.newFile();
         StatsTracker testMe = new StatsTracker(backingFile);
         assertFileContents(backingFile);
