@@ -37,9 +37,6 @@ import android.util.Log;
 
 import com.gmail.walles.johan.exactype.BuildConfig;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import timber.log.Timber;
 
 public class LoggingUtils {
@@ -102,24 +99,10 @@ public class LoggingUtils {
                 tag = "Exactype";
             }
 
-            String stackTraceString;
-            if (throwable == null) {
-                stackTraceString = "";
-            } else if (EmulatorUtils.IS_ON_ANDROID) {
-                stackTraceString = "\n" + Log.getStackTraceString(throwable);
-            } else {
-                // We have a throwable but we are not on Android, assume unit testing
-                StringWriter stringWriter = new StringWriter();
-                PrintWriter printWriter = new PrintWriter(stringWriter);
-                throwable.printStackTrace(printWriter);
-                printWriter.close();
-                stackTraceString = "\n" + stringWriter.toString();
-            }
-
             if (EmulatorUtils.IS_ON_ANDROID) {
-                Log.println(priority, tag, message + stackTraceString);
+                Log.println(priority, tag, message);
             } else {
-                System.err.println("[" + priority + "] " + tag + ": " + message + stackTraceString);
+                System.err.println("[" + priority + "] " + tag + ": " + message);
             }
         }
     }
