@@ -97,7 +97,7 @@ class StatsTracker {
     }
 
     private void writeCountsToFile(Map<Character, Integer> counts) throws IOException {
-        File tempFile = new File(backingFile.getAbsolutePath(), ".tmp");
+        File tempFile = new File(backingFile.getAbsolutePath() + ".tmp");
         try (FileWriter fileWriter = new FileWriter(tempFile);
              PrintWriter out = new PrintWriter(fileWriter)) {
             for (Map.Entry<Character, Integer> entry: counts.entrySet()) {
