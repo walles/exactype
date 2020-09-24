@@ -18,10 +18,12 @@ package com.gmail.walles.johan.exactype.stats;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,6 +93,12 @@ class StatsTracker {
 
                 returnMe.put(character, count);
             }
+        } catch (FileNotFoundException e) {
+            // This happens if somebody asks for stats before having pressed any key
+            Timber.w(e,
+                "Stats file not found, pretending it was empty: %s",
+                countsFile.getAbsolutePath());
+            return Collections.emptyMap();
         }
 
         return returnMe;

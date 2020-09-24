@@ -87,4 +87,13 @@ public class StatsTrackerTest {
 
         assertFileContents(backingFileCopy, 'c', 3);
     }
+
+    @Test
+    public void testReadNoFile() throws IOException {
+        File doesNotExist = new File(folder.getRoot(), "doesnotexist");
+
+        // This is what happens if somebody asks for stats before having run anything, "no file"
+        // should be treated as "no counts".
+        assertFileContents(doesNotExist);
+    }
 }
