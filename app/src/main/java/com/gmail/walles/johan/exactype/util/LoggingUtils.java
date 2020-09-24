@@ -37,6 +37,9 @@ import android.util.Log;
 
 import com.gmail.walles.johan.exactype.BuildConfig;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import timber.log.Timber;
 
 public class LoggingUtils {
@@ -92,17 +95,32 @@ public class LoggingUtils {
 
     private static class LocalTree extends Timber.Tree {
         @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
+        protected void log(int priority, String tag, String message, Throwable throwable) {
             if (BuildConfig.DEBUG) {
                 tag = "DEBUG";
             } else if (TextUtils.isEmpty(tag)) {
                 tag = "Exactype";
             }
 
-            if (t != null) {
-                message += "\n" + Log.getStackTraceString(t);
+            String stackTraceString;
+            if (throwable == null) {
+                stackTraceString = "";
+            } else if (EmulatorUtils.IS_ON_ANDROID) {
+                stackTraceString = "\n" + Log.getStackTraceString(throwable);
+            } else {
+                // We have a throwable but we are not on Android, assume unit testing
+                StringWriter stringWriter = new StringWriter();
+                PrintWriter printWriter = new PrintWriter(stringWriter);
+                throwable.printStackTrace(printWriter);
+                printWriter.close();
+                stackTraceString = "\n" + stringWriter.toString();
             }
-            Log.println(priority, tag, message);
+
+            if (EmulatorUtils.IS_ON_ANDROID) {
+                Log.println(priority, tag, message + stackTraceString);
+            } else {
+                System.err.println("[" + priority + "] " + tag + ": " + message + stackTraceString);
+            }
         }
     }
 }

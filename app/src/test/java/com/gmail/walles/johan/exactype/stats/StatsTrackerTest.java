@@ -16,8 +16,11 @@
 
 package com.gmail.walles.johan.exactype.stats;
 
+import com.gmail.walles.johan.exactype.util.LoggingUtils;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -30,6 +33,11 @@ import java.util.Map;
 public class StatsTrackerTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+
+    @BeforeClass
+    public static void beforeClass() {
+        LoggingUtils.setUpLogging();
+    }
 
     private static void assertFileContents(File file, Object ... contents) throws IOException {
         if (contents.length % 2 != 0) {
