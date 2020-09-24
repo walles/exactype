@@ -32,7 +32,6 @@
 
 package com.gmail.walles.johan.exactype.util;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.gmail.walles.johan.exactype.BuildConfig;
@@ -95,7 +94,7 @@ public class LoggingUtils {
         protected void log(int priority, String tag, String message, Throwable throwable) {
             if (BuildConfig.DEBUG) {
                 tag = "DEBUG";
-            } else if (TextUtils.isEmpty(tag)) {
+            } else if (tag == null || "".equals(tag)) {
                 tag = "Exactype";
             }
 
