@@ -16,6 +16,8 @@
 
 package com.gmail.walles.johan.exactype.stats;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,19 +25,26 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.VisibleForTesting;
 import timber.log.Timber;
 
-class StatsTracker {
+public class StatsTracker {
     private final File backingFile;
 
-    public StatsTracker(File backingFile) {
+    @VisibleForTesting
+    StatsTracker(File backingFile) {
         this.backingFile = backingFile;
     }
 
+    public StatsTracker(Context context) {
+        String dataDir = context.getApplicationInfo().dataDir;
+        backingFile = new File(dataDir, "stats.txt");
+    }
+
+    // FIXME: This method must be non-blocking
     public void countCharacter(char character) {
         Map<Character, Integer> counts;
         try {
@@ -98,7 +107,7 @@ class StatsTracker {
             Timber.w(e,
                 "Stats file not found, pretending it was empty: %s",
                 countsFile.getAbsolutePath());
-            return Collections.emptyMap();
+            return returnMe;
         }
 
         return returnMe;

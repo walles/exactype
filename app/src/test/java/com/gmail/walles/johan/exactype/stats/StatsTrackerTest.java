@@ -76,7 +76,7 @@ public class StatsTrackerTest {
 
     @Test
     public void testPersistence() throws IOException {
-        File backingFile = folder.newFile("initial");
+        File backingFile = new File(folder.getRoot(), "initial");
         StatsTracker initial = new StatsTracker(backingFile);
         initial.countCharacter('c');
         initial.countCharacter('c');
