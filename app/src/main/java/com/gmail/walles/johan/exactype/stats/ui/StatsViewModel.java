@@ -16,30 +16,38 @@
 
 package com.gmail.walles.johan.exactype.stats.ui;
 
+import android.content.Context;
+
+import com.gmail.walles.johan.exactype.stats.StatsTracker;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import androidx.lifecycle.ViewModel;
+import timber.log.Timber;
 
 public class StatsViewModel extends ViewModel {
-    public static class Entry {
-        public final char character;
-        public final int count;
+    public final List<Map.Entry<Character, Integer>> entries = new ArrayList<>();
+    private boolean populated = false;
 
-        private Entry(char character, int count) {
-            this.character = character;
-            this.count = count;
+    public void populate(Context context) {
+        if (populated) {
+            return;
         }
-    }
+        populated = true;
 
-    public final List<Entry> entries = new ArrayList<>();
-
-    public StatsViewModel() {
-        // Add fake data
-        for (int i = 0; i < 20; i++) {
-            char character = (char)('a' + i);
-            int count = i * 71 + 17;
-            entries.add(new Entry(character, count));
+        final Map<Character, Integer> counts;
+        try {
+            counts = new StatsTracker(context).getCounts();
+        } catch (IOException e) {
+            Timber.w(e, "Failed to read key stats");
+            return;
         }
+
+        entries.addAll(counts.entrySet());
+        Collections.sort(entries, (o1, o2) -> Integer.compare(o1.getValue(), o2.getValue()));
     }
 }

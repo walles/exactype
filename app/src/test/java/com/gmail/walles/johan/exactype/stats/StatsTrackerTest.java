@@ -51,7 +51,7 @@ public class StatsTrackerTest {
             counts.put(character, count);
         }
 
-        Assert.assertThat(StatsTracker.readCountsFromFile(file), Matchers.is(counts));
+        Assert.assertThat(new StatsTracker(file).getCounts(), Matchers.is(counts));
     }
 
     @Test

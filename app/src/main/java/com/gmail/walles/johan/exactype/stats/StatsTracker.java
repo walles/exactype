@@ -48,7 +48,7 @@ public class StatsTracker {
     public void countCharacter(char character) {
         Map<Character, Integer> counts;
         try {
-            counts = readCountsFromFile(backingFile);
+            counts = getCounts();
         } catch (IOException e) {
             Timber.w(e,
                 "Failed reading stats from file: %s",
@@ -72,9 +72,9 @@ public class StatsTracker {
         }
     }
 
-    public static Map<Character, Integer> readCountsFromFile(File countsFile) throws IOException {
+    public Map<Character, Integer> getCounts() throws IOException {
         Map<Character, Integer> returnMe = new HashMap<>();
-        try (FileReader fileReader = new FileReader(countsFile);
+        try (FileReader fileReader = new FileReader(backingFile);
              BufferedReader in = new BufferedReader(fileReader)) {
             while(true) {
                 String line = in.readLine();
@@ -106,7 +106,7 @@ public class StatsTracker {
             // This happens if somebody asks for stats before having pressed any key
             Timber.w(e,
                 "Stats file not found, pretending it was empty: %s",
-                countsFile.getAbsolutePath());
+                backingFile.getAbsolutePath());
             return returnMe;
         }
 

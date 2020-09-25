@@ -32,6 +32,7 @@ import com.gmail.walles.johan.exactype.R;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,6 +60,7 @@ public class StatsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(StatsViewModel.class);
+        viewModel.populate(getContext());
     }
 
     @Override
@@ -91,14 +93,14 @@ public class StatsFragment extends Fragment {
 
         TableLayout table = view.findViewById(R.id.statsTable);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        for (StatsViewModel.Entry entry: viewModel.entries) {
+        for (Map.Entry<Character, Integer> entry: viewModel.entries) {
             TextView charColumn = new TextView(context);
-            charColumn.setText(Character.toString(entry.character));
+            charColumn.setText(Character.toString(entry.getKey()));
             charColumn.setGravity(Gravity.END);
             charColumn.setLayoutParams(fiveDpOnEachSide);
 
             TextView countColumn = new TextView(context);
-            countColumn.setText(numberFormat.format(entry.count));
+            countColumn.setText(numberFormat.format(entry.getValue()));
             countColumn.setGravity(Gravity.END);
             countColumn.setLayoutParams(fiveDpOnEachSide);
 
