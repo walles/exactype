@@ -48,6 +48,6 @@ public class StatsViewModel extends ViewModel {
         }
 
         entries.addAll(counts.entrySet());
-        Collections.sort(entries, (o1, o2) -> Integer.compare(o1.getValue(), o2.getValue()));
+        Collections.sort(entries, (o1, o2) -> -Integer.compare(o1.getValue(), o2.getValue()));
     }
 }
