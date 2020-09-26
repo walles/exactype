@@ -44,9 +44,9 @@ public class StatsTrackerTest {
             throw new IllegalArgumentException("Even number of arguments required, got " + contents.length);
         }
 
-        Map<Character, Integer> counts = new HashMap<>();
+        Map<String, Integer> counts = new HashMap<>();
         for (int i = 0; i < contents.length; i += 2) {
-            char character = (char)contents[i];
+            String character = (String)contents[i];
             int count = (int)contents[i + 1];
             counts.put(character, count);
         }
@@ -60,18 +60,18 @@ public class StatsTrackerTest {
         StatsTracker testMe = new StatsTracker(backingFile);
         assertFileContents(backingFile);
 
-        testMe.countCharacter('a');
-        assertFileContents(backingFile, 'a', 1);
+        testMe.countCharacter("a");
+        assertFileContents(backingFile, "a", 1);
 
-        testMe.countCharacter('a');
-        assertFileContents(backingFile, 'a', 2);
+        testMe.countCharacter("a");
+        assertFileContents(backingFile, "a", 2);
 
-        testMe.countCharacter('b');
-        assertFileContents(backingFile, 'a', 2, 'b', 1);
+        testMe.countCharacter("b");
+        assertFileContents(backingFile, "a", 2, "b", 1);
 
-        testMe.countCharacter('b');
-        testMe.countCharacter('b');
-        assertFileContents(backingFile, 'a', 2, 'b', 3);
+        testMe.countCharacter("b");
+        testMe.countCharacter("b");
+        assertFileContents(backingFile, "a", 2, "b", 3);
     }
 
     @Test
@@ -79,24 +79,35 @@ public class StatsTrackerTest {
         File backingFile = new File(folder.getRoot(), "backing-file.txt");
         StatsTracker testMe = new StatsTracker(backingFile);
 
-        testMe.countCharacter(':');
-        assertFileContents(backingFile, ':', 1);
-        testMe.countCharacter(':');
-        assertFileContents(backingFile, ':', 2);
+        testMe.countCharacter(":");
+        assertFileContents(backingFile, ":", 1);
+        testMe.countCharacter(":");
+        assertFileContents(backingFile, ":", 2);
+    }
+
+    @Test
+    public void testCountWord() throws IOException {
+        File backingFile = new File(folder.getRoot(), "backing-file.txt");
+        StatsTracker testMe = new StatsTracker(backingFile);
+
+        testMe.countCharacter("word");
+        assertFileContents(backingFile, "word", 1);
+        testMe.countCharacter("word");
+        assertFileContents(backingFile, "word", 2);
     }
 
     @Test
     public void testPersistence() throws IOException {
         File backingFile = new File(folder.getRoot(), "initial");
         StatsTracker initial = new StatsTracker(backingFile);
-        initial.countCharacter('c');
-        initial.countCharacter('c');
-        initial.countCharacter('c');
+        initial.countCharacter("c");
+        initial.countCharacter("c");
+        initial.countCharacter("c");
 
         File backingFileCopy = new File(folder.getRoot(), "secondary");
         Assert.assertThat(backingFile.renameTo(backingFileCopy), Matchers.is(true));
 
-        assertFileContents(backingFileCopy, 'c', 3);
+        assertFileContents(backingFileCopy, "c", 3);
     }
 
     @Test

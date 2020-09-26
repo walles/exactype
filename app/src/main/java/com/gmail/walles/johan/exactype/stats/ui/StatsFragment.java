@@ -93,9 +93,9 @@ public class StatsFragment extends Fragment {
 
         TableLayout table = view.findViewById(R.id.statsTable);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        for (Map.Entry<Character, Integer> entry: viewModel.entries) {
+        for (Map.Entry<String, Integer> entry: viewModel.entries) {
             TextView charColumn = new TextView(context);
-            charColumn.setText(Character.toString(entry.getKey()));
+            charColumn.setText(entry.getKey());
             charColumn.setGravity(Gravity.END);
             charColumn.setLayoutParams(fiveDpOnEachSide);
 

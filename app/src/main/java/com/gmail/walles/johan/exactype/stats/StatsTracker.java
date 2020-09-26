@@ -45,8 +45,8 @@ public class StatsTracker {
     }
 
     // FIXME: This method must be non-blocking
-    public void countCharacter(char character) {
-        Map<Character, Integer> counts;
+    public void countCharacter(String character) {
+        Map<String, Integer> counts;
         try {
             counts = getCounts();
         } catch (IOException e) {
@@ -72,8 +72,8 @@ public class StatsTracker {
         }
     }
 
-    public Map<Character, Integer> getCounts() throws IOException {
-        Map<Character, Integer> returnMe = new HashMap<>();
+    public Map<String, Integer> getCounts() throws IOException {
+        Map<String, Integer> returnMe = new HashMap<>();
         try (FileReader fileReader = new FileReader(backingFile);
              BufferedReader in = new BufferedReader(fileReader)) {
             while(true) {
@@ -88,14 +88,30 @@ public class StatsTracker {
                     throw new IOException(COMPLAINT + line);
                 }
 
-                char character = line.charAt(0);
-                if (line.charAt(1) != ':' || line.charAt(2) != ' ') {
+                int lastColonIndex = line.lastIndexOf(':');
+                if (lastColonIndex == -1) {
+                    // No colon found
+                    throw new IOException(COMPLAINT + line);
+                }
+                if (lastColonIndex == 0) {
+                    // Colon in first position
+                    throw new IOException(COMPLAINT + line);
+                }
+                if (line.length() < (lastColonIndex + 2)) {
+                    // No room for any number
+                    throw new IOException(COMPLAINT + line);
+                }
+
+                String character = line.substring(0, lastColonIndex);
+
+                if (line.charAt(lastColonIndex + 1) != ' ') {
+                    // No ": " after the word
                     throw new IOException(COMPLAINT + line);
                 }
 
                 int count;
                 try {
-                    count = Integer.parseInt(line.substring(3));
+                    count = Integer.parseInt(line.substring(lastColonIndex + 2));
                 } catch (NumberFormatException e) {
                     throw new IOException(COMPLAINT + line, e);
                 }
@@ -113,11 +129,11 @@ public class StatsTracker {
         return returnMe;
     }
 
-    private void writeCountsToFile(Map<Character, Integer> counts) throws IOException {
+    private void writeCountsToFile(Map<String, Integer> counts) throws IOException {
         File tempFile = new File(backingFile.getAbsolutePath() + ".tmp");
         try (FileWriter fileWriter = new FileWriter(tempFile);
              PrintWriter out = new PrintWriter(fileWriter)) {
-            for (Map.Entry<Character, Integer> entry: counts.entrySet()) {
+            for (Map.Entry<String, Integer> entry: counts.entrySet()) {
                 out.print(entry.getKey());
                 out.print(": ");
                 out.println(entry.getValue());

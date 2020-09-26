@@ -30,7 +30,7 @@ import androidx.lifecycle.ViewModel;
 import timber.log.Timber;
 
 public class StatsViewModel extends ViewModel {
-    public final List<Map.Entry<Character, Integer>> entries = new ArrayList<>();
+    public final List<Map.Entry<String, Integer>> entries = new ArrayList<>();
     private boolean populated = false;
 
     public void populate(Context context) {
@@ -39,7 +39,7 @@ public class StatsViewModel extends ViewModel {
         }
         populated = true;
 
-        final Map<Character, Integer> counts;
+        final Map<String, Integer> counts;
         try {
             counts = new StatsTracker(context).getCounts();
         } catch (IOException e) {

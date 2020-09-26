@@ -207,7 +207,7 @@ public class Exactype
                 return;
             }
 
-            statsTracker.countCharacter(tappedKey);
+            statsTracker.countCharacter(Character.toString(tappedKey));
             inputConnection.commitText(Character.toString(tappedKey), 1);
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Commit char ms", timer.getMs()));
