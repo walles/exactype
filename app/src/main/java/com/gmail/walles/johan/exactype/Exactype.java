@@ -230,12 +230,12 @@ public class Exactype
             if (TextUtils.isEmpty(selection)) {
                 // Nothing selected, just backspace
                 timer.addLeg("backspace");
-                // FIXME: Add this to the stats tracker?
+                statsTracker.countCharacter("backspace");
                 inputConnection.deleteSurroundingText(1, 0);
             } else {
                 // Delete selection
                 timer.addLeg("delete selection");
-                // FIXME: Add this to the stats tracker?
+                statsTracker.countCharacter("backspace");
                 inputConnection.commitText("", 1);
             }
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
@@ -326,7 +326,7 @@ public class Exactype
 
             if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                 inputConnection.commitText("\n", 1);
-                // FIXME: Add this to the stats tracker?
+                statsTracker.countCharacter("newline");
                 LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Commit newline ms", timer.getMs()));
 
@@ -337,6 +337,7 @@ public class Exactype
 
             inputConnection.
                 performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+            statsTracker.countCharacter("editor action");
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Perform editor action ms", timer.getMs()));
         });
