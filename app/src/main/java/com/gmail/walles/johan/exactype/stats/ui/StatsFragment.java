@@ -73,9 +73,18 @@ public class StatsFragment extends Fragment {
             return;
         }
 
+        TableLayout table = view.findViewById(R.id.statsTable);
+
+        // Remove everything except for the table heading
+        table.removeViewsInLayout(1, table.getChildCount() - 1);
+
+        populateTable(table);
+    }
+
+    private void populateTable(TableLayout table) {
         Context context = getContext();
         if (context == null) {
-            Timber.w("Context was null when trying to populate stats table");
+            Timber.w("Context was null when trying to populate the stats table");
             return;
         }
 
@@ -91,7 +100,6 @@ public class StatsFragment extends Fragment {
         );
         fiveDpOnEachSide.setMargins(fiveDpInPixels, 0, fiveDpInPixels, 0);
 
-        TableLayout table = view.findViewById(R.id.statsTable);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
         for (Map.Entry<String, Integer> entry: viewModel.entries) {
             TextView charColumn = new TextView(context);
