@@ -53,6 +53,8 @@ just `false`.
 
 ## TODO Prioritized Beta User Issues
 * Always do lower-UPPER-numbers, and no other order
+* I'm getting warnings about Exactype running in the background. Fix whatever is required to make
+  sure those go away.
 * Add emoji support
 
 ## TODO Before Getting the First Remote Beta Tester
