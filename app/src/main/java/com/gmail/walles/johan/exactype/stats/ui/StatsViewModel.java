@@ -31,13 +31,11 @@ import timber.log.Timber;
 
 public class StatsViewModel extends ViewModel {
     public final List<Map.Entry<String, Integer>> entries = new ArrayList<>();
-    private boolean populated = false;
 
     public void populate(Context context) {
-        if (populated) {
+        if (!entries.isEmpty()) {
             return;
         }
-        populated = true;
 
         final Map<String, Integer> counts;
         try {
