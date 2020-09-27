@@ -25,27 +25,89 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.GuardedBy;
 import androidx.annotation.VisibleForTesting;
 import timber.log.Timber;
 
 public class StatsTracker {
+    @GuardedBy("countQueueLock")
+    private final List<String> countQueue = new ArrayList<>();
+    private final Object countQueueLock = new Object();
+
     private final File backingFile;
 
     @VisibleForTesting
     StatsTracker(File backingFile) {
         this.backingFile = backingFile;
+
+        final Thread flusher = new Thread(() -> {
+            try {
+                Timber.i("Stats flushing thread started");
+                threadFlusher();
+            } catch (InterruptedException e) {
+                Timber.w(e, "Stats flushing thread interrupted");
+            }
+        }, "Stats flusher for " + backingFile.getName());
+        flusher.setDaemon(true);
+        flusher.start();
     }
 
     public StatsTracker(Context context) {
-        String dataDir = context.getApplicationInfo().dataDir;
-        backingFile = new File(dataDir, "stats.txt");
+        this(new File(context.getApplicationInfo().dataDir, "stats.txt"));
     }
 
-    // FIXME: This method must be non-blocking
+    private void threadFlusher() throws InterruptedException {
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            synchronized (countQueueLock) {
+                if (countQueue.isEmpty()) {
+                    // Wait for keypresses to show up
+                    countQueueLock.wait();
+                }
+            }
+
+            // We have been notified that there's something to flush, wait a bit to let more things
+            // accumulate. It's probably good if the wait time is a good bit longer than the time it
+            // takes to flush.
+            //noinspection BusyWait
+            Thread.sleep(3000);
+
+            flush();
+        }
+    }
+
+    public void flush() {
+        long t0 = System.currentTimeMillis();
+        List<String> toFlushNow;
+        synchronized (countQueueLock) {
+            toFlushNow = new ArrayList<>(countQueue);
+            countQueue.clear();
+        }
+
+        countCharactersSynchronously(toFlushNow);
+        long t1 = System.currentTimeMillis();
+        long dtMillis = t1 - t0;
+        Timber.v("Flushed %d stats entries in %dms", toFlushNow.size(), dtMillis);
+    }
+
     public void countCharacter(String character) {
+        synchronized (countQueueLock) {
+            countQueue.add(character);
+            countQueueLock.notifyAll();
+        }
+    }
+
+    private void countCharactersSynchronously(Collection<String> characters) {
+        if (characters.isEmpty()) {
+            return;
+        }
+
         Map<String, Integer> counts;
         try {
             counts = getCounts();
@@ -56,12 +118,14 @@ public class StatsTracker {
             return;
         }
 
-        // Bump the count
-        Integer count = counts.get(character);
-        if (count == null) {
-            count = 0;
+        // Bump the counts
+        for (String character: characters) {
+            Integer count = counts.get(character);
+            if (count == null) {
+                count = 0;
+            }
+            counts.put(character, count + 1);
         }
-        counts.put(character, count + 1);
 
         try {
             writeCountsToFile(counts);
@@ -69,6 +133,8 @@ public class StatsTracker {
             Timber.w(e,
                 "Failed writing stats to file: %s",
                 backingFile.getAbsolutePath());
+            //noinspection UnnecessaryReturnStatement
+            return;
         }
     }
 

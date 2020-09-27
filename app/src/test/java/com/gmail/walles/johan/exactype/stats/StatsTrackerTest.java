@@ -61,16 +61,20 @@ public class StatsTrackerTest {
         assertFileContents(backingFile);
 
         testMe.countCharacter("a");
+        testMe.flush();
         assertFileContents(backingFile, "a", 1);
 
         testMe.countCharacter("a");
+        testMe.flush();
         assertFileContents(backingFile, "a", 2);
 
         testMe.countCharacter("b");
+        testMe.flush();
         assertFileContents(backingFile, "a", 2, "b", 1);
 
         testMe.countCharacter("b");
         testMe.countCharacter("b");
+        testMe.flush();
         assertFileContents(backingFile, "a", 2, "b", 3);
     }
 
@@ -80,8 +84,11 @@ public class StatsTrackerTest {
         StatsTracker testMe = new StatsTracker(backingFile);
 
         testMe.countCharacter(":");
+        testMe.flush();
         assertFileContents(backingFile, ":", 1);
+
         testMe.countCharacter(":");
+        testMe.flush();
         assertFileContents(backingFile, ":", 2);
     }
 
@@ -91,8 +98,11 @@ public class StatsTrackerTest {
         StatsTracker testMe = new StatsTracker(backingFile);
 
         testMe.countCharacter("word");
+        testMe.flush();
         assertFileContents(backingFile, "word", 1);
+
         testMe.countCharacter("word");
+        testMe.flush();
         assertFileContents(backingFile, "word", 2);
     }
 
@@ -103,6 +113,7 @@ public class StatsTrackerTest {
         initial.countCharacter("c");
         initial.countCharacter("c");
         initial.countCharacter("c");
+        initial.flush();
 
         File backingFileCopy = new File(folder.getRoot(), "secondary");
         Assert.assertThat(backingFile.renameTo(backingFileCopy), Matchers.is(true));

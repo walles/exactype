@@ -92,6 +92,8 @@ public class Exactype
 
     private ExactypeExecutor inputConnectionExecutor;
 
+    // Can be null during unit testing
+    @Nullable
     private StatsTracker statsTracker;
 
     // We override this method only to add the @Nullable annotation and get the corresponding
@@ -207,7 +209,9 @@ public class Exactype
                 return;
             }
 
-            statsTracker.countCharacter(Character.toString(tappedKey));
+            if (statsTracker != null) {
+                statsTracker.countCharacter(Character.toString(tappedKey));
+            }
             inputConnection.commitText(Character.toString(tappedKey), 1);
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Commit char ms", timer.getMs()));
@@ -230,12 +234,16 @@ public class Exactype
             if (TextUtils.isEmpty(selection)) {
                 // Nothing selected, just backspace
                 timer.addLeg("backspace");
-                statsTracker.countCharacter("backspace");
+                if (statsTracker != null) {
+                    statsTracker.countCharacter("backspace");
+                }
                 inputConnection.deleteSurroundingText(1, 0);
             } else {
                 // Delete selection
                 timer.addLeg("delete selection");
-                statsTracker.countCharacter("backspace");
+                if (statsTracker != null) {
+                    statsTracker.countCharacter("backspace");
+                }
                 inputConnection.commitText("", 1);
             }
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
@@ -326,7 +334,9 @@ public class Exactype
 
             if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                 inputConnection.commitText("\n", 1);
-                statsTracker.countCharacter("newline");
+                if (statsTracker != null) {
+                    statsTracker.countCharacter("newline");
+                }
                 LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Commit newline ms", timer.getMs()));
 
@@ -337,7 +347,9 @@ public class Exactype
 
             inputConnection.
                 performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
-            statsTracker.countCharacter("editor action");
+            if (statsTracker != null) {
+                statsTracker.countCharacter("editor action");
+            }
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Perform editor action ms", timer.getMs()));
         });
