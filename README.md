@@ -225,3 +225,4 @@ the start.
 * On multi touch, interpret the second touch as the end of the first and the start of another single
 touch gesture
 * Make keyboard more responsive when communicating with the input field is slow.
+* Add a Refresh button to the statistics

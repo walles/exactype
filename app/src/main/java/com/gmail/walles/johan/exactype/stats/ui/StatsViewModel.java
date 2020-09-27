@@ -37,6 +37,10 @@ public class StatsViewModel extends ViewModel {
             return;
         }
 
+        refresh(context);
+    }
+
+    public void refresh(Context context) {
         final Map<String, Integer> counts;
         try {
             counts = new StatsTracker(context).getCounts();
@@ -45,6 +49,7 @@ public class StatsViewModel extends ViewModel {
             return;
         }
 
+        entries.clear();
         entries.addAll(counts.entrySet());
         Collections.sort(entries, (o1, o2) -> -Integer.compare(o1.getValue(), o2.getValue()));
     }

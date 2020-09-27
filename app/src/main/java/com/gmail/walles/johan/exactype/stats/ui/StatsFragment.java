@@ -22,6 +22,9 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -57,6 +60,28 @@ public class StatsFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.refresh) {
+            viewModel.refresh(getContext());
+            repopulateTable();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.stats, menu);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(StatsViewModel.class);
@@ -66,6 +91,16 @@ public class StatsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        repopulateTable();
+    }
+
+    private void repopulateTable() {
+        Context context = getContext();
+        if (context == null) {
+            Timber.w("Context was null when trying to populate the stats table");
+            return;
+        }
 
         View view = getView();
         if (view == null) {
@@ -77,16 +112,6 @@ public class StatsFragment extends Fragment {
 
         // Remove everything except for the table heading
         table.removeViewsInLayout(1, table.getChildCount() - 1);
-
-        populateTable(table);
-    }
-
-    private void populateTable(TableLayout table) {
-        Context context = getContext();
-        if (context == null) {
-            Timber.w("Context was null when trying to populate the stats table");
-            return;
-        }
 
         Resources r = context.getResources();
         int fiveDpInPixels = (int)TypedValue.applyDimension(
