@@ -21,7 +21,6 @@ import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -30,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
+import com.gmail.walles.johan.exactype.stats.StatsTracker;
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 import com.gmail.walles.johan.exactype.util.Timer;
 import com.gmail.walles.johan.exactype.util.VibrationUtils;
@@ -37,6 +37,7 @@ import com.gmail.walles.johan.exactype.util.VibrationUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 public class Exactype
@@ -91,6 +92,10 @@ public class Exactype
 
     private ExactypeExecutor inputConnectionExecutor;
 
+    // Can be null during unit testing
+    @Nullable
+    private StatsTracker statsTracker;
+
     // We override this method only to add the @Nullable annotation and get the corresponding
     // warnings
     @Override
@@ -112,6 +117,8 @@ public class Exactype
                 SettingsActivity.DEFAULT_VIBRATE_DURATION_MS);
 
         inputConnectionExecutor = new ExactypeExecutor();
+
+        statsTracker = new StatsTracker(this);
     }
 
     @Override
@@ -202,6 +209,9 @@ public class Exactype
                 return;
             }
 
+            if (statsTracker != null) {
+                statsTracker.countCharacter(Character.toString(tappedKey));
+            }
             inputConnection.commitText(Character.toString(tappedKey), 1);
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Commit char ms", timer.getMs()));
@@ -224,10 +234,16 @@ public class Exactype
             if (TextUtils.isEmpty(selection)) {
                 // Nothing selected, just backspace
                 timer.addLeg("backspace");
+                if (statsTracker != null) {
+                    statsTracker.countCharacter("backspace");
+                }
                 inputConnection.deleteSurroundingText(1, 0);
             } else {
                 // Delete selection
                 timer.addLeg("delete selection");
+                if (statsTracker != null) {
+                    statsTracker.countCharacter("backspace");
+                }
                 inputConnection.commitText("", 1);
             }
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
@@ -318,6 +334,9 @@ public class Exactype
 
             if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
                 inputConnection.commitText("\n", 1);
+                if (statsTracker != null) {
+                    statsTracker.countCharacter("newline");
+                }
                 LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                     "Commit newline ms", timer.getMs()));
 
@@ -328,6 +347,9 @@ public class Exactype
 
             inputConnection.
                 performEditorAction(editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+            if (statsTracker != null) {
+                statsTracker.countCharacter("editor action");
+            }
             LoggingUtils.logCustom(new LoggingUtils.CustomEvent(PERF_EVENT).putCustomAttribute(
                 "Perform editor action ms", timer.getMs()));
         });

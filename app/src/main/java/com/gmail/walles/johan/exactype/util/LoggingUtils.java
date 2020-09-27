@@ -32,7 +32,6 @@
 
 package com.gmail.walles.johan.exactype.util;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.gmail.walles.johan.exactype.BuildConfig;
@@ -92,17 +91,18 @@ public class LoggingUtils {
 
     private static class LocalTree extends Timber.Tree {
         @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
+        protected void log(int priority, String tag, String message, Throwable throwable) {
             if (BuildConfig.DEBUG) {
                 tag = "DEBUG";
-            } else if (TextUtils.isEmpty(tag)) {
+            } else if (tag == null || "".equals(tag)) {
                 tag = "Exactype";
             }
 
-            if (t != null) {
-                message += "\n" + Log.getStackTraceString(t);
+            if (EmulatorUtils.IS_ON_ANDROID) {
+                Log.println(priority, tag, message);
+            } else {
+                System.err.println("[" + priority + "] " + tag + ": " + message);
             }
-            Log.println(priority, tag, message);
         }
     }
 }
