@@ -69,7 +69,7 @@ public class Exactype
     static final String[] NUMERIC = new String[] {
         "1234567890",
         "@&/<>()-+$",
-        "'\"*%#?!;:"
+        "'\"*%#;:?!"
     };
 
     private final Map<Character, String> popupKeysForKey;
