@@ -43,7 +43,7 @@ public class StatsViewModel extends ViewModel {
     public void refresh(Context context) {
         final Map<String, Integer> counts;
         try {
-            counts = new StatsTracker(context).getCounts();
+            counts = StatsTracker.getCounts(context);
         } catch (IOException e) {
             Timber.w(e, "Failed to read key stats");
             return;

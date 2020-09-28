@@ -59,7 +59,11 @@ public class StatsTracker {
     }
 
     public StatsTracker(Context context) {
-        this(new File(context.getApplicationInfo().dataDir, "stats.txt"));
+        this(getBackingFile(context));
+    }
+
+    private static File getBackingFile(Context context) {
+        return new File(context.getApplicationInfo().dataDir, "stats.txt");
     }
 
     private void threadFlusher() throws InterruptedException {
@@ -82,7 +86,8 @@ public class StatsTracker {
         }
     }
 
-    public void flush() {
+    @VisibleForTesting
+    void flush() {
         long t0 = System.currentTimeMillis();
         List<String> toFlushNow;
         synchronized (countQueueLock) {
@@ -110,7 +115,7 @@ public class StatsTracker {
 
         Map<String, Integer> counts;
         try {
-            counts = getCounts();
+            counts = getCounts(backingFile);
         } catch (IOException e) {
             Timber.w(e,
                 "Failed reading stats from file: %s",
@@ -138,7 +143,12 @@ public class StatsTracker {
         }
     }
 
-    public Map<String, Integer> getCounts() throws IOException {
+    public static Map<String, Integer> getCounts(Context context) throws IOException {
+        return getCounts(getBackingFile(context));
+    }
+
+    @VisibleForTesting
+    static Map<String, Integer> getCounts(File backingFile) throws IOException {
         Map<String, Integer> returnMe = new HashMap<>();
         try (FileReader fileReader = new FileReader(backingFile);
              BufferedReader in = new BufferedReader(fileReader)) {
