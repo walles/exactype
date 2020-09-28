@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 /**
  * Keeps track of which mode the keyboard should be in.
  */
@@ -44,15 +46,16 @@ public class ExactypeMode {
         void onModeChange(String[] rows, SwitchKey switchKey);
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "[" + currentKeyboard[0] + ", " + switchKey + "]";
+    }
+
     private final String[] lowercase;
     private final String[] caps;
     private final String[] numeric;
     private String[] currentKeyboard;
-
-    /**
-     * This is the keyboard most recently set by the system.
-     */
-    private String[] implicitKeyboard;
 
     private SwitchKey switchKey;
     private final List<ModeChangeListener> listeners;
@@ -85,9 +88,7 @@ public class ExactypeMode {
 
         // This is how we start out
         currentKeyboard = this.caps;
-        switchKey = SwitchKey.TO_LOWER;
-
-        implicitKeyboard = currentKeyboard;
+        switchKey = SwitchKey.NUMLOCK;
 
         listeners = new ArrayList<>();
     }
@@ -113,38 +114,17 @@ public class ExactypeMode {
         switch (switchKey) {
             case TO_UPPER:
                 currentKeyboard = caps;
-
-                if (implicitKeyboard == lowercase) {
-                    // lowercase -> uppercase -> numlock
-                    switchKey = SwitchKey.NUMLOCK;
-                } else {
-                    // Numlock -> uppercase -> lowercase
-                    switchKey = SwitchKey.TO_LOWER;
-                }
+                switchKey = SwitchKey.NUMLOCK;
                 break;
 
             case TO_LOWER:
                 currentKeyboard = lowercase;
-
-                if (implicitKeyboard == lowercase) {
-                    // lowercase -> uppercase -> numlock
-                    switchKey = SwitchKey.TO_UPPER;
-                } else {
-                    // numlock -> uppercase -> lowercase
-                    switchKey = SwitchKey.NUMLOCK;
-                }
+                switchKey = SwitchKey.TO_UPPER;
                 break;
 
             case NUMLOCK:
                 currentKeyboard = numeric;
-
-                if (implicitKeyboard == lowercase) {
-                    // lowercase -> uppercase -> numlock
-                    switchKey = SwitchKey.TO_LOWER;
-                } else {
-                    // numlock -> uppercase -> lowercase
-                    switchKey = SwitchKey.TO_UPPER;
-                }
+                switchKey = SwitchKey.TO_LOWER;
                 break;
 
             default:
@@ -205,10 +185,6 @@ public class ExactypeMode {
                 "No event handler for keyboard: " + Arrays.toString(currentKeyboard));
         }
 
-        if (event == Event.INSERT_CHAR) {
-            implicitKeyboard = currentKeyboard;
-        }
-
         if (currentKeyboard != preKeyboard || switchKey != preSwitchKey) {
             for (ModeChangeListener listener : listeners) {
                 listener.onModeChange(currentKeyboard, switchKey);
@@ -224,9 +200,13 @@ public class ExactypeMode {
         String[] preKeyboard = currentKeyboard;
         SwitchKey preSwitchKey = switchKey;
 
-        currentKeyboard = shifted ? caps : lowercase;
-        implicitKeyboard = currentKeyboard;
-        switchKey = shifted ? SwitchKey.TO_LOWER : SwitchKey.TO_UPPER;
+        if (shifted) {
+            currentKeyboard = caps;
+            switchKey = SwitchKey.NUMLOCK;
+        } else {
+            currentKeyboard = lowercase;
+            switchKey = SwitchKey.TO_UPPER;
+        }
 
         if (currentKeyboard != preKeyboard || switchKey != preSwitchKey) {
             for (ModeChangeListener listener : listeners) {
@@ -240,7 +220,7 @@ public class ExactypeMode {
             return;
         }
 
-        switchKey = (currentKeyboard == caps) ? SwitchKey.TO_UPPER : SwitchKey.TO_LOWER;
+        switchKey = SwitchKey.TO_LOWER;
         currentKeyboard = numeric;
 
         for (ModeChangeListener listener : listeners) {

@@ -42,6 +42,8 @@ To work with the icon, [download the latest version of Blender](http://blender.o
 ## TODO Misc
 * Have only one Exactype launchable, with one tab each for preferences and stats.
 * Make long click duration configurable
+* To the stats page, add rank and percentile columns
+* On the stats page, list " " as "space"
 * Add support for an English keyboard layout. This is a step towards emoji support (see below); it
 requires us to support more than one keyboard, without needing to make an entirely new keyboard.
 * Maybe or maybe not before the emojis, make a cursor-keys keyboard that shows up if you move the
@@ -52,7 +54,6 @@ for auto correction.
 just `false`.
 
 ## TODO Prioritized Beta User Issues
-* Always do lower-UPPER-numbers, and no other order
 * I'm getting warnings about Exactype running in the background. Fix whatever is required to make
   sure those go away.
 * Add emoji support
@@ -226,3 +227,4 @@ the start.
 touch gesture
 * Make keyboard more responsive when communicating with the input field is slow.
 * Add a Refresh button to the statistics
+* Always do lower-UPPER-numbers, and no other order
