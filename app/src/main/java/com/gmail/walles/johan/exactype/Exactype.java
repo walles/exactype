@@ -56,20 +56,20 @@ public class Exactype
     private static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
-        "zxcvbnm" // ⇧ = SHIFT, ⌫ = Backspace
+        "zxcvbnm,." // ⇧ = SHIFT, ⌫ = Backspace
     };
 
     private static final String[] SHIFTED = new String[] {
         "QWERTYUIOPÅ",
         "ASDFGHJKLÖÄ",
-        "ZXCVBNM" // ⇧ = SHIFT, ⌫ = Backspace
+        "ZXCVBNM,." // ⇧ = SHIFT, ⌫ = Backspace
     };
 
     // Default protection for testing purposes
     static final String[] NUMERIC = new String[] {
         "1234567890",
-        "@&/:;()-+$",
-        "'\"*%#?!,."
+        "@&/<>()-+$",
+        "'\"*%#?!;:"
     };
 
     private final Map<Character, String> popupKeysForKey;
