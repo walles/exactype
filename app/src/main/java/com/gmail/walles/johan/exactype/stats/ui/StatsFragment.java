@@ -35,7 +35,6 @@ import com.gmail.walles.johan.exactype.R;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -126,20 +125,34 @@ public class StatsFragment extends Fragment {
         fiveDpOnEachSide.setMargins(fiveDpInPixels, 0, fiveDpInPixels, 0);
 
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        for (Map.Entry<String, Integer> entry: viewModel.entries) {
+        for (StatsViewModel.Entry entry: viewModel.entries) {
             TextView charColumn = new TextView(context);
-            charColumn.setText(entry.getKey());
+            charColumn.setText(entry.name);
             charColumn.setGravity(Gravity.END);
             charColumn.setLayoutParams(fiveDpOnEachSide);
 
             TextView countColumn = new TextView(context);
-            countColumn.setText(numberFormat.format(entry.getValue()));
+            countColumn.setText(numberFormat.format(entry.count));
             countColumn.setGravity(Gravity.END);
             countColumn.setLayoutParams(fiveDpOnEachSide);
+
+            TextView rankColumn = new TextView(context);
+            rankColumn.setText(numberFormat.format(entry.rank));
+            rankColumn.setGravity(Gravity.END);
+            rankColumn.setLayoutParams(fiveDpOnEachSide);
+
+            TextView percentileColumn = new TextView(context);
+            String percentileText =
+                context.getResources().getString(R.string.percentile_fmt, entry.percentile);
+            percentileColumn.setText(percentileText);
+            percentileColumn.setGravity(Gravity.END);
+            percentileColumn.setLayoutParams(fiveDpOnEachSide);
 
             TableRow row = new TableRow(context);
             row.addView(charColumn);
             row.addView(countColumn);
+            row.addView(rankColumn);
+            row.addView(percentileColumn);
 
             table.addView(row);
         }

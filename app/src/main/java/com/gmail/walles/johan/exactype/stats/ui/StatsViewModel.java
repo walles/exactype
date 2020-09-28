@@ -30,7 +30,13 @@ import androidx.lifecycle.ViewModel;
 import timber.log.Timber;
 
 public class StatsViewModel extends ViewModel {
-    public final List<Map.Entry<String, Integer>> entries = new ArrayList<>();
+    public static class Entry {
+        public String name;
+        public int count;
+        public int rank;
+        public int percentile;
+    }
+    public final List<Entry> entries = new ArrayList<>();
 
     public void populate(Context context) {
         if (!entries.isEmpty()) {
@@ -49,8 +55,30 @@ public class StatsViewModel extends ViewModel {
             return;
         }
 
+        List<Map.Entry<String, Integer>> storedEntries = new ArrayList<>(counts.entrySet());
+        Collections.sort(storedEntries, (o1, o2) -> -Integer.compare(o1.getValue(), o2.getValue()));
+        int totalKeysCount = 0;
+        for (Map.Entry<String, Integer> entry: storedEntries) {
+            totalKeysCount += entry.getValue();
+        }
+
         entries.clear();
-        entries.addAll(counts.entrySet());
-        Collections.sort(entries, (o1, o2) -> -Integer.compare(o1.getValue(), o2.getValue()));
+        int rank = 1;
+        int countSoFar = 0;
+        for (Map.Entry<String, Integer> countEntry: storedEntries) {
+            Entry statsEntry = new Entry();
+            statsEntry.rank = rank++;
+
+            statsEntry.name = countEntry.getKey();
+            if (" ".equals(statsEntry.name)) {
+                statsEntry.name = "space";
+            }
+
+            statsEntry.count = countEntry.getValue();
+            countSoFar += statsEntry.count;
+            statsEntry.percentile = (100 * countSoFar) / totalKeysCount;
+
+            entries.add(statsEntry);
+        }
     }
 }

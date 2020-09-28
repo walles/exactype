@@ -47,6 +47,14 @@
                     android:layout_margin="5dp"
                     android:text="@string/stats_column_count" />
 
+                <TextView
+                    android:layout_margin="5dp"
+                    android:text="@string/rank" />
+
+                <TextView
+                    android:layout_margin="5dp"
+                    android:text="@string/percentile" />
+
             </TableRow>
         </TableLayout>
     </ScrollView>

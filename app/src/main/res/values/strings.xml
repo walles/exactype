@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Exactype</string>
     <string name="exactype_label">Exactype</string>
     <string name="exactype_settings">Exactype Settings</string>
@@ -23,4 +23,7 @@
     <string name="stats_column_character">Character</string>
     <string name="stats_column_count">Count</string>
     <string name="refresh">Refresh</string>
+    <string name="rank">Rank</string>
+    <string name="percentile">Percentile</string>
+    <string name="percentile_fmt"><xliff:g id="percentile" example="14">%1$d</xliff:g>%%</string>
 </resources>
