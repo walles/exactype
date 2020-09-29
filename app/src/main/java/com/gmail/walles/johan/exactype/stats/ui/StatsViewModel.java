@@ -73,6 +73,9 @@ public class StatsViewModel extends ViewModel {
             if (" ".equals(statsEntry.name)) {
                 statsEntry.name = "space";
             }
+            if ("editor action".equals(statsEntry.name)) {
+                statsEntry.name = "action";
+            }
 
             statsEntry.count = countEntry.getValue();
             countSoFar += statsEntry.count;
