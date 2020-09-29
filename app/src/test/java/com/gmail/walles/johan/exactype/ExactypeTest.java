@@ -19,6 +19,7 @@ package com.gmail.walles.johan.exactype;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -36,6 +37,61 @@ public class ExactypeTest {
 
         Assert.assertTrue("Move some keys from line 2 to line 3", diff <= 1);
         Assert.assertTrue("Move some keys from line 3 to line 2", diff >= -1);
+    }
+
+    @Test
+    public void checkNumericLayoutForDups() {
+        String lastTwoLines = Exactype.NUMERIC[1] + Exactype.NUMERIC[2];
+        for (char checkMe: lastTwoLines.toCharArray()) {
+            long checkMeCount = lastTwoLines.chars().filter(c -> c == checkMe).count();
+            Assert.assertEquals(
+                "Char must occur exactly once on the numeric keyboard: <" + checkMe + ">",
+                1, checkMeCount);
+        }
+    }
+
+    private void assertSymbolUnderCharacter(char symbol, char character) {
+        int rowIndex = 1;
+        String characterRow = Exactype.UNSHIFTED[rowIndex];
+        if (!characterRow.contains(Character.toString(character))) {
+            rowIndex++;
+            characterRow = Exactype.UNSHIFTED[rowIndex];
+        }
+        Assert.assertThat(characterRow, CoreMatchers.containsString(Character.toString(character)));
+
+        String symbolRow = Exactype.NUMERIC[rowIndex];
+
+        int symbolIndex = symbolRow.indexOf(symbol);
+        assert symbolIndex >= 0;
+        int characterIndex = characterRow.indexOf(character);
+        assert characterIndex >= 0;
+
+        Assert.assertEquals(String.format(
+            "Symbol '%c' must be under char '%c'\n%s\n%s", symbol, character, characterRow, symbolRow),
+            characterIndex, symbolIndex);
+    }
+
+    private void assertSymbolOrder(char first, char second) {
+        String symbolRow = Exactype.NUMERIC[1];
+        if (!symbolRow.contains(Character.toString(first))) {
+            symbolRow = Exactype.NUMERIC[2];
+        }
+
+        Assert.assertTrue(symbolRow.contains("" + first + second));
+        Assert.assertThat(symbolRow, CoreMatchers.containsString("" + first + second));
+    }
+
+    @Test
+    public void testErgonomics() {
+        assertSymbolUnderCharacter('*', 'x');
+        assertSymbolUnderCharacter('/', 'z');
+        assertSymbolUnderCharacter('@', 'a');
+        assertSymbolUnderCharacter('$', 's');
+
+        assertSymbolUnderCharacter('(', 'c');
+        assertSymbolOrder('(', ')');
+
+        assertSymbolOrder('<', '>');
     }
 
     @Test

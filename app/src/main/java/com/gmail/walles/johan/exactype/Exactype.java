@@ -53,7 +53,7 @@ public class Exactype
      */
     private static final int DELETE_LOOKBACK = 22;
 
-    private static final String[] UNSHIFTED = new String[] {
+    static final String[] UNSHIFTED = new String[] {
         "qwertyuiopå",
         "asdfghjklöä",
         "zxcvbnm,." // ⇧ = SHIFT, ⌫ = Backspace
@@ -68,8 +68,8 @@ public class Exactype
     // Default protection for testing purposes
     static final String[] NUMERIC = new String[] {
         "1234567890",
-        "@&/<>()-+$",
-        "'\"*%#;:?!"
+        "@$<>'\"-+&%",
+        "/*()#;:?!"
     };
 
     private final Map<Character, String> popupKeysForKey;
