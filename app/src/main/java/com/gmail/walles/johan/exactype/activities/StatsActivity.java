@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype.stats;
+package com.gmail.walles.johan.exactype.activities;
 
 import android.os.Bundle;
 
 import com.gmail.walles.johan.exactype.R;
-import com.gmail.walles.johan.exactype.stats.ui.StatsFragment;
+import com.gmail.walles.johan.exactype.activities.ui.StatsFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 

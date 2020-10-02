@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Johan Walles <johan.walles@gmail.com>
+ * Copyright 2020 Johan Walles <johan.walles@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype;
+package com.gmail.walles.johan.exactype.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
+import com.gmail.walles.johan.exactype.R;
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 
 import androidx.appcompat.app.ActionBar;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Johan Walles <johan.walles@gmail.com>
+ * Copyright 2020 Johan Walles <johan.walles@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype;
+package com.gmail.walles.johan.exactype.activities;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.gmail.walles.johan.exactype.R;
 import com.gmail.walles.johan.exactype.util.VibrationUtils;
 
 public class VibrationDurationPreference extends DialogPreference {

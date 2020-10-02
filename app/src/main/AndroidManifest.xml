@@ -33,7 +33,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".stats.StatsActivity"
+            android:name=".activities.StatsActivity"
             android:label="@string/exactype_stats">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,7 +56,7 @@
         </service>
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/exactype_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype.stats.ui;
+package com.gmail.walles.johan.exactype.activities.ui;
 
 import android.content.Context;
 
-import com.gmail.walles.johan.exactype.stats.StatsTracker;
+import com.gmail.walles.johan.exactype.activities.StatsTracker;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype.stats.ui;
+package com.gmail.walles.johan.exactype.activities.ui;
 
 import android.content.Context;
 import android.content.res.Resources;

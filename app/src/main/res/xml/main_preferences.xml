@@ -16,7 +16,7 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.gmail.walles.johan.exactype.VibrationDurationPreference
+    <com.gmail.walles.johan.exactype.activities.VibrationDurationPreference
         android:key="vibrate_duration_preference"
         android:title="@string/title_vibrate_duration_preference"
         android:dialogTitle="@string/title_vibrate_duration_preference"

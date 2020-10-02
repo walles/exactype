@@ -29,7 +29,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.PopupWindow;
 
-import com.gmail.walles.johan.exactype.stats.StatsTracker;
+import com.gmail.walles.johan.exactype.activities.SettingsActivity;
+import com.gmail.walles.johan.exactype.activities.StatsTracker;
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 import com.gmail.walles.johan.exactype.util.Timer;
 import com.gmail.walles.johan.exactype.util.VibrationUtils;

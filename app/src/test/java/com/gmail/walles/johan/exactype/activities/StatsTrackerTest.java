@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gmail.walles.johan.exactype.stats;
+package com.gmail.walles.johan.exactype.activities;
 
 import com.gmail.walles.johan.exactype.util.LoggingUtils;
 
