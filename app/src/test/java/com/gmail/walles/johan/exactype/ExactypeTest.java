@@ -122,12 +122,25 @@ public class ExactypeTest {
 
     @Test
     public void testErgonomics() {
+        // Because * looks kind of like x
         assertSymbolUnderCharacter('*', 'x');
+
+        // Because / is a partial Z
         assertSymbolUnderCharacter('/', 'z');
+
+        // Because @ looks like a decorated a
         assertSymbolUnderCharacter('@', 'a');
+
+        // What else?
         assertSymbolUnderCharacter('$', 's');
+
+        // Because ( looks like a C
         assertSymbolUnderCharacter('(', 'c');
 
+        // Because f isn't entirely unlike +
+        assertSymbolUnderCharacter('+', 'f');
+
+        // Similarities and commonalities
         assertSymbolUnderCharacter('!', '.');
         assertSymbolUnderCharacter('?', ',');
         assertSymbolAboveCharacter(':', '.');
@@ -135,6 +148,8 @@ public class ExactypeTest {
 
         assertSymbolOrder('(', ')');
         assertSymbolOrder('<', '>');
+
+        // This matches the order of , and .
         assertSymbolOrder(';', ':');
     }
 
