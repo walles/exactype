@@ -50,6 +50,28 @@ public class ExactypeTest {
         }
     }
 
+    private void assertIndexComparable(int characterIndexInFirst, String first, String second) {
+        if (characterIndexInFirst == 0) {
+            // First is always comparable
+            return;
+        }
+
+        if (characterIndexInFirst == (first.length() - 2)) {
+            // Last index is always comparable
+            return;
+        }
+
+        // Character is neither first nor last
+        Assert.assertEquals(
+            String.format("Should have same lengths for 0 based index %d to be comparable:\n%s\n%s",
+                characterIndexInFirst, first, second),
+            first.length(),
+            second.length());
+    }
+
+    /**
+     * Check that long pressing character will get you symbol.
+     */
     private void assertSymbolUnderCharacter(char symbol, char character) {
         int rowIndex = 1;
         String characterRow = Exactype.UNSHIFTED[rowIndex];
@@ -58,26 +80,29 @@ public class ExactypeTest {
             characterRow = Exactype.UNSHIFTED[rowIndex];
         }
         Assert.assertThat(characterRow, CoreMatchers.containsString(Character.toString(character)));
+        int characterIndex = characterRow.indexOf(character);
+        assert characterIndex >= 0;
 
         String symbolRow = Exactype.NUMERIC[rowIndex];
+        assertIndexComparable(characterIndex, characterRow, symbolRow);
 
         int symbolIndex = symbolRow.indexOf(symbol);
         assert symbolIndex >= 0;
-        int characterIndex = characterRow.indexOf(character);
-        assert characterIndex >= 0;
 
         Assert.assertEquals(String.format(
             "Symbol '%c' must be under char '%c'\n%s\n%s", symbol, character, characterRow, symbolRow),
             characterIndex, symbolIndex);
     }
 
+    /**
+     * Check that first and second are right next to each other in that order.
+     */
     private void assertSymbolOrder(char first, char second) {
         String symbolRow = Exactype.NUMERIC[1];
         if (!symbolRow.contains(Character.toString(first))) {
             symbolRow = Exactype.NUMERIC[2];
         }
 
-        Assert.assertTrue(symbolRow.contains("" + first + second));
         Assert.assertThat(symbolRow, CoreMatchers.containsString("" + first + second));
     }
 
@@ -87,11 +112,34 @@ public class ExactypeTest {
         assertSymbolUnderCharacter('/', 'z');
         assertSymbolUnderCharacter('@', 'a');
         assertSymbolUnderCharacter('$', 's');
-
         assertSymbolUnderCharacter('(', 'c');
+
+        assertSymbolUnderCharacter('!', '.');
+        assertSymbolUnderCharacter('?', ',');
+        assertSymbolAboveCharacter(':', '.');
+        assertSymbolAboveCharacter(';', ',');
+
         assertSymbolOrder('(', ')');
 
         assertSymbolOrder('<', '>');
+    }
+
+    /**
+     * Check that long pressing above character will get you symbol.
+     */
+    private void assertSymbolAboveCharacter(char symbol, char character) {
+        String middleSymbolRow = Exactype.NUMERIC[1];
+
+        // "1" for "123" button, "B" for backspace button
+        String bottomCharacterRow = "1" + Exactype.UNSHIFTED[2] + "B";
+
+        int index = bottomCharacterRow.indexOf(character);
+        assert index >= 0;
+
+        assertIndexComparable(index, bottomCharacterRow, middleSymbolRow);
+
+        // Are they the same?
+        Assert.assertEquals(character, middleSymbolRow.charAt(index));
     }
 
     @Test
