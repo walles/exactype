@@ -24,6 +24,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ExactypeTest {
     @Test
     public void testNumericLayout() {
@@ -107,6 +110,17 @@ public class ExactypeTest {
     }
 
     @Test
+    public void testNoDuplicateSymbols() {
+        Set<Character> symbols = new HashSet<>();
+        for (int row = 1; row <= 2; row++) {
+            for (char symbol : Exactype.NUMERIC[row].toCharArray()) {
+                assert !symbols.contains(symbol);
+                symbols.add(symbol);
+            }
+        }
+    }
+
+    @Test
     public void testErgonomics() {
         assertSymbolUnderCharacter('*', 'x');
         assertSymbolUnderCharacter('/', 'z');
@@ -120,14 +134,14 @@ public class ExactypeTest {
         assertSymbolAboveCharacter(';', ',');
 
         assertSymbolOrder('(', ')');
-
         assertSymbolOrder('<', '>');
+        assertSymbolOrder(';', ':');
     }
 
     /**
      * Check that long pressing above character will get you symbol.
      */
-    private void assertSymbolAboveCharacter(char symbol, char character) {
+    private void assertSymbolAboveCharacter(char expectedSymbol, char character) {
         String middleSymbolRow = Exactype.NUMERIC[1];
 
         // "1" for "123" button, "B" for backspace button
@@ -139,7 +153,11 @@ public class ExactypeTest {
         assertIndexComparable(index, bottomCharacterRow, middleSymbolRow);
 
         // Are they the same?
-        Assert.assertEquals(character, middleSymbolRow.charAt(index));
+        char actualSymbol = middleSymbolRow.charAt(index);
+        Assert.assertEquals(
+            String.format("Expected %c when long pressing above %c but found %c",
+                expectedSymbol, character, actualSymbol),
+            expectedSymbol, actualSymbol);
     }
 
     @Test
