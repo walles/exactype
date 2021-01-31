@@ -140,6 +140,10 @@ public class ExactypeTest {
         // Because f isn't entirely unlike +
         assertSymbolUnderCharacter('+', 'f');
 
+        // I want to type double quotes sometimes, and without this I can't remember where they are.
+        // And if you remove the arch from the n, you kind of get a ".
+        assertSymbolUnderCharacter('"', 'n');
+
         // Similarities and commonalities
         assertSymbolUnderCharacter('!', '.');
         assertSymbolUnderCharacter('?', ',');
