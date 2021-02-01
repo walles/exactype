@@ -60,7 +60,7 @@ public class Exactype
         "zxcvbnm,." // ⇧ = SHIFT, ⌫ = Backspace
     };
 
-    private static final String[] SHIFTED = new String[] {
+    static final String[] SHIFTED = new String[] {
         "QWERTYUIOPÅ",
         "ASDFGHJKLÖÄ",
         "ZXCVBNM,." // ⇧ = SHIFT, ⌫ = Backspace
@@ -69,8 +69,8 @@ public class Exactype
     // Default protection for testing purposes
     static final String[] NUMERIC = new String[] {
         "1234567890",
-        "@$<>'\"-+&%",
-        "/*()#;:?!"
+        "@$=+-<>%;:#",
+        "/*()'\"&?!"
     };
 
     private final Map<Character, String> popupKeysForKey;

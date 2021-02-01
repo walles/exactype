@@ -20,9 +20,14 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExactypeTest {
     @Test
@@ -50,6 +55,28 @@ public class ExactypeTest {
         }
     }
 
+    private void assertIndexComparable(int characterIndexInFirst, String first, String second) {
+        if (characterIndexInFirst == 0) {
+            // First is always comparable
+            return;
+        }
+
+        if (characterIndexInFirst == (first.length() - 2)) {
+            // Last index is always comparable
+            return;
+        }
+
+        // Character is neither first nor last
+        Assert.assertEquals(
+            String.format("Should have same lengths for 0 based index %d to be comparable:\n%s\n%s",
+                characterIndexInFirst, first, second),
+            first.length(),
+            second.length());
+    }
+
+    /**
+     * Check that long pressing character will get you symbol.
+     */
     private void assertSymbolUnderCharacter(char symbol, char character) {
         int rowIndex = 1;
         String characterRow = Exactype.UNSHIFTED[rowIndex];
@@ -58,40 +85,128 @@ public class ExactypeTest {
             characterRow = Exactype.UNSHIFTED[rowIndex];
         }
         Assert.assertThat(characterRow, CoreMatchers.containsString(Character.toString(character)));
+        int characterIndex = characterRow.indexOf(character);
+        assert characterIndex >= 0;
 
         String symbolRow = Exactype.NUMERIC[rowIndex];
+        assertIndexComparable(characterIndex, characterRow, symbolRow);
 
         int symbolIndex = symbolRow.indexOf(symbol);
         assert symbolIndex >= 0;
-        int characterIndex = characterRow.indexOf(character);
-        assert characterIndex >= 0;
 
         Assert.assertEquals(String.format(
             "Symbol '%c' must be under char '%c'\n%s\n%s", symbol, character, characterRow, symbolRow),
             characterIndex, symbolIndex);
     }
 
+    /**
+     * Check that first and second are right next to each other in that order.
+     */
     private void assertSymbolOrder(char first, char second) {
         String symbolRow = Exactype.NUMERIC[1];
         if (!symbolRow.contains(Character.toString(first))) {
             symbolRow = Exactype.NUMERIC[2];
         }
 
-        Assert.assertTrue(symbolRow.contains("" + first + second));
         Assert.assertThat(symbolRow, CoreMatchers.containsString("" + first + second));
+    }
+
+    /**
+     * Check that long pressing above character will get you symbol.
+     */
+    private void assertSymbolAboveCharacter(char expectedSymbol, char character) {
+        String middleSymbolRow = Exactype.NUMERIC[1];
+
+        // "1" for "123" button, "B" for backspace button
+        String bottomCharacterRow = "1" + Exactype.UNSHIFTED[2] + "B";
+
+        int index = bottomCharacterRow.indexOf(character);
+        assert index >= 0;
+
+        assertIndexComparable(index, bottomCharacterRow, middleSymbolRow);
+
+        // Are they the same?
+        char actualSymbol = middleSymbolRow.charAt(index);
+        Assert.assertEquals(
+            String.format("Expected %c when long pressing above %c but found %c",
+                expectedSymbol, character, actualSymbol),
+            expectedSymbol, actualSymbol);
     }
 
     @Test
     public void testErgonomics() {
+        // Because * looks kind of like x
         assertSymbolUnderCharacter('*', 'x');
+
+        // Because / is a partial Z
         assertSymbolUnderCharacter('/', 'z');
+
+        // Because @ looks like a decorated a
         assertSymbolUnderCharacter('@', 'a');
+
+        // What else?
         assertSymbolUnderCharacter('$', 's');
 
+        // Because ( looks like a C
         assertSymbolUnderCharacter('(', 'c');
-        assertSymbolOrder('(', ')');
 
+        // Because f isn't entirely unlike +
+        assertSymbolUnderCharacter('+', 'f');
+
+        // I want to type double quotes sometimes, and without this I can't remember where they are.
+        // And if you remove the arch from the n, you kind of get a ".
+        assertSymbolUnderCharacter('"', 'n');
+
+        // Similarities and commonalities
+        assertSymbolUnderCharacter('!', '.');
+        assertSymbolUnderCharacter('?', ',');
+        assertSymbolAboveCharacter(':', '.');
+        assertSymbolAboveCharacter(';', ',');
+
+        assertSymbolOrder('(', ')');
         assertSymbolOrder('<', '>');
+
+        // This matches the order of , and .
+        assertSymbolOrder(';', ':');
+    }
+
+    @Test
+    public void testNoDuplicateSymbols() {
+        Set<Character> symbols = new HashSet<>();
+        for (int row = 1; row <= 2; row++) {
+            for (char symbol : Exactype.NUMERIC[row].toCharArray()) {
+                assert !symbols.contains(symbol);
+                symbols.add(symbol);
+            }
+        }
+    }
+
+    @Test
+    public void testHasAllTheChars() {
+        final Set<Character> expendables = new HashSet<>(Arrays.asList(
+            '[', ']', '\\', '^', '_', '`', '{', '|', '}'));
+
+        Set<Character> expected = new HashSet<>();
+        // 32 is space and 127 is DEL and we want neither so require everything in between
+        for (char c = 33; c < 126; c++) {
+            expected.add(c);
+        }
+
+        Set<Character> actual = new HashSet<>();
+        for (char c: (Exactype.UNSHIFTED[0] + Exactype.UNSHIFTED[1] + Exactype.UNSHIFTED[2]).toCharArray()) {
+            actual.add(c);
+        }
+        for (char c: (Exactype.SHIFTED[0] + Exactype.SHIFTED[1] + Exactype.SHIFTED[2]).toCharArray()) {
+            actual.add(c);
+        }
+        for (char c: (Exactype.NUMERIC[0] + Exactype.NUMERIC[1] + Exactype.NUMERIC[2]).toCharArray()) {
+            actual.add(c);
+        }
+
+        Set<Character> missing = new HashSet<>(expected);
+        missing.removeAll(actual);
+        missing.removeAll(expendables);
+        Assert.assertThat(missing, IsEmptyCollection.empty());
     }
 
     @Test
