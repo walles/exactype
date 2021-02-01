@@ -20,10 +20,12 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -109,15 +111,26 @@ public class ExactypeTest {
         Assert.assertThat(symbolRow, CoreMatchers.containsString("" + first + second));
     }
 
-    @Test
-    public void testNoDuplicateSymbols() {
-        Set<Character> symbols = new HashSet<>();
-        for (int row = 1; row <= 2; row++) {
-            for (char symbol : Exactype.NUMERIC[row].toCharArray()) {
-                assert !symbols.contains(symbol);
-                symbols.add(symbol);
-            }
-        }
+    /**
+     * Check that long pressing above character will get you symbol.
+     */
+    private void assertSymbolAboveCharacter(char expectedSymbol, char character) {
+        String middleSymbolRow = Exactype.NUMERIC[1];
+
+        // "1" for "123" button, "B" for backspace button
+        String bottomCharacterRow = "1" + Exactype.UNSHIFTED[2] + "B";
+
+        int index = bottomCharacterRow.indexOf(character);
+        assert index >= 0;
+
+        assertIndexComparable(index, bottomCharacterRow, middleSymbolRow);
+
+        // Are they the same?
+        char actualSymbol = middleSymbolRow.charAt(index);
+        Assert.assertEquals(
+            String.format("Expected %c when long pressing above %c but found %c",
+                expectedSymbol, character, actualSymbol),
+            expectedSymbol, actualSymbol);
     }
 
     @Test
@@ -157,26 +170,43 @@ public class ExactypeTest {
         assertSymbolOrder(';', ':');
     }
 
-    /**
-     * Check that long pressing above character will get you symbol.
-     */
-    private void assertSymbolAboveCharacter(char expectedSymbol, char character) {
-        String middleSymbolRow = Exactype.NUMERIC[1];
+    @Test
+    public void testNoDuplicateSymbols() {
+        Set<Character> symbols = new HashSet<>();
+        for (int row = 1; row <= 2; row++) {
+            for (char symbol : Exactype.NUMERIC[row].toCharArray()) {
+                assert !symbols.contains(symbol);
+                symbols.add(symbol);
+            }
+        }
+    }
 
-        // "1" for "123" button, "B" for backspace button
-        String bottomCharacterRow = "1" + Exactype.UNSHIFTED[2] + "B";
+    @Test
+    public void testHasAllTheChars() {
+        final Set<Character> expendables = new HashSet<>(Arrays.asList(
+            '[', ']', '\\', '^', '_', '`', '{', '|', '}'));
 
-        int index = bottomCharacterRow.indexOf(character);
-        assert index >= 0;
+        Set<Character> expected = new HashSet<>();
+        // 32 is space and 127 is DEL and we want neither so require everything in between
+        for (char c = 33; c < 126; c++) {
+            expected.add(c);
+        }
 
-        assertIndexComparable(index, bottomCharacterRow, middleSymbolRow);
+        Set<Character> actual = new HashSet<>();
+        for (char c: (Exactype.UNSHIFTED[0] + Exactype.UNSHIFTED[1] + Exactype.UNSHIFTED[2]).toCharArray()) {
+            actual.add(c);
+        }
+        for (char c: (Exactype.SHIFTED[0] + Exactype.SHIFTED[1] + Exactype.SHIFTED[2]).toCharArray()) {
+            actual.add(c);
+        }
+        for (char c: (Exactype.NUMERIC[0] + Exactype.NUMERIC[1] + Exactype.NUMERIC[2]).toCharArray()) {
+            actual.add(c);
+        }
 
-        // Are they the same?
-        char actualSymbol = middleSymbolRow.charAt(index);
-        Assert.assertEquals(
-            String.format("Expected %c when long pressing above %c but found %c",
-                expectedSymbol, character, actualSymbol),
-            expectedSymbol, actualSymbol);
+        Set<Character> missing = new HashSet<>(expected);
+        missing.removeAll(actual);
+        missing.removeAll(expendables);
+        Assert.assertThat(missing, IsEmptyCollection.empty());
     }
 
     @Test

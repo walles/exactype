@@ -60,7 +60,7 @@ public class Exactype
         "zxcvbnm,." // ⇧ = SHIFT, ⌫ = Backspace
     };
 
-    private static final String[] SHIFTED = new String[] {
+    static final String[] SHIFTED = new String[] {
         "QWERTYUIOPÅ",
         "ASDFGHJKLÖÄ",
         "ZXCVBNM,." // ⇧ = SHIFT, ⌫ = Backspace
